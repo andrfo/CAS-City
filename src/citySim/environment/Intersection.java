@@ -12,9 +12,10 @@ public class Intersection extends Entity {
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
 	
-	public Intersection(GridPoint location, ContinuousSpace<Object> space, Grid<Object> grid) {
-		super(location, space, grid);
+	public Intersection(ContinuousSpace<Object> space, Grid<Object> grid) {
+		super(space, grid);
 		// TODO Auto-generated constructor stub
 	}
+
 	
 }

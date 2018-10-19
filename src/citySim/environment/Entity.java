@@ -2,6 +2,7 @@ package citySim.environment;
 
 import java.util.List;
 
+
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
@@ -21,8 +22,7 @@ public abstract class Entity {
 	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
-	public Entity(GridPoint location, ContinuousSpace<Object> space, Grid<Object> grid) {
-		this.location = location;
+	public Entity(ContinuousSpace<Object> space, Grid<Object> grid) {
 		this.space = space;
 		this.grid = grid;
 	}

@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+
 import citySim.environment.Road;
 import repast.simphony.context.Context;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactory;
@@ -19,7 +20,7 @@ import repast.simphony.space.continuous.SimpleCartesianAdder;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridBuilderParameters;
 import repast.simphony.space.grid.SimpleGridAdder;
-import repast.simphony.space.grid.StrictBorders;
+import repast.simphony.space.grid.WrapAroundBorders;
 
 /**
  * @author andrfo
@@ -32,7 +33,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	
 	@Override
 	public Context build(Context<Object> context) {
-		context.setId("citysim");
+		context.setId("CitySim");
 		
 		
 		
@@ -41,20 +42,20 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		ContinuousSpace<Object> space = spaceFactory.createContinuousSpace(
 				"space", 
 				context, 
-				new SimpleCartesianAdder<Object>(), //TODO: Change adder?
-				new repast.simphony.space.continuous.StrictBorders(), 
-				50, 50);
+				new SimpleCartesianAdder<Object>(), 
+				new repast.simphony.space.continuous.WrapAroundBorders(), 
+				200, 200);
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
 		Grid<Object> grid = gridFactory.createGrid(
 				"grid", 
 				context, 
 				new GridBuilderParameters<Object>(
-						new StrictBorders(), 
+						new WrapAroundBorders(), 
 						new SimpleGridAdder<Object>(),//TODO: Change adder?
 						true,
-						50,
-						50));
-		readImage(space, grid);
+						200,
+						200));
+		readImage(space, grid, context);
 		
 		//TODO: add Entities
 		
@@ -68,10 +69,10 @@ public class CitySimBuilder implements ContextBuilder<Object> {
     // green = pixel.r < 0.5 && pixel.g > 0.5 && pixel.b < 0.5;
     // red = pixel.r > 0.5 && pixel.g < 0.5 && pixel.b < 0.5;
 	
-	private void readImage(ContinuousSpace<Object> space, Grid grid, Context<Object> context) {
+	private void readImage(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context) {
 		BufferedImage img = null;
 		try {
-		    img = ImageIO.read(new File("maps/3-2.png"));
+		    img = ImageIO.read(new File("maps/3-2.jpg"));
 		} catch (IOException e) {
 			System.out.println(e + ": Image file not found!");
 		}
@@ -80,7 +81,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				//get pixel value
-				int p = img.getRGB(0,0);
+				int p = img.getRGB(i,j);
 				
 				//get alpha
 				int a = (p>>24) & 0xff;
@@ -93,19 +94,30 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 				
 				//get blue
 				int b = p & 0xff;
-				
-				
-				if(r >= 255 && g >= 255 && b >= 255) {//Nothing
+				if(r >= 240 && g >= 240 && b >= 240) {//Nothing
 					continue;
 				}
-				else if(r == 0 && g == 0 && b == 0) {//Road
-					context.add(new Road(location, space, grid))
+				else if(r < 10 && g < 10 && b < 10) {//Road
+					Road road = new Road(space, grid);
+					road.setType("simple");
+					context.add(road);
+					space.moveTo(road, i, j);
+					
 				}
 				else if(r <= 100 && g >= 100 && b <= 100) {//Start
-					
+					Road road = new Road(space, grid);
+					context.add(road);
+					road.setType("spawn");
+					space.moveTo(road, i, j);
 				}
 				else if(r >= 100 && g <= 100 && b <= 100) {//end
-					
+					Road road = new Road(space, grid);
+					road.setType("despawn");
+					context.add(road);
+					space.moveTo(road, i, j);
+				}
+				else {
+					System.out.println("r: " + r + "g: " + g + "b: " + b);
 				}
 				
 			}
