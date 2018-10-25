@@ -3,14 +3,22 @@
   <type>2D</type>
   <styles>
     <entry>
+      <string>citySim.agent.Car</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
       <string>citySim.environment.Road</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
   </styles>
   <editedStyles>
     <entry>
+      <string>citySim.agent.Car</string>
+      <string>citySim.agent.Car.style_2.xml</string>
+    </entry>
+    <entry>
       <string>citySim.environment.Road</string>
-      <string>citySim.environment.Road.style_0.xml</string>
+      <string>citySim.environment.Road.style_1.xml</string>
     </entry>
   </editedStyles>
   <netStyles/>
@@ -23,12 +31,16 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-88015469</hashCode>
+    <hashCode>1445490690</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
+    <entry>
+      <string>citySim.agent.Car</string>
+      <int>1</int>
+    </entry>
     <entry>
       <string>citySim.environment.Road</string>
       <int>0</int>

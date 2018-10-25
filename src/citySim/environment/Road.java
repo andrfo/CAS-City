@@ -41,11 +41,10 @@ public class Road extends Entity{
 	public void step() {
 		// get the grid location of this
 		GridPoint pt = grid.getLocation(this);
-		System.out.println("I am at: " +pt.getX() + ", " + pt.getY());
 		
 	}
 	
-
+	
 	
 	
 	
