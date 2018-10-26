@@ -131,7 +131,6 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
 					spawnPoints.add(road);
-					System.out.println("START ROAD SEGMENT: " + x + ", " + y);
 				}
 				else if(r >= 150 && g <= 150 && b <= 150) {//end
 					Road road = new Road(space, grid);

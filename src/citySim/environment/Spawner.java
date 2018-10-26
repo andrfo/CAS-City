@@ -47,7 +47,6 @@ public class Spawner {
 		Network<Object> net = (Network<Object>)context.getProjection("road network");
 		shortestPath = new ShortestPath<>(net);
 		shortestPath.getPath(spawnPoints.get(0), goals.get(0));
-		//TODO: init path somehow
 		
 		
 		//TODO: Check instance of Agent?
