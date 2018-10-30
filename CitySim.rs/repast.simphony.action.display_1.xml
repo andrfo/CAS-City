@@ -14,15 +14,25 @@
   <editedStyles>
     <entry>
       <string>citySim.agent.Car</string>
-      <string>citySim.agent.Car.style_2.xml</string>
+      <string>citySim.agent.Car.style_3.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.Road</string>
-      <string>citySim.environment.Road.style_1.xml</string>
+      <string>citySim.environment.Road.style_2.xml</string>
     </entry>
   </editedStyles>
-  <netStyles/>
-  <editedNetStyles/>
+  <netStyles>
+    <entry>
+      <string>road network</string>
+      <string>repast.simphony.visualization.editedStyle.EditedEdgeStyle2D</string>
+    </entry>
+  </netStyles>
+  <editedNetStyles>
+    <entry>
+      <string>road network</string>
+      <string>roadnetwork.style_0.xml</string>
+    </entry>
+  </editedNetStyles>
   <frequency>ON_MOVE</frequency>
   <schedParams>
     <start>1.0</start>
@@ -31,7 +41,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1445490690</hashCode>
+    <hashCode>-2057986576</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
@@ -48,6 +58,11 @@
   </layerOrder>
   <projections>
     <repast.simphony.scenario.data.ProjectionData>
+      <id>road network</id>
+      <attributes/>
+      <type>network</type>
+    </repast.simphony.scenario.data.ProjectionData>
+    <repast.simphony.scenario.data.ProjectionData>
       <id>space</id>
       <attributes/>
       <type>continuous space</type>
@@ -58,9 +73,16 @@
   </visualizationProperties>
   <projectionDescriptors>
     <entry>
+      <string>road network</string>
+      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData"/>
+        <props/>
+      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+    </entry>
+    <entry>
       <string>space</string>
       <repast.simphony.visualization.continuous.ContinuousProjectionDescriptor>
-        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData"/>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[2]"/>
         <props>
           <entry>
             <string>repast.simphony.visualization.continuous.ContinuousDecorator</string>

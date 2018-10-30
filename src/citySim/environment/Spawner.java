@@ -43,10 +43,15 @@ public class Spawner {
 		this.context = context;
 		this.spawnPoints = spawnPoints;
 		this.goals = goals;
+		if(spawnPoints.size() == 0 || goals.size() == 0) {
+			throw new IllegalArgumentException("no spawn or goal");
+		}
+		
 		
 		Network<Object> net = (Network<Object>)context.getProjection("road network");
 		shortestPath = new ShortestPath<>(net);
-		shortestPath.getPath(spawnPoints.get(0), goals.get(0));
+		shortestPath.getPath(spawnPoints.get(0), goals.get(0)); //Check empty
+		
 		
 		
 		//TODO: Check instance of Agent?

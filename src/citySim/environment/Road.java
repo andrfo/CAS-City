@@ -2,8 +2,9 @@ package citySim.environment;
 
 import java.util.List;
 
-
-import repast.simphony.engine.schedule.ScheduledMethod;
+import citySim.agent.Car;
+import repast.simphony.engine.watcher.Watch;
+import repast.simphony.engine.watcher.WatcherTriggerSchedule;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.random.RandomHelper;
@@ -14,13 +15,11 @@ import repast.simphony.util.SimUtilities;
 
 public class Road extends Entity{
 	
-	private Road next; // Next road segment
-	private Road preceding; // The preceding Road segment
-	private Road nextLane; // The other lane. There are no more than 2 lanes currently
-	private String type;
 	
-	private int x;
-	private int y;
+	private String type;
+	private Junction junction;
+	
+	
 	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
@@ -29,20 +28,35 @@ public class Road extends Entity{
 		this.space = space;
 		this.grid = grid;
 	}
+	@Watch(
+			watcheeClassName = "citySim.agent.Car", 
+			watcheeFieldNames = "moved",
+			query = "colocated",
+			whenToTrigger = WatcherTriggerSchedule.IMMEDIATE)
+	public void trigger() {
+		if(junction != null) {
+			GridPoint pt = grid.getLocation(this);
+			Car c = (Car) grid.getObjectAt(pt.getX(), pt.getY());
+			junction.addCar(c);
+		}
+		
+		
+	}
+	
 	public String getType() {
 		return type;
 	}
 	public void setType(String type) {
 		this.type = type;
 	}
-	
-	
-	@ScheduledMethod(start = 1, interval = 1)
-	public void step() {
-		// get the grid location of this
-		GridPoint pt = grid.getLocation(this);
-		
+	public Junction getJunction() {
+		return junction;
 	}
+	public void setJunction(Junction junction) {
+		this.junction = junction;
+	}
+	
+	
 	
 	
 	

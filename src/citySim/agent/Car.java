@@ -16,6 +16,8 @@ import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import repast.simphony.util.ContextUtils;
 import repast.simphony.util.SimUtilities;
+import utils.Tools;
+import utils.Vector2D;
 
 public class Car extends Agent{
 
@@ -26,6 +28,9 @@ public class Car extends Agent{
 	private Road start;
 	private List<RepastEdge<Object>> path;
 	private double pathIndex;
+	private boolean moved;
+	private boolean isAtJunction;
+	private Vector2D direction;
 	
 	//Speed control
 	private double speed;
@@ -60,25 +65,37 @@ public class Car extends Agent{
 		List<GridCell<Road>> roadGridCells = roadNghCreator.getNeighborhood(true);
 		SimUtilities.shuffle(roadGridCells, RandomHelper.getUniform());
 		
-		speedControl();
+		
+		speedControl();	
 		
 		//Follow path
 		if(pathIndex < path.size() - 1) {
 			int index = (int) Math.floor(pathIndex);
 			GridPoint next = grid.getLocation((Road)path.get(index).getTarget());
 			//System.out.println("x: " + next.getX() + " y: " + next.getY() + " lenght: " + path.size());
+			direction = Tools.create2DVector(pt, next);
 			moveTowards(next);
 			pathIndex = pathIndex + speed;
 			
 		}
 		else {
 			//Goal reached, die(for now)
-			//TODO: agent cycle
+			//TODO: agent life cycle
 			Context<Object> context = ContextUtils.getContext(this);
 			context.remove(this);
 		}
 		//================================
 	}
+	
+	
+	/**
+	 * TODO:local naviation: 
+	 * 		large grid neighbourhood that detects the surrounding area
+	 * 		This can also be a tweakable variable!
+	 * 
+	 */
+	
+	
 	
 	public void moveTowards(GridPoint pt) {
 		// only move if we are not already in this grid location
@@ -89,6 +106,7 @@ public class Car extends Agent{
 			space.moveByVector(this, speed, angle, 0);
 			myPoint = space.getLocation(this);
 			grid.moveTo(this, (int)myPoint.getX(), (int)myPoint.getY());
+			moved = true;
 		}
 	}
 	private void speedControl() {
@@ -98,7 +116,14 @@ public class Car extends Agent{
 		
 		double minDist = Float.MAX_VALUE;
 		for (GridCell<Agent> cell : agentGridCells) {
-			double dist = distance(cell.getPoint(), grid.getLocation(this));
+			if(cell.size() <= 0) {
+				continue;
+			}
+			Car c = (Car)cell.items().iterator().next();
+			if(!isSameWay(c)) {
+				continue;
+			}
+			double dist = Tools.distance(cell.getPoint(), grid.getLocation(this));
 			if(dist < minDist && cell.size() > 0) {
 				minDist = dist;		
 			}
@@ -126,15 +151,46 @@ public class Car extends Agent{
 			speed += forceAccelerate;
 		}
 	}
-	private double distance(GridPoint a, GridPoint b) {
-		float dx = a.getX() - b.getX();
-		float dy = a.getY() - b.getY();
-		return Math.sqrt(dx*dx + dy*dy);
+	
+	private boolean isSameWay(Car c) {
+		Vector2D cDir = c.getDirection();
+		if(cDir == null || this.direction == null) {
+			return false;
+		}
+		double angle = direction.angle(cDir);
 		
+		if(angle < Math.PI/2) {
+			return true;
+		}
+		return false;
 	}
 	
 	
 	
+	
+
+	public Vector2D getDirection() {
+		return direction;
+	}
+
+	public boolean isAtJunction() {
+		return isAtJunction;
+	}
+
+	/**
+	 * 
+	 * @param isAtJunction
+	 */
+	public void setAtJunction(boolean isAtJunction) {
+		if(isAtJunction) {
+			stop();
+		}
+		else {
+			accelerate();
+		}
+		this.isAtJunction = isAtJunction;
+	}
+
 	public void setGoal(Road goal) {
 		this.goal = goal;
 	}
