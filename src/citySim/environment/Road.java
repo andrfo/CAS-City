@@ -1,23 +1,27 @@
 package citySim.environment;
 
-import java.util.List;
-
 import citySim.agent.Car;
+import repast.simphony.engine.environment.RunEnvironment;
+import repast.simphony.engine.schedule.Schedule;
+import repast.simphony.engine.schedule.ScheduleParameters;
+import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.engine.watcher.Watch;
 import repast.simphony.engine.watcher.WatcherTriggerSchedule;
-import repast.simphony.query.space.grid.GridCell;
-import repast.simphony.query.space.grid.GridCellNgh;
-import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
-import repast.simphony.util.SimUtilities;
+import utils.Tools;
+import utils.Vector2D;
 
 public class Road extends Entity{
 	
 	
 	private String type;
 	private Junction junction;
+	private Car car;
+	private boolean isOccupied = false;
+	private boolean isJunctionEdge;
+	GridPoint pt;
 	
 	
 	
@@ -27,22 +31,67 @@ public class Road extends Entity{
 		super(space, grid);
 		this.space = space;
 		this.grid = grid;
+		this.isJunctionEdge = false;
 	}
 	@Watch(
 			watcheeClassName = "citySim.agent.Car", 
 			watcheeFieldNames = "moved",
 			query = "colocated",
 			whenToTrigger = WatcherTriggerSchedule.IMMEDIATE)
-	public void trigger() {
-		if(junction != null) {
-			GridPoint pt = grid.getLocation(this);
-			Car c = (Car) grid.getObjectAt(pt.getX(), pt.getY());
-			junction.addCar(c);
+	@ScheduledMethod
+	public void onTriggerEnter() {
+		if(junction == null) {
+			return;
+		}
+		
+		pt = grid.getLocation(this);
+		
+		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
+			if(obj instanceof Car) {
+				//Check if car is entering or leaving junction
+				if(isLeavingJunction((Car)obj)) {
+					return;
+				}
+				isOccupied = true;
+				if(isJunctionEdge) {
+					junction.addCar((Car)obj);					
+				}
+				this.car = (Car)obj;
+			}
 		}
 		
 		
+		Schedule schedule = (Schedule) RunEnvironment.getInstance().getCurrentSchedule();
+		int tick = (int) RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
+		
+		ScheduleParameters params = ScheduleParameters.createOneTime(tick, ScheduleParameters.FIRST_PRIORITY);
+		schedule.schedule(params, this, "update");
 	}
-	
+	public void update() {
+		boolean containsCar = false;
+		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
+			if(obj instanceof Car) {
+				containsCar = true;
+			}
+		}
+		if(!containsCar) {
+			isOccupied = false;
+			this.car = null;
+		}
+	}
+	private boolean isLeavingJunction(Car c) {
+		Vector2D cDir = c.getDirection();
+		if(cDir == null) { 
+			return true;
+		}
+		Vector2D diff = Tools.create2DVector(grid.getLocation(junction), grid.getLocation(this));
+		double angle = diff.angle(cDir);
+		
+		if(angle < Math.PI/2) {
+			return true;
+		}
+		return false;
+	}
 	public String getType() {
 		return type;
 	}
@@ -54,6 +103,24 @@ public class Road extends Entity{
 	}
 	public void setJunction(Junction junction) {
 		this.junction = junction;
+	}
+	public boolean isJunctionEdge() {
+		return isJunctionEdge;
+	}
+	public void setJunctionEdge(boolean isJunctionEdge) {
+		this.isJunctionEdge = isJunctionEdge;
+	}
+	public Car getCar() {
+		return car;
+	}
+	public void setCar(Car car) {
+		this.car = car;
+	}
+	public boolean isOccupied() {
+		return isOccupied;
+	}
+	public void setOccupied(boolean isOccupied) {
+		this.isOccupied = isOccupied;
 	}
 	
 	

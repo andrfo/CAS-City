@@ -59,7 +59,8 @@ public class Spawner {
 		
 	}
 	
-	@ScheduledMethod(start = 1, interval = 10)
+	//TODO: spawn frequency
+	@ScheduledMethod(start = 1, interval = 1)
 	public void spawn() {
 		if (spawnPoints.size() > 0) {
 			Car a = new Car(space, grid);

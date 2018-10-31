@@ -21,6 +21,11 @@ import utils.Vector2D;
 
 public class Car extends Agent{
 
+	/**TODO:
+	 * Bug: Seems that some cars overtake the one in front and that creates a jam at that point. 
+	 * both cars stop
+	 */
+	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
 	
@@ -29,14 +34,15 @@ public class Car extends Agent{
 	private List<RepastEdge<Object>> path;
 	private double pathIndex;
 	private boolean moved;
-	private boolean isAtJunction;
+	private boolean isCarAhead;
+	private boolean isInQueue;
 	private Vector2D direction;
 	
 	//Speed control
 	private double speed;
 	private double maxSpeed;
 	
-	private double thresholdStop = 1.2;
+	private double thresholdStop = 1.6;
 	private double thresholdDecelerate = 2;
 	private double thresholdAccelerate = 3;
 	
@@ -48,12 +54,12 @@ public class Car extends Agent{
 		this.grid = grid;
 		this.space = space;
 		this.pathIndex = 0;
-		this.speed = maxSpeed = 1 + RandomHelper.nextDouble();
+		this.speed = maxSpeed = 0.5 + RandomHelper.nextDouble();
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step(){
-		if(goal == null) {
+		if(goal == null || isInQueue) {
 			return;
 		}
 		// get the grid location of this Agent
@@ -64,7 +70,6 @@ public class Car extends Agent{
 		GridCellNgh<Road> roadNghCreator = new GridCellNgh<Road>(grid, pt, Road.class, 1, 1);
 		List<GridCell<Road>> roadGridCells = roadNghCreator.getNeighborhood(true);
 		SimUtilities.shuffle(roadGridCells, RandomHelper.getUniform());
-		
 		
 		speedControl();	
 		
@@ -109,6 +114,11 @@ public class Car extends Agent{
 			moved = true;
 		}
 	}
+	
+	public String debugLabel() {
+		return "" + (int)Math.ceil(speed) + " " + isCarAhead;
+	}
+
 	private void speedControl() {
 		GridPoint pt = grid.getLocation(this);
 		GridCellNgh<Agent> agentNghCreator = new GridCellNgh<Agent>(grid, pt, Agent.class, 3, 3);
@@ -117,10 +127,11 @@ public class Car extends Agent{
 		double minDist = Float.MAX_VALUE;
 		for (GridCell<Agent> cell : agentGridCells) {
 			if(cell.size() <= 0) {
+				minDist = Double.MAX_VALUE;
 				continue;
 			}
 			Car c = (Car)cell.items().iterator().next();
-			if(!isSameWay(c)) {
+			if(!isSameWay(c) || isBehind(c)) {
 				continue;
 			}
 			double dist = Tools.distance(cell.getPoint(), grid.getLocation(this));
@@ -130,12 +141,14 @@ public class Car extends Agent{
 		}
 		if(minDist >= thresholdAccelerate) {
 			accelerate();
+			isCarAhead = false;
 		}
 		else if(minDist <= thresholdStop) {
 			stop();
 		}
 		else if(minDist <= thresholdDecelerate) {
 			descelerate();
+			isCarAhead = true;
 		}
 	}
 	private void stop() {
@@ -152,6 +165,20 @@ public class Car extends Agent{
 		}
 	}
 	
+	private boolean isBehind(Car c) {
+		Vector2D cDir = c.getDirection();
+		if(cDir == null || this.direction == null) {
+			return true;
+		}
+		Vector2D diff = Tools.create2DVector(grid.getLocation(c), grid.getLocation(this));
+		double angle = direction.angle(diff);
+		
+		if(angle < Math.PI/2) {
+			return true;
+		}
+		return false;
+	}
+	
 	private boolean isSameWay(Car c) {
 		Vector2D cDir = c.getDirection();
 		if(cDir == null || this.direction == null) {
@@ -164,31 +191,33 @@ public class Car extends Agent{
 		}
 		return false;
 	}
-	
-	
-	
-	
 
 	public Vector2D getDirection() {
 		return direction;
 	}
 
 	public boolean isAtJunction() {
-		return isAtJunction;
+		return isInQueue;
+	}
+	
+	public int getRemainingSteps() {
+		return path.size() - (int)Math.floor(pathIndex);
 	}
 
 	/**
 	 * 
-	 * @param isAtJunction
+	 * @param isInQueue
 	 */
-	public void setAtJunction(boolean isAtJunction) {
-		if(isAtJunction) {
+	public void setInQueue(boolean isInQueue) {
+		this.isInQueue = isInQueue;
+		if(isInQueue) {
 			stop();
 		}
 		else {
-			accelerate();
+			pathIndex += 1;
+			setSpeed(maxSpeed);
+			step();
 		}
-		this.isAtJunction = isAtJunction;
 	}
 
 	public void setGoal(Road goal) {

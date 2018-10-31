@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 
 import citySim.agent.Car;
 import utils.Tools;
+import citySim.environment.Junction;
 import citySim.environment.Road;
 import citySim.environment.Spawner;
 import repast.simphony.context.Context;
@@ -62,6 +63,9 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	
 	BufferedImage img = null;
 	
+	ContinuousSpace<Object> space;
+	Grid<Object> grid;
+	
 	Spawner spawner;
 	
 	@Override
@@ -82,7 +86,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		
 		ContinuousSpaceFactory spaceFactory = 
 				ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
-		ContinuousSpace<Object> space = spaceFactory.createContinuousSpace(
+		space = spaceFactory.createContinuousSpace(
 				"space", 
 				context, 
 				new SimpleCartesianAdder<Object>(), 
@@ -90,7 +94,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 				width + 10, 
 				height + 10);
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
-		Grid<Object> grid = gridFactory.createGrid(
+		grid = gridFactory.createGrid(
 				"grid", 
 				context, 
 				new GridBuilderParameters<Object>(
@@ -102,16 +106,6 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		
 		
 		readImage(space, grid, context);
-		Road road = new Road(space, grid);
-		road.setType("roadSW");
-		context.add(road);
-		space.moveTo(road, 1, 1);
-		grid.moveTo(road, 1, 1);
-		
-		
-		//TODO: add Entities
-		
-		//TODO: add Agents
 		
 		return context;
 	}
@@ -195,6 +189,20 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 				
 			}
 		}
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				
+				Object obj = grid.getObjectAt(x, y);
+				if(!(obj instanceof Road)) {
+					continue;
+				}
+				Road r = (Road)obj;
+				
+				if(r.getType().equals("junction")) {
+					buildJunction(r, context);							
+				}
+			}
+		}
 		buildGraph(grid, context);
 		System.out.println("Setting up Spawner");
 		spawner = new Spawner(space, grid, context, spawnPoints, goals);
@@ -203,7 +211,8 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	}
 	
 	/**
-	 * builds a graph with edges between neighbouring roads
+	 * builds a graph with edges between neighboring roads
+	 * primarily used for path finding
 	 * @param grid
 	 * @param context
 	 * @param goals
@@ -213,8 +222,6 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		//Get network
 		Network<Object> net = (Network<Object>)context.getProjection("road network");
 		
-		boolean rne;
-		boolean crne;
 		
 		//iterate over all roads in sim
 		for (Object obj : context) {
@@ -222,13 +229,12 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 				Road r = (Road) obj;
 				GridPoint pt = grid.getLocation(r);
 				
-				//TODO: Junction
-				
 				//use the GridCellNgh class to create GridCells 
-				// for the surrounding neighbourhood.
+				// for the surrounding neighborhood.
 				GridCellNgh<Road> nghCreator = new GridCellNgh<Road>(grid, pt, Road.class, 1, 1);
 				List<GridCell<Road>> gridCells = nghCreator.getNeighborhood(false);
 				
+				//TODO: Clean up code
 				for (GridCell<Road> cell : gridCells) {
 					if(cell.size() <= 0) {
 						continue;
@@ -255,14 +261,56 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 							addEdge(r, cr, net);
 						}
 					}
-					
-					
+					//Connect spawn and despawn to everything around them
+					//TODO: Clean up
+					else if(r.getType().equals("spawn")){
+						addEdge(r, cr, net);
+					}
+					else if(cr.getType().equals("despawn")){
+						addEdge(r, cr, net);
+					}
+					else if(r.getType().equals("junction") || 
+							cr.getType().equals("junction")) {
+						addEdge(r, cr, net);
+					}
 				}
 			}
 		}
 		return net;
 	}
-	
+	private void buildJunction(Road r, Context<Object> context) {
+		if(r.getJunction() == null) {
+			Junction junction = new Junction(space, grid);	
+			context.add(junction);
+			space.moveTo(junction, space.getLocation(r).getX(), space.getLocation(r).getY());
+			grid.moveTo(junction, grid.getLocation(r).getX(), grid.getLocation(r).getY());
+			recursiveBuildJunction(junction, r);
+		}
+		
+	}
+	private void recursiveBuildJunction(Junction junction, Road r) {
+		GridCellNgh<Road> nghCreator = new GridCellNgh<Road>(grid, grid.getLocation(r), Road.class, 1, 1);
+		List<GridCell<Road>> gridCells = nghCreator.getNeighborhood(true);
+		
+		for (GridCell<Road> gridCell : gridCells) {
+			if(gridCell.items().iterator().hasNext()) {
+				Road road = gridCell.items().iterator().next();	
+				if(!road.getType().equals("junction")) {
+					junction.addEdgeRoad(road);
+					road.setJunction(junction);
+					road.setJunctionEdge(true);
+					continue;
+				}
+				if(road.getJunction() == null) {
+					road.setJunction(junction);
+					junction.addRoad(road);
+					
+					recursiveBuildJunction(junction, road);
+				}
+			}
+		}
+		
+	}
 	private void addEdge(Object a, Object b, Network<Object> net) {
 		if(net.getEdge(a, b) == null) {
 			net.addEdge(a, b);
