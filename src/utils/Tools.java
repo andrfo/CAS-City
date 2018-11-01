@@ -54,11 +54,11 @@ public class Tools {
 	}
 	//TODO: fix:(?) change direction?
 	public static Vector2D create2DVector(GridPoint a, GridPoint b) {
-		Vector2D v =  new Vector2D(a.getX() - b.getX(), a.getY() - b.getY());
+		Vector2D v =  new Vector2D(b.getX() - a.getX(), b.getY() - a.getY());
 		return v;
 	}
 	
-	public static double distance(GridPoint a, GridPoint b) {
+	public static Double distance(GridPoint a, GridPoint b) {
 		float dx = a.getX() - b.getX();
 		float dy = a.getY() - b.getY();
 		return Math.sqrt(dx*dx + dy*dy);

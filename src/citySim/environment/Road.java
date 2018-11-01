@@ -21,18 +21,20 @@ public class Road extends Entity{
 	private Car car;
 	private boolean isOccupied = false;
 	private boolean isJunctionEdge;
+	private boolean isNewCar;
 	GridPoint pt;
-	
-	
 	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
+	
 	public Road(ContinuousSpace<Object> space, Grid<Object> grid) {
 		super(space, grid);
 		this.space = space;
 		this.grid = grid;
 		this.isJunctionEdge = false;
+		this.isNewCar = false;
 	}
+	
 	@Watch(
 			watcheeClassName = "citySim.agent.Car", 
 			watcheeFieldNames = "moved",
@@ -40,25 +42,41 @@ public class Road extends Entity{
 			whenToTrigger = WatcherTriggerSchedule.IMMEDIATE)
 	@ScheduledMethod
 	public void onTriggerEnter() {
-		if(junction == null) {
-			return;
-		}
 		
 		pt = grid.getLocation(this);
 		
 		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
 			if(obj instanceof Car) {
+				Car c = (Car)obj;
+				c.addVisited(this);
+				
+				
+				if(junction == null) {
+					return;
+				}
 				//Check if car is entering or leaving junction
-				if(isLeavingJunction((Car)obj)) {
+				if(isLeavingJunction(c)) {
+					junction.carLeft(c);
 					return;
 				}
 				isOccupied = true;
-				if(isJunctionEdge) {
-					junction.addCar((Car)obj);					
-				}
-				this.car = (Car)obj;
+				this.car = c;
+				isNewCar = true;
 			}
 		}
+		if(isJunctionEdge && isOccupied && car != null) {
+			try {
+				space.moveTo(car, space.getLocation(this).getX(), space.getLocation(this).getY());
+				grid.moveTo(car, grid.getLocation(this).getX(), grid.getLocation(this).getY());
+				junction.addCar(car);									
+			}
+			catch (Exception e) {
+				this.car = null;
+				System.out.println("Car is dead");
+				
+			}
+		}
+		isNewCar = false;
 		
 		
 		Schedule schedule = (Schedule) RunEnvironment.getInstance().getCurrentSchedule();
@@ -67,6 +85,7 @@ public class Road extends Entity{
 		ScheduleParameters params = ScheduleParameters.createOneTime(tick, ScheduleParameters.FIRST_PRIORITY);
 		schedule.schedule(params, this, "update");
 	}
+	
 	public void update() {
 		boolean containsCar = false;
 		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
@@ -79,6 +98,7 @@ public class Road extends Entity{
 			this.car = null;
 		}
 	}
+	
 	private boolean isLeavingJunction(Car c) {
 		Vector2D cDir = c.getDirection();
 		if(cDir == null) { 
@@ -92,33 +112,43 @@ public class Road extends Entity{
 		}
 		return false;
 	}
+	
 	public String getType() {
 		return type;
 	}
+	
 	public void setType(String type) {
 		this.type = type;
 	}
+	
 	public Junction getJunction() {
 		return junction;
 	}
+	
 	public void setJunction(Junction junction) {
 		this.junction = junction;
 	}
+	
 	public boolean isJunctionEdge() {
 		return isJunctionEdge;
 	}
+	
 	public void setJunctionEdge(boolean isJunctionEdge) {
 		this.isJunctionEdge = isJunctionEdge;
 	}
+	
 	public Car getCar() {
 		return car;
 	}
+	
 	public void setCar(Car car) {
 		this.car = car;
 	}
+	
 	public boolean isOccupied() {
 		return isOccupied;
 	}
+	
 	public void setOccupied(boolean isOccupied) {
 		this.isOccupied = isOccupied;
 	}

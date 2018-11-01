@@ -110,11 +110,6 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		return context;
 	}
 	
-	//black = pixel.r == 0 && pixel.g == 0 && pixel.b == 0;
-    // white = pixel.r > 0.5 && pixel.g > 0.5 && pixel.b > 0.5;
-    // green = pixel.r < 0.5 && pixel.g > 0.5 && pixel.b < 0.5;
-    // red = pixel.r > 0.5 && pixel.g < 0.5 && pixel.b < 0.5;
-	
 	private void readImage(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context) {
 		
 		List<Road> spawnPoints = new ArrayList<Road>();
@@ -278,6 +273,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		}
 		return net;
 	}
+	
 	private void buildJunction(Road r, Context<Object> context) {
 		if(r.getJunction() == null) {
 			Junction junction = new Junction(space, grid);	
@@ -288,6 +284,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		}
 		
 	}
+	
 	private void recursiveBuildJunction(Junction junction, Road r) {
 		GridCellNgh<Road> nghCreator = new GridCellNgh<Road>(grid, grid.getLocation(r), Road.class, 1, 1);
 		List<GridCell<Road>> gridCells = nghCreator.getNeighborhood(true);
@@ -311,6 +308,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		}
 		
 	}
+	
 	private void addEdge(Object a, Object b, Network<Object> net) {
 		if(net.getEdge(a, b) == null) {
 			net.addEdge(a, b);

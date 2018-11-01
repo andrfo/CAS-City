@@ -76,7 +76,7 @@ public class Spawner {
 				int ep = RandomHelper.nextIntFromTo(0,  goals.size() - 1);
 				a.setGoal(goals.get(ep));
 				a.setStart(start);
-				a.setPath(shortestPath.getPath(start, goals.get(ep)));
+				a.setShortestPath(shortestPath);
 			}
 		}
 	}

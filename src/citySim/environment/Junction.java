@@ -17,11 +17,14 @@ public class Junction extends Entity {
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
 	
+	private boolean isOccupied;
+	
 	public Junction(ContinuousSpace<Object> space, Grid<Object> grid) {
 		super(space, grid);
 		this.edgeRoads = new ArrayList<Road>();
 		this.roads =  new ArrayList<Road>();
 		this.queue = new ArrayList<Car>();
+		isOccupied = false;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -33,6 +36,7 @@ public class Junction extends Entity {
 	}
 	
 	private void activate(Car car) {
+		isOccupied = true;
 		car.setInQueue(false);
 		queue.remove(car);
 	}
@@ -56,12 +60,19 @@ public class Junction extends Entity {
 	}
 	
 	public boolean isOccupied() {
+		return isOccupied;
+		/*
 		for (Road road : roads) {
 			if(road.isOccupied()) {
 				return true;
 			}
 		}
 		return false;
+		*/
+	}
+	
+	public void carLeft(Car c) {
+		isOccupied = false;
 	}
 	
 	public void addEdgeRoad(Road road) {
