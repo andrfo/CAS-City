@@ -53,8 +53,8 @@ public class Tools {
 		return 9; //Should not get here.
 	}
 	//TODO: fix:(?) change direction?
-	public static Vector2D create2DVector(GridPoint a, GridPoint b) {
-		Vector2D v =  new Vector2D(b.getX() - a.getX(), b.getY() - a.getY());
+	public static Vector2D create2DVector(GridPoint from, GridPoint to) {
+		Vector2D v =  new Vector2D(to.getX() - from.getX(), to.getY() - from.getY());
 		return v;
 	}
 	

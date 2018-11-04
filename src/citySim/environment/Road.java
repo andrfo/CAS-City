@@ -66,8 +66,8 @@ public class Road extends Entity{
 		}
 		if(isJunctionEdge && isOccupied && car != null) {
 			try {
-				space.moveTo(car, space.getLocation(this).getX(), space.getLocation(this).getY());
-				grid.moveTo(car, grid.getLocation(this).getX(), grid.getLocation(this).getY());
+//				space.moveTo(car, space.getLocation(this).getX(), space.getLocation(this).getY());
+//				grid.moveTo(car, grid.getLocation(this).getX(), grid.getLocation(this).getY());
 				junction.addCar(car);									
 			}
 			catch (Exception e) {

@@ -64,6 +64,8 @@ public class Car extends Agent{
 	private double forceDecelerate = 0.2;
 	private double forceAccelerate = 0.2;
 	
+	private String debugString = "ok";
+	
 	
 	private List<Road> open;
 	private List<Road> closed;
@@ -223,15 +225,25 @@ public class Car extends Agent{
 		}
 	}
 	
+	public String getRoadType() {
+		GridPoint pt = grid.getLocation(this);
+		int x = pt.getX();
+		int y = pt.getY();
+		//Get the road where this is located.
+		for (Object obj : grid.getObjectsAt(x, y)){
+			if(obj instanceof Road) {
+				return ((Road)obj).getType();
+			}
+		}
+		return null;
+	}
+	
 	public String debugLabel() {
-		return "" + (int)Math.ceil(speed);
+		return debugString;
 	}
 	
 	private void speedControl() {
 		GridPoint pt = grid.getLocation(this);
-		if(pt == null) {
-			return;
-		}
 		
 		GridCellNgh<Agent> agentNghCreator = new GridCellNgh<Agent>(grid, pt, Agent.class, 3, 3);
 		List<GridCell<Agent>> agentGridCells = agentNghCreator.getNeighborhood(false);
@@ -284,7 +296,7 @@ public class Car extends Agent{
 	
 	private boolean isBehind(Car c) {
 		if(this.direction == null) {
-			return false;
+			return true;
 		}
 		Vector2D diff = Tools.create2DVector(grid.getLocation(c), grid.getLocation(this));
 		double angle = direction.angle(diff);
@@ -296,6 +308,16 @@ public class Car extends Agent{
 	}
 	
 	private boolean isSameWay(Car c) {
+		String cType = c.getRoadType();
+		String tType = this.getRoadType();
+		
+		if(cType == null || tType == null) {
+			return false;
+		}
+		
+		return cType.equals(tType);
+		
+		/*
 		Vector2D cDir = c.getDirection();
 		if(cDir == null || this.direction == null) {
 			return false;
@@ -306,6 +328,7 @@ public class Car extends Agent{
 			return true;
 		}
 		return false;
+		*/
 	}
 	
 	public Vector2D getDirection() {
