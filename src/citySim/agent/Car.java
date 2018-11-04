@@ -30,6 +30,11 @@ public class Car extends Agent{
 	 * TODO:local naviation: 
 	 * 		large grid neighbourhood that detects the surrounding area
 	 * 		This can also be a tweakable variable!
+	 * TODO: remove cars from memory:
+	 * 		Seems the cars are not being removed from the memory and we are running out of memory.
+	 * 			- Memory leak
+	 * 			- Force garbage collector to collect cars?
+	 * 			- Remove all references of car and set them to null when dead
 	 * 
 	 */
 	
@@ -103,8 +108,8 @@ public class Car extends Agent{
 				else {
 					//Goal reached, die(for now)
 					//TODO: agent life cycle
-					Context<Object> context = ContextUtils.getContext(this);
-					context.remove(this);
+					
+					die();
 				}
 				//================================
 	}
@@ -136,10 +141,11 @@ public class Car extends Agent{
 	private void selectNewLocalGoal() {
 		//TODO: account for other cars
 		GridPoint pt = grid.getLocation(this);
-		
+		int x = pt.getX();
+		int y = pt.getY();
 		//Get the road where this is located.
 		Road tr = null;
-		for (Object obj : grid.getObjectsAt(pt.getX(), pt.getY())){
+		for (Object obj : grid.getObjectsAt(x, y)){
 			if(obj instanceof Road) {
 				tr = (Road)obj;
 			}
@@ -208,7 +214,13 @@ public class Car extends Agent{
 	
 	public void die() {
 		Context<Object> context = ContextUtils.getContext(this);
-		context.remove(this);
+		try {
+			context.remove(this);			
+		}
+		catch (NullPointerException e) {
+			System.out.println("Tried to kill a dead car.");
+			// TODO: handle exception
+		}
 	}
 	
 	public String debugLabel() {
@@ -217,6 +229,10 @@ public class Car extends Agent{
 	
 	private void speedControl() {
 		GridPoint pt = grid.getLocation(this);
+		if(pt == null) {
+			return;
+		}
+		
 		GridCellNgh<Agent> agentNghCreator = new GridCellNgh<Agent>(grid, pt, Agent.class, 3, 3);
 		List<GridCell<Agent>> agentGridCells = agentNghCreator.getNeighborhood(false);
 		
@@ -316,7 +332,7 @@ public class Car extends Agent{
 		else {
 			pathIndex += 1;
 			setSpeed(maxSpeed);
-			step();
+			//step();
 		}
 	}
 	
