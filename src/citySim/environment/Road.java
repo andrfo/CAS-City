@@ -102,14 +102,16 @@ public class Road extends Entity{
 	private boolean isLeavingJunction(Car c) {
 		Vector2D cDir = c.getDirection();
 		if(cDir == null) { 
+			c.setInJunction(false);
 			return true;
 		}
 		Vector2D diff = Tools.create2DVector(grid.getLocation(junction), grid.getLocation(this));
 		double angle = diff.angle(cDir);
 		
 		if(angle < Math.PI/2) {
-			return true;
+			c.setInJunction(false);
 		}
+		c.setInJunction(true);
 		return false;
 	}
 	

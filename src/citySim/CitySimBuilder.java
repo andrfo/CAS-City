@@ -72,7 +72,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	public Context build(Context<Object> context) {
 		
 		try {
-		    img = ImageIO.read(new File("maps/grid.png"));
+		    img = ImageIO.read(new File("maps/trident.png"));
 		} catch (IOException e) {
 			System.out.println(e + ": Image file not found!");
 		}
@@ -82,7 +82,9 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		context.setId("CitySim");
 		//TODO: Change to be directed when 2way is implemented
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("road network", context, true);
+		NetworkBuilder<Object> debugNetBuilder = new NetworkBuilder<Object>("debug network", context, true);
 		netBuilder.buildNetwork();
+		debugNetBuilder.buildNetwork();
 		
 		ContinuousSpaceFactory spaceFactory = 
 				ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
@@ -258,7 +260,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					}
 					//Connect spawn and despawn to everything around them
 					//TODO: Clean up
-					else if(r.getType().equals("spawn")){
+					if(r.getType().equals("spawn")){
 						addEdge(r, cr, net);
 					}
 					else if(cr.getType().equals("despawn")){

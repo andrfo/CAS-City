@@ -10,18 +10,30 @@
       <string>citySim.environment.Road</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
+    <entry>
+      <string>citySim.environment.Junction</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
   </styles>
   <editedStyles>
     <entry>
       <string>citySim.agent.Car</string>
-      <string>citySim.agent.Car.style_3.xml</string>
+      <string>citySim.agent.Car.style_5.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.Road</string>
-      <string>citySim.environment.Road.style_2.xml</string>
+      <string>citySim.environment.Road.style_4.xml</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.Junction</string>
+      <string>citySim.environment.Junction.style_0.xml</string>
     </entry>
   </editedStyles>
   <netStyles>
+    <entry>
+      <string>debug network</string>
+      <string>repast.simphony.visualizationOGL2D.DefaultEdgeStyleOGL2D</string>
+    </entry>
     <entry>
       <string>road network</string>
       <string>repast.simphony.visualization.editedStyle.EditedEdgeStyle2D</string>
@@ -29,8 +41,12 @@
   </netStyles>
   <editedNetStyles>
     <entry>
+      <string>debug network</string>
+      <null/>
+    </entry>
+    <entry>
       <string>road network</string>
-      <string>roadnetwork.style_0.xml</string>
+      <string>roadnetwork.style_2.xml</string>
     </entry>
   </editedNetStyles>
   <frequency>ON_MOVE</frequency>
@@ -41,7 +57,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-2057986576</hashCode>
+    <hashCode>826944044</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
@@ -49,23 +65,37 @@
   <layerOrder>
     <entry>
       <string>citySim.agent.Car</string>
-      <int>1</int>
+      <int>2</int>
     </entry>
     <entry>
       <string>citySim.environment.Road</string>
+      <int>1</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.Junction</string>
       <int>0</int>
     </entry>
   </layerOrder>
   <projections>
+    <repast.simphony.scenario.data.ProjectionData>
+      <id>space</id>
+      <attributes/>
+      <type>continuous space</type>
+    </repast.simphony.scenario.data.ProjectionData>
     <repast.simphony.scenario.data.ProjectionData>
       <id>road network</id>
       <attributes/>
       <type>network</type>
     </repast.simphony.scenario.data.ProjectionData>
     <repast.simphony.scenario.data.ProjectionData>
-      <id>space</id>
+      <id>debug network</id>
       <attributes/>
-      <type>continuous space</type>
+      <type>network</type>
+    </repast.simphony.scenario.data.ProjectionData>
+    <repast.simphony.scenario.data.ProjectionData>
+      <id>grid</id>
+      <attributes/>
+      <type>grid</type>
     </repast.simphony.scenario.data.ProjectionData>
   </projections>
   <visualizationProperties class="repast.simphony.visualization.UnitSizeLayoutProperties">
@@ -73,23 +103,55 @@
   </visualizationProperties>
   <projectionDescriptors>
     <entry>
-      <string>road network</string>
+      <string>debug network</string>
       <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
-        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData"/>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[3]"/>
         <props/>
       </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
     </entry>
     <entry>
+      <string>road network</string>
+      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[2]"/>
+        <props/>
+      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+    </entry>
+    <entry>
+      <string>grid</string>
+      <repast.simphony.visualization.grid.GridProjectionDescriptor>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[4]"/>
+        <props>
+          <entry>
+            <string>repast.simphony.visualization.grid.GridDecorator</string>
+            <map>
+              <entry>
+                <string>COLOR</string>
+                <int>-16777216</int>
+              </entry>
+              <entry>
+                <string>UNIT_SIZE</string>
+                <float>15.0</float>
+              </entry>
+              <entry>
+                <string>SHOW</string>
+                <boolean>true</boolean>
+              </entry>
+            </map>
+          </entry>
+        </props>
+      </repast.simphony.visualization.grid.GridProjectionDescriptor>
+    </entry>
+    <entry>
       <string>space</string>
       <repast.simphony.visualization.continuous.ContinuousProjectionDescriptor>
-        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[2]"/>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData"/>
         <props>
           <entry>
             <string>repast.simphony.visualization.continuous.ContinuousDecorator</string>
             <map>
               <entry>
                 <string>COLOR</string>
-                <int>-16777216</int>
+                <int>-1</int>
               </entry>
               <entry>
                 <string>UNIT_SIZE</string>
