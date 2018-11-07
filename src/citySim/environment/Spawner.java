@@ -34,6 +34,7 @@ public class Spawner {
 	private List<Road> spawnPoints;
 	private List<Road> goals;
 	private ShortestPath<Object> shortestPath;
+	private Network<Object> net;
 	
 	
 	public Spawner(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context, List<Road> spawnPoints, List<Road> goals) {
@@ -48,9 +49,7 @@ public class Spawner {
 		}
 		
 		
-		Network<Object> net = (Network<Object>)context.getProjection("road network");
-		shortestPath = new ShortestPath<>(net);
-		shortestPath.getPath(spawnPoints.get(0), goals.get(0)); //Check empty
+		net = (Network<Object>)context.getProjection("road network");
 		
 		
 		
@@ -62,22 +61,26 @@ public class Spawner {
 	//TODO: spawn frequency
 	@ScheduledMethod(start = 1, interval = 1)
 	public void spawn() {
-		if (spawnPoints.size() > 0) {
-			Car a = new Car(space, grid);
-			int sp = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
-			Road start = spawnPoints.get(sp);
-			NdPoint spacePt = space.getLocation(start);
-			GridPoint pt = grid.getLocation(start);
-			context.add(a);
-			space.moveTo(a, spacePt.getX(), spacePt.getY());
-			grid.moveTo(a, pt.getX(), pt.getY());
-			//System.out.println("Car spawned at: " + spacePt.getX() + ", " + j);
-			if (goals.size() > 0) {
-				int ep = RandomHelper.nextIntFromTo(0,  goals.size() - 1);
-				a.setGoal(goals.get(ep));
-				a.setStart(start);
-				a.setShortestPath(shortestPath);
-			}
-		}
+		Car car = new Car(space, grid);
+		
+		//Start and goal
+		int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
+		int despawnPointIndex = RandomHelper.nextIntFromTo(0,  goals.size() - 1);
+		Road start = spawnPoints.get(spawnPointIndex);
+		Road goal = goals.get(despawnPointIndex);
+		
+		//Add to context
+		NdPoint spacePt = space.getLocation(start);
+		GridPoint pt = grid.getLocation(start);
+		context.add(car);
+		space.moveTo(car, spacePt.getX(), spacePt.getY());
+		grid.moveTo(car, pt.getX(), pt.getY());
+		
+		//Setup
+		car.setGoal(goal);
+		car.setStart(start);
+		car.setNet(net);
+		//car.setShortestPath(shortestPath);
+		
 	}
 }

@@ -1,8 +1,56 @@
 package utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import citySim.environment.Road;
+import repast.simphony.space.graph.Network;
+import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.space.grid.GridPoint;
 
 public class Tools {
+	
+	public static List<RepastEdge<Object>> aStar(Road startRoad, Road goalRoad, Network<Object> net){
+		class Node{
+			Double g;
+			Double h;
+			Double f;
+			Road road;
+			
+			public Node(Road road) {
+				this.road = road;
+			}
+		}
+		ArrayList<Node> open = new ArrayList<Node>();
+		ArrayList<Node> closed = new ArrayList<Node>();
+		ArrayList<RepastEdge<Object>> path = new ArrayList<RepastEdge<Object>>();
+		
+		Node goal = new Node(goalRoad);
+		goal.g = Double.MAX_VALUE;
+		goal.f = Double.MAX_VALUE;
+		
+		Node start = new Node(startRoad);
+		start.g = 0d;
+		start.h = distance(startRoad.getLocation(), goalRoad.getLocation());
+		start.f = start.h; //Reference error?
+		open.add(start);
+		
+		while(open.size() > 0) {
+			Node current = open.remove(0); //Sorted by f value
+			
+			if(current == goal) {
+				//TODO: Reconstruct path
+			}
+			closed.add(current);
+			
+			for (RepastEdge<Object> neighbour : net.getOutEdges(current.road)) {
+				
+			}
+			
+		}
+		
+		return path;
+	}
 
 	public static int getMooreDirection(GridPoint a, GridPoint b) {
 		

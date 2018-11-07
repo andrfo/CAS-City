@@ -18,10 +18,7 @@ public class Road extends Entity{
 	
 	private String type;
 	private Junction junction;
-	private Car car;
-	private boolean isOccupied = false;
 	private boolean isJunctionEdge;
-	private boolean isNewCar;
 	GridPoint pt;
 	
 	private ContinuousSpace<Object> space;
@@ -32,7 +29,6 @@ public class Road extends Entity{
 		this.space = space;
 		this.grid = grid;
 		this.isJunctionEdge = false;
-		this.isNewCar = false;
 	}
 	
 	@Watch(
@@ -48,70 +44,46 @@ public class Road extends Entity{
 		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
 			if(obj instanceof Car) {
 				Car c = (Car)obj;
-				c.addVisited(this);
-				
-				
-				if(junction == null) {
-					return;
-				}
-				//Check if car is entering or leaving junction
-				if(isLeavingJunction(c)) {
-					junction.carLeft(c);
-					return;
-				}
-				isOccupied = true;
-				this.car = c;
-				isNewCar = true;
+				c.addVisited(this);//TODO:have in car instead
+				if(isJunctionEdge && !type.equals("junction")) {
+					if(!isLeavingJunction(c)) {
+						junction.addCar(c);							
+					}
+				}				
 			}
 		}
-		if(isJunctionEdge && isOccupied && car != null) {
-			try {
-//				space.moveTo(car, space.getLocation(this).getX(), space.getLocation(this).getY());
-//				grid.moveTo(car, grid.getLocation(this).getX(), grid.getLocation(this).getY());
-				junction.addCar(car);									
-			}
-			catch (Exception e) {
-				this.car = null;
-				System.out.println("Car is dead");
-				
-			}
-		}
-		isNewCar = false;
 		
-		
-		Schedule schedule = (Schedule) RunEnvironment.getInstance().getCurrentSchedule();
-		int tick = (int) RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
-		
-		ScheduleParameters params = ScheduleParameters.createOneTime(tick, ScheduleParameters.FIRST_PRIORITY);
-		schedule.schedule(params, this, "update");
+//		Schedule schedule = (Schedule) RunEnvironment.getInstance().getCurrentSchedule();
+//		int tick = (int) schedule.getTickCount();
+//		
+//		ScheduleParameters params = ScheduleParameters.createOneTime(tick, ScheduleParameters.FIRST_PRIORITY);
+//		schedule.schedule(params, this, "update");
 	}
 	
-	public void update() {
-		boolean containsCar = false;
-		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
-			if(obj instanceof Car) {
-				containsCar = true;
-			}
-		}
-		if(!containsCar) {
-			isOccupied = false;
-			this.car = null;
-		}
-	}
+//	public void update() {
+//		boolean containsCar = false;
+//		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
+//			if(obj instanceof Car) {
+//				containsCar = true;
+//			}
+//		}
+//		if(!containsCar) {
+//			isOccupied = false;
+//		}
+//	}
 	
 	private boolean isLeavingJunction(Car c) {
 		Vector2D cDir = c.getDirection();
 		if(cDir == null) { 
-			c.setInJunction(false);
 			return true;
 		}
 		Vector2D diff = Tools.create2DVector(grid.getLocation(junction), grid.getLocation(this));
 		double angle = diff.angle(cDir);
 		
 		if(angle < Math.PI/2) {
-			c.setInJunction(false);
+			System.out.println("Car leaving junction");
+			return true;
 		}
-		c.setInJunction(true);
 		return false;
 	}
 	
@@ -139,20 +111,19 @@ public class Road extends Entity{
 		this.isJunctionEdge = isJunctionEdge;
 	}
 	
-	public Car getCar() {
-		return car;
-	}
-	
-	public void setCar(Car car) {
-		this.car = car;
+	public GridPoint getLocation() {
+		return grid.getLocation(this);
 	}
 	
 	public boolean isOccupied() {
-		return isOccupied;
-	}
-	
-	public void setOccupied(boolean isOccupied) {
-		this.isOccupied = isOccupied;
+		pt = grid.getLocation(this);
+		
+		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
+			if(obj instanceof Car) {	
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	
