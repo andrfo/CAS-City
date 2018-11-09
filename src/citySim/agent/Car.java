@@ -45,20 +45,18 @@ public class Car extends Agent{
 	
 	private Road globalGoal;
 	private Road start;
-	private Road localgoal;
+	private Road localGoal;
 	private Road currentRoad;
 	
 	private int viewDistance = 20;
 	
 	private List<RepastEdge<Object>> path;
-	private ShortestPath<Object> shortestPath;
 	private Network<Object> net;
 	
 	private double pathIndex;
 	private boolean moved;
 	private boolean isInQueue;
 	private Vector2D direction;
-	private boolean hasLocalgoal;
 	private boolean isInJunction;
 	
 	//Speed control
@@ -84,7 +82,6 @@ public class Car extends Agent{
 		this.space = space;
 		this.pathIndex = 0;
 		this.speed = maxSpeed = 0.5 + RandomHelper.nextDouble();
-		this.hasLocalgoal = false;
 		this.open = new ArrayList<Road>();
 		this.closed = new ArrayList<Road>();
 	}
@@ -94,20 +91,10 @@ public class Car extends Agent{
 		if(isInQueue) {
 			return;
 		}
-		if(globalGoal == null) {
-			die("No goal in life, car dies");
-		}
 		isReachedGlobalGoal();
 		getSurroundings();
 		selectNewLocalGoal();
-		/* Commenting out efficiency for now
-		if(!hasLocalgoal || isReachedLocalGoal() || calcCounter >= 5) {
-			selectNewLocalGoal();
-			calcCounter = 0;
-		}	
-		*/
 		move();
-		//calcCounter++;
 	}
 	
 	private void move() {
@@ -126,7 +113,7 @@ public class Car extends Agent{
 			
 		}
 		else {
-			System.out.println("path error, index: " + pathIndex + " Size: " + path.size());
+//			System.out.println("path error, index: " + pathIndex + " Size: " + path.size());
 			selectNewLocalGoal();
 			//Goal reached, die
 			//die("Path ended, car dies");
@@ -137,9 +124,8 @@ public class Car extends Agent{
 	
 	private boolean isReachedLocalGoal() {
 		GridPoint pt = grid.getLocation(this);
-		if(Tools.distance(pt, grid.getLocation(localgoal)) < 1) {
+		if(Tools.distance(pt, grid.getLocation(localGoal)) < 1) {
 			isReachedGlobalGoal();
-			hasLocalgoal = false;
 			return true;
 		}
 		return false;
@@ -149,7 +135,7 @@ public class Car extends Agent{
 	private boolean isReachedGlobalGoal() {
 		
 		GridPoint pt = grid.getLocation(this);
-		if(Tools.distance(pt, grid.getLocation(globalGoal)) < 1) {
+		if(Tools.distance(pt, grid.getLocation(globalGoal)) < 2) {
 			die("Arrived at global goal, car dies");
 			return true;
 		}
@@ -166,53 +152,52 @@ public class Car extends Agent{
 			return;
 		}
 		
-		//Inefficient?
-		//Sorts the open list based on distance from this location
-		//open.sort((o1, o2) -> ((Integer)shortestPath.getPath(o1, globalGoal).size()).compareTo(shortestPath.getPath(o1, globalGoal).size()));
-//		open.sort((o1, o2) -> 
-//		(Tools.distance(
-//				grid.getLocation(o1), 
-//				grid.getLocation(globalGoal)
-//				).compareTo(Tools.distance(
-//						grid.getLocation(o2), 
-//						grid.getLocation(globalGoal)))
-//				));
-		
-		
-		
-		//Pick the road closest to goal
-		GridPoint pt = grid.getLocation(this);
-		int x = pt.getX();
-		int y = pt.getY();
+		//Pick the road within view that is closest to goal
 		Double minDist = Double.MAX_VALUE;
-		Road closestRoad = null;
+		Double dist = 0d;
 		for (Road road : open) {
-
-			if(Tools.distance(grid.getLocation(globalGoal), grid.getLocation(road)) < minDist) {
-				closestRoad = road;
+			dist = Tools.distance(grid.getLocation(globalGoal), grid.getLocation(road));
+			if(dist < minDist) {
+				localGoal = road;
+				minDist = dist;
 			}
 		}
-		localgoal = closestRoad;
-		open.remove(closestRoad);
-		debugPointTo(currentRoad);
-		//System.out.println("Here: " + x + ", " + y + " There: " + grid.getLocation(localgoal).getX() + ", " + grid.getLocation(localgoal).getY());
-		//Get the road where this is located.
-//		Road tr = null;
-//		for (Object obj : grid.getObjectsAt(x, y)){
-//			if(obj instanceof Road) {
-//				tr = (Road)obj;
-//			}
-//		}
-		if(currentRoad != null) {
-			shortestPath = new ShortestPath<>(net);
-			path = shortestPath.getPath(currentRoad, localgoal);
-			
-			//path = shortestPath.getPath(tr, localgoal);
-			pathIndex = 0;
-			hasLocalgoal = true;			
-		}
-		else {
-			System.out.println("tr == null");
+		open.remove(localGoal);
+		debugPointTo(localGoal);
+		
+//		System.out.println(
+//				"Current: " + grid.getLocation(currentRoad).getX() + 
+//				", " + grid.getLocation(currentRoad).getY() + 
+//				" Goal: " + localGoal.getLocation().getX() + 
+//				", " + localGoal.getLocation().getY() +
+//				" Car: " + grid.getLocation(this).getX() + 
+//				", " + grid.getLocation(this).getY() + 
+//				" open size: " + open.size() + 
+//				" distance to goal: " + Tools.distance(grid.getLocation(this), grid.getLocation(globalGoal))
+//				);
+		
+		path = Tools.aStar(currentRoad, localGoal, net);
+		pathIndex = 0;			
+		
+	}
+	
+	private void getSurroundings() {
+		
+		GridPoint pt = grid.getLocation(this);
+		Double minDist = Double.MAX_VALUE;
+		Double dist = 0d;
+		GridCellNgh<Road> roadNghCreator = new GridCellNgh<Road>(grid, pt, Road.class, viewDistance, viewDistance);
+		List<GridCell<Road>> roadGridCells = roadNghCreator.getNeighborhood(true);
+		for (GridCell<Road> gridCell : roadGridCells) {
+			if(gridCell.items().iterator().hasNext()) {
+				Road r = gridCell.items().iterator().next();
+				addOpen(r);
+				dist = Tools.distance(pt, grid.getLocation(r));
+				if(dist < minDist) {
+					minDist = dist;
+					currentRoad = r;
+				}
+			}
 		}
 	}
 	
@@ -331,32 +316,16 @@ public class Car extends Agent{
 		}
 	}
 	
+	/**
+	 * Adds a road to the open list if it has not been seen before by this car
+	 * @param r
+	 */
 	public void addOpen(Road r) {
 		if(!open.contains(r) && !closed.contains(r)) {
 			open.add(r);
 		}
 	}
 	
-	private void getSurroundings() {
-		
-		GridPoint pt = grid.getLocation(this);
-		Double minDist = Double.MAX_VALUE;
-		Road closestRoad = null;
-		GridCellNgh<Road> roadNghCreator = new GridCellNgh<Road>(grid, pt, Road.class, viewDistance, viewDistance);
-		List<GridCell<Road>> roadGridCells = roadNghCreator.getNeighborhood(true);
-		for (GridCell<Road> gridCell : roadGridCells) {
-			if(gridCell.items().iterator().hasNext()) {
-				Road r = gridCell.items().iterator().next();
-				addOpen(r);
-				if(Tools.distance(pt, grid.getLocation(r)) < minDist) {
-					closestRoad = r;
-				}
-			}
-		}
-		if(closestRoad != null) {
-			currentRoad = closestRoad;
-		}
-	}
 	
 	private boolean isBehind(Car c) {
 		if(this.direction == null) {
@@ -455,12 +424,13 @@ public class Car extends Agent{
 		this.path = list;
 	}
 
-	public void setShortestPath(ShortestPath<Object> shortestPath) {
-		this.shortestPath = shortestPath;
-	}
-
 	
 	public void setNet(Network<Object> net) {
+//		int size = 0;
+//		for(RepastEdge<Object> edge: net.getEdges()) {
+//			size++;
+//		}
+//		System.out.println("Net set. Nodes: " + size);
 		this.net = net;
 	}
 	

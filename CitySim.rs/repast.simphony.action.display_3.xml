@@ -18,21 +18,21 @@
   <editedStyles>
     <entry>
       <string>citySim.agent.Car</string>
-      <string>citySim.agent.Car.style_5.xml</string>
+      <string>citySim.agent.Car.style_6.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.Road</string>
-      <string>citySim.environment.Road.style_4.xml</string>
+      <string>citySim.environment.Road.style_5.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.Junction</string>
-      <string>citySim.environment.Junction.style_0.xml</string>
+      <string>citySim.environment.Junction.style_2.xml</string>
     </entry>
   </editedStyles>
   <netStyles>
     <entry>
       <string>debug network</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultEdgeStyleOGL2D</string>
+      <string>repast.simphony.visualization.editedStyle.EditedEdgeStyle2D</string>
     </entry>
     <entry>
       <string>road network</string>
@@ -42,11 +42,11 @@
   <editedNetStyles>
     <entry>
       <string>debug network</string>
-      <null/>
+      <string>debugnetwork.style_2.xml</string>
     </entry>
     <entry>
       <string>road network</string>
-      <string>roadnetwork.style_2.xml</string>
+      <string>roadnetwork.style_3.xml</string>
     </entry>
   </editedNetStyles>
   <frequency>ON_MOVE</frequency>
@@ -57,7 +57,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>826944044</hashCode>
+    <hashCode>-134062374</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
@@ -92,11 +92,6 @@
       <attributes/>
       <type>network</type>
     </repast.simphony.scenario.data.ProjectionData>
-    <repast.simphony.scenario.data.ProjectionData>
-      <id>grid</id>
-      <attributes/>
-      <type>grid</type>
-    </repast.simphony.scenario.data.ProjectionData>
   </projections>
   <visualizationProperties class="repast.simphony.visualization.UnitSizeLayoutProperties">
     <unitSize>15.0</unitSize>
@@ -117,31 +112,6 @@
       </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
     </entry>
     <entry>
-      <string>grid</string>
-      <repast.simphony.visualization.grid.GridProjectionDescriptor>
-        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[4]"/>
-        <props>
-          <entry>
-            <string>repast.simphony.visualization.grid.GridDecorator</string>
-            <map>
-              <entry>
-                <string>COLOR</string>
-                <int>-16777216</int>
-              </entry>
-              <entry>
-                <string>UNIT_SIZE</string>
-                <float>15.0</float>
-              </entry>
-              <entry>
-                <string>SHOW</string>
-                <boolean>true</boolean>
-              </entry>
-            </map>
-          </entry>
-        </props>
-      </repast.simphony.visualization.grid.GridProjectionDescriptor>
-    </entry>
-    <entry>
       <string>space</string>
       <repast.simphony.visualization.continuous.ContinuousProjectionDescriptor>
         <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData"/>
@@ -151,7 +121,7 @@
             <map>
               <entry>
                 <string>COLOR</string>
-                <int>-1</int>
+                <int>-16777216</int>
               </entry>
               <entry>
                 <string>UNIT_SIZE</string>

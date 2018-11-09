@@ -76,6 +76,8 @@ public class Spawner {
 		space.moveTo(car, spacePt.getX(), spacePt.getY());
 		grid.moveTo(car, pt.getX(), pt.getY());
 		
+		System.out.println("car: " + pt.getX() + ", " + pt.getY());
+		
 		//Setup
 		car.setGoal(goal);
 		car.setStart(start);

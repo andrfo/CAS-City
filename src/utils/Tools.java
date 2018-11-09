@@ -1,7 +1,10 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.apache.velocity.runtime.directive.Foreach;
 
 import citySim.environment.Road;
 import repast.simphony.space.graph.Network;
@@ -10,43 +13,90 @@ import repast.simphony.space.grid.GridPoint;
 
 public class Tools {
 	
-	public static List<RepastEdge<Object>> aStar(Road startRoad, Road goalRoad, Network<Object> net){
-		class Node{
-			Double g;
-			Double h;
-			Double f;
-			Road road;
-			
-			public Node(Road road) {
-				this.road = road;
-			}
+	public static List<RepastEdge<Object>> aStar(Road start, Road goal, Network<Object> net){
+		if(start.getLocation().getY() == goal.getLocation().getY()) {
+			System.out.println("SAME");
 		}
-		ArrayList<Node> open = new ArrayList<Node>();
-		ArrayList<Node> closed = new ArrayList<Node>();
+		// Will contain the shortest path
 		ArrayList<RepastEdge<Object>> path = new ArrayList<RepastEdge<Object>>();
 		
-		Node goal = new Node(goalRoad);
-		goal.g = Double.MAX_VALUE;
-		goal.f = Double.MAX_VALUE;
+
+		// The set of nodes already evaluated
+		ArrayList<Road> closed = new ArrayList<Road>(); 
 		
-		Node start = new Node(startRoad);
-		start.g = 0d;
-		start.h = distance(startRoad.getLocation(), goalRoad.getLocation());
-		start.f = start.h; //Reference error?
+		
+		// The set of currently discovered nodes that are not evaluated yet.
+	    // Initially, only the start node is known
+		ArrayList<Road> open = new ArrayList<Road>(); 
+		
+		
+		// For each node, which node it can most efficiently be reached from.
+	    // If a node can be reached from many nodes, cameFrom will eventually contain the
+	    // most efficient previous step.
+		HashMap<Road, Road> cameFrom = new HashMap<Road, Road>();
+		
+		
+		// For each node, the cost of getting from the start node to that node.
+		HashMap<Road, Double> gScore = new HashMap<Road, Double>(); 
+		
+		
+		// For each node, the total cost of getting from the start node to the goal
+	    // by passing by that node. That value is partly known, partly heuristic.
+		HashMap<Road, Double> fScore = new HashMap<Road, Double>(); 
+		
+		gScore.put(start, 0d);
+		fScore.put(start, distance(start.getLocation(), goal.getLocation()));
+		
 		open.add(start);
 		
+		
 		while(open.size() > 0) {
-			Node current = open.remove(0); //Sorted by f value
+			open.sort((o1, o2) -> 
+			(fScore.get(o1).compareTo(fScore.get(o2))));
+			
+			Road current = open.remove(0); //Sorted by f value
 			
 			if(current == goal) {
-				//TODO: Reconstruct path
+				Road child = goal;
+				Road parent;
+				while(true) {
+					if(child == start) {
+						break;
+					}
+					
+					parent = cameFrom.get(child);
+					
+					RepastEdge<Object> edge = net.getEdge(parent, child);
+					path.add(edge);
+					
+					child = parent;
+				}
 			}
+			
 			closed.add(current);
-			
-			for (RepastEdge<Object> neighbour : net.getOutEdges(current.road)) {
+			for (RepastEdge<Object> n : net.getOutEdges(current)) {
+				Road neighbour = (Road)n.getTarget();
+				if(closed.contains(neighbour)) {
+					continue; // Ignore the neighbor which is already evaluated.
+				}
 				
+				Double tentativeGScore = gScore.getOrDefault(current, Double.MAX_VALUE) + 1;// the cost is always one for now
+				
+				if(!open.contains(neighbour)) {
+					open.add(neighbour);
+				}
+				else if(tentativeGScore >= gScore.getOrDefault(neighbour, Double.MAX_VALUE)) {
+					continue; // Not a better path
+				}
+				
+				//This path is the best until now, record it!
+				cameFrom.put(neighbour, current);
+				gScore.put(neighbour, tentativeGScore);
+				fScore.put(
+						neighbour, 
+						gScore.getOrDefault(neighbour, Double.MAX_VALUE) + 
+							distance(neighbour.getLocation(), goal.getLocation()));
 			}
-			
 		}
 		
 		return path;
@@ -107,9 +157,9 @@ public class Tools {
 	}
 	
 	public static Double distance(GridPoint a, GridPoint b) {
-		float dx = a.getX() - b.getX();
-		float dy = a.getY() - b.getY();
-		return Math.sqrt(dx*dx + dy*dy);
+		Double dx = (double) (b.getX() - a.getX());
+		Double dy = (double) (b.getY() - a.getY());
+		return Math.sqrt((dx*dx) + (dy*dy));
 		
 	}
 }
