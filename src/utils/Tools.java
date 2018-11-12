@@ -50,9 +50,10 @@ public class Tools {
 		fScore.put(start, distance(start.getLocation(), goal.getLocation()));
 		
 		open.add(start);
-		
+		String tester = "";
 		
 		while(open.size() > 0) {
+			tester += "|";
 			open.sort((o1, o2) -> 
 			(fScore.get(o1).compareTo(fScore.get(o2))));
 			
@@ -73,6 +74,7 @@ public class Tools {
 					
 					child = parent;
 				}
+				return path;
 			}
 			
 			closed.add(current);
@@ -100,6 +102,7 @@ public class Tools {
 							distance(neighbour.getLocation(), goal.getLocation()));
 			}
 		}
+		System.out.println("Path failed: " + tester);
 		return path;
 	}
 

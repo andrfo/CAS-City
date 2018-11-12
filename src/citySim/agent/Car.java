@@ -173,7 +173,7 @@ public class Car extends Agent{
 		Double dist = 0d;
 		for (Road road : open) {
 			dist = Tools.distance(grid.getLocation(globalGoal), grid.getLocation(road));
-			if(dist < minDist) {
+			if(dist < minDist && !road.getType().equals("spawn")) {
 				localGoal = road;
 				minDist = dist;
 			}
@@ -193,9 +193,9 @@ public class Car extends Agent{
 		
 		path = Tools.aStar(currentRoad, localGoal, net);
 		if(path.size() == 0) {
-			for (Road r : open) {
-				debugPointTo(r);
-			}
+//			for (Road r : open) {
+//				debugPointTo(r);
+//			}
 			System.out.println(
 					"Path is empty. currentRoad: (" + 
 			currentRoad.getLocation().getX() + 
@@ -205,6 +205,11 @@ public class Car extends Agent{
 			localGoal.getLocation().getX() + 
 			", " + 
 			localGoal.getLocation().getY() +
+			")" + 
+			" Car: (" + 
+			grid.getLocation(this).getX() + 
+			", " + 
+			grid.getLocation(this).getY() +
 			")");
 		}
 		pathIndex = 0;			
