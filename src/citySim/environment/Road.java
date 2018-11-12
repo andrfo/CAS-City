@@ -81,7 +81,7 @@ public class Road extends Entity{
 		double angle = diff.angle(cDir);
 		
 		if(angle < Math.PI/2) {
-			System.out.println("Car leaving junction");
+//			System.out.println("Car leaving junction");
 			return true;
 		}
 		return false;

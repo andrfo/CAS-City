@@ -1,5 +1,6 @@
 package citySim.agent;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +59,7 @@ public class Car extends Agent{
 	private boolean isInQueue;
 	private Vector2D direction;
 	private boolean isInJunction;
+	private boolean dead = false;
 	
 	//Speed control
 	private double speed;
@@ -91,10 +93,19 @@ public class Car extends Agent{
 		if(isInQueue) {
 			return;
 		}
+		
+		DecimalFormat df = new DecimalFormat("####0.0");
+		if(path != null) {
+			debugString = df.format(speed) + "; " + path.size();			
+		}
+		
 		isReachedGlobalGoal();
+		if(dead) { return;}
 		getSurroundings();
+		if(dead) { return;}
 		selectNewLocalGoal();
-		move();
+		if(dead) { return;}
+		move();	
 	}
 	
 	private void move() {
@@ -105,16 +116,21 @@ public class Car extends Agent{
 		speedControl();	
 		
 		//Follow path
-		if(pathIndex < path.size() - 1) {
+		if(pathIndex <= path.size() - 1) {
+//			System.out.print("path error, index: " + pathIndex + " Size: " + path.size());
+			selectNewLocalGoal();
+//			System.out.println("; new path size: " + path.size() + ", moving");
+		}	
+		if(pathIndex <= path.size() - 1) {
 			int index = (int) Math.ceil(pathIndex);
 			GridPoint next = grid.getLocation((Road)path.get(index).getTarget());
 			direction = Tools.create2DVector(pt, next);
+			debugPointTo((Road)path.get(index).getTarget());
 			moveTowards(next);
 			
 		}
 		else {
-//			System.out.println("path error, index: " + pathIndex + " Size: " + path.size());
-			selectNewLocalGoal();
+			
 			//Goal reached, die
 			//die("Path ended, car dies");
 		}
@@ -164,7 +180,6 @@ public class Car extends Agent{
 		}
 		open.remove(localGoal);
 		debugPointTo(localGoal);
-		
 //		System.out.println(
 //				"Current: " + grid.getLocation(currentRoad).getX() + 
 //				", " + grid.getLocation(currentRoad).getY() + 
@@ -177,6 +192,21 @@ public class Car extends Agent{
 //				);
 		
 		path = Tools.aStar(currentRoad, localGoal, net);
+		if(path.size() == 0) {
+			for (Road r : open) {
+				debugPointTo(r);
+			}
+			System.out.println(
+					"Path is empty. currentRoad: (" + 
+			currentRoad.getLocation().getX() + 
+			", " + 
+			currentRoad.getLocation().getY() +
+			") localGoal: (" + 
+			localGoal.getLocation().getX() + 
+			", " + 
+			localGoal.getLocation().getY() +
+			")");
+		}
 		pathIndex = 0;			
 		
 	}
@@ -243,9 +273,14 @@ public class Car extends Agent{
 			System.out.println("Tried to kill a dead car.");
 			// TODO: handle exception
 		}
+		dead = true;
 	}
 	
 	public String getRoadType() {
+		
+		if(currentRoad == null) {
+			getSurroundings();
+		}
 		if(currentRoad != null) {
 			return currentRoad.getType();
 		}
@@ -369,10 +404,10 @@ public class Car extends Agent{
 		this.isInQueue = isInQueue;
 		if(isInQueue) {
 			stop();
-			System.out.println("Car in queue");
+//			System.out.println("Car in queue");
 		}
 		else {
-			System.out.println("Car activated");
+//			System.out.println("Car activated");
 			//pathIndex += 1;
 			setSpeed(maxSpeed);
 			step();

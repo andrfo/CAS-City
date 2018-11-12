@@ -14,20 +14,22 @@ import repast.simphony.space.grid.GridPoint;
 public class Tools {
 	
 	public static List<RepastEdge<Object>> aStar(Road start, Road goal, Network<Object> net){
-		if(start.getLocation().getY() == goal.getLocation().getY()) {
+		if(start == goal) {
 			System.out.println("SAME");
 		}
+		
+		
 		// Will contain the shortest path
 		ArrayList<RepastEdge<Object>> path = new ArrayList<RepastEdge<Object>>();
 		
 
 		// The set of nodes already evaluated
-		ArrayList<Road> closed = new ArrayList<Road>(); 
+		ArrayList<Road> closed = new ArrayList<Road>();
 		
 		
 		// The set of currently discovered nodes that are not evaluated yet.
 	    // Initially, only the start node is known
-		ArrayList<Road> open = new ArrayList<Road>(); 
+		ArrayList<Road> open = new ArrayList<Road>();
 		
 		
 		// For each node, which node it can most efficiently be reached from.
@@ -37,12 +39,12 @@ public class Tools {
 		
 		
 		// For each node, the cost of getting from the start node to that node.
-		HashMap<Road, Double> gScore = new HashMap<Road, Double>(); 
+		HashMap<Road, Double> gScore = new HashMap<Road, Double>();
 		
 		
 		// For each node, the total cost of getting from the start node to the goal
 	    // by passing by that node. That value is partly known, partly heuristic.
-		HashMap<Road, Double> fScore = new HashMap<Road, Double>(); 
+		HashMap<Road, Double> fScore = new HashMap<Road, Double>();
 		
 		gScore.put(start, 0d);
 		fScore.put(start, distance(start.getLocation(), goal.getLocation()));
@@ -67,7 +69,7 @@ public class Tools {
 					parent = cameFrom.get(child);
 					
 					RepastEdge<Object> edge = net.getEdge(parent, child);
-					path.add(edge);
+					path.add(0, edge);
 					
 					child = parent;
 				}
@@ -98,7 +100,6 @@ public class Tools {
 							distance(neighbour.getLocation(), goal.getLocation()));
 			}
 		}
-		
 		return path;
 	}
 
@@ -160,6 +161,5 @@ public class Tools {
 		Double dx = (double) (b.getX() - a.getX());
 		Double dy = (double) (b.getY() - a.getY());
 		return Math.sqrt((dx*dx) + (dy*dy));
-		
 	}
 }
