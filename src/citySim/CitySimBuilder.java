@@ -26,6 +26,7 @@ import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.continuous.SimpleCartesianAdder;
 import repast.simphony.space.graph.Network;
+import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridBuilderParameters;
 import repast.simphony.space.grid.GridPoint;
@@ -40,19 +41,6 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 
 	int width;
 	int height;
-	
-
-	public static final int NORTHWEST = 0;
-	public static final int NORTH = 1;
-	public static final int NORTHEAST = 2;
-	
-	public static final int WEST = 3;
-	public static final int EAST = 4;
-
-	public static final int SOUTHWEST = 5;
-	public static final int SOUTH = 6;
-	public static final int SOUTHEAST = 7;
-	
 	/*
 	 * 		0 1 2
 	 * 		3 8 4
@@ -240,21 +228,21 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					
 					if(r.getType().equals("roadNE") && cr.getType().equals("roadNE")) {
 						int dir = Tools.getMooreDirection(grid.getLocation(r), grid.getLocation(cr));
-						if(		dir == NORTHWEST ||		// points:
-								dir == NORTH	 ||		// x x x
-								dir == NORTHEAST ||		// 0 0 x
-								dir == EAST		 ||		// 0 0 x
-								dir == SOUTHEAST) {
+						if(		dir == Tools.NORTHWEST ||		// points:
+								dir == Tools.NORTH	 ||			// x x x
+								dir == Tools.NORTHEAST ||		// 0 0 x
+								dir == Tools.EAST		 ||		// 0 0 x
+								dir == Tools.SOUTHEAST) {
 							addEdge(r, cr, net);
 						}
 					}
 					else if(r.getType().equals("roadSW") && cr.getType().equals("roadSW")) {
 						int dir = Tools.getMooreDirection(grid.getLocation(r), grid.getLocation(cr));
-						if(		dir == NORTHWEST ||		// points:
-								dir == WEST		 ||		// x 0 0
-								dir == SOUTHWEST ||		// x 0 0
-								dir == SOUTH	 ||		// x x x
-								dir == SOUTHEAST) {
+						if(		dir == Tools.NORTHWEST ||		// points:
+								dir == Tools.WEST		 ||		// x 0 0
+								dir == Tools.SOUTHWEST ||		// x 0 0
+								dir == Tools.SOUTH	 ||			// x x x
+								dir == Tools.SOUTHEAST) {
 							addEdge(r, cr, net);
 						}
 					}
@@ -313,7 +301,17 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	
 	private void addEdge(Object a, Object b, Network<Object> net) {
 		if(net.getEdge(a, b) == null) {
-			net.addEdge(a, b);
+			RepastEdge<Object> edge = net.addEdge(a, b);
+			int dir = Tools.getMooreDirection(grid.getLocation(a), grid.getLocation(b));
+			if(		dir == Tools.NORTH	 ||		// points:
+					dir == Tools.EAST	 ||		// 0 x 0
+					dir == Tools.WEST 	 ||		// x 0 x
+					dir == Tools.SOUTH) {		// 0 x 0
+				edge.setWeight(1.0);
+			}
+			else {
+				edge.setWeight(1.3);
+			}
 		}
 	}
 

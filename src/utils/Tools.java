@@ -13,6 +13,20 @@ import repast.simphony.space.grid.GridPoint;
 
 public class Tools {
 	
+	
+	public static final int NORTHWEST = 0;
+	public static final int NORTH = 1;
+	public static final int NORTHEAST = 2;
+	
+	public static final int WEST = 3;
+	public static final int EAST = 4;
+
+	public static final int SOUTHWEST = 5;
+	public static final int SOUTH = 6;
+	public static final int SOUTHEAST = 7;
+	
+	
+	
 	public static List<RepastEdge<Object>> aStar(Road start, Road goal, Network<Object> net){
 		if(start == goal) {
 			System.out.println("SAME");
@@ -84,7 +98,7 @@ public class Tools {
 					continue; // Ignore the neighbor which is already evaluated.
 				}
 				
-				Double tentativeGScore = gScore.getOrDefault(current, Double.MAX_VALUE) + 1;// the cost is always one for now
+				Double tentativeGScore = gScore.getOrDefault(current, Double.MAX_VALUE) + n.getWeight();
 				
 				if(!open.contains(neighbour)) {
 					open.add(neighbour);

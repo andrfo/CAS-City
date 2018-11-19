@@ -21,6 +21,8 @@ public class Road extends Entity{
 	private boolean isJunctionEdge;
 	GridPoint pt;
 	
+	private boolean isExit;
+	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
 	
@@ -29,6 +31,7 @@ public class Road extends Entity{
 		this.space = space;
 		this.grid = grid;
 		this.isJunctionEdge = false;
+		this.isExit = false;
 	}
 	
 	@Watch(
@@ -46,7 +49,7 @@ public class Road extends Entity{
 				Car c = (Car)obj;
 				c.addVisited(this);//TODO:have in car instead
 				if(isJunctionEdge && !type.equals("junction")) {
-					if(!isLeavingJunction(c)) {
+					if(!isExit) {
 						junction.addCar(c);							
 					}
 				}				
@@ -72,20 +75,30 @@ public class Road extends Entity{
 //		}
 //	}
 	
-	private boolean isLeavingJunction(Car c) {
-		Vector2D cDir = c.getDirection();
-		if(cDir == null) { 
-			return true;
-		}
-		Vector2D diff = Tools.create2DVector(grid.getLocation(junction), grid.getLocation(this));
-		double angle = diff.angle(cDir);
-		
-		if(angle < Math.PI/2) {
-//			System.out.println("Car leaving junction");
-			return true;
-		}
-		return false;
+	public boolean isExit() {
+		return isExit;
 	}
+	
+//	private boolean isLeavingJunction(Car c) {
+//		
+//		
+//		
+//		
+//		
+//		
+//		Vector2D cDir = c.getDirection();
+//		if(cDir == null) { 
+//			return true;
+//		}
+//		Vector2D diff = Tools.create2DVector(grid.getLocation(junction), grid.getLocation(this));
+//		double angle = diff.angle(cDir);
+//		
+//		if(angle < Math.PI/2) {
+////			System.out.println("Car leaving junction");
+//			return true;
+//		}
+//		return false;
+//	}
 	
 	public String getType() {
 		return type;
@@ -101,6 +114,25 @@ public class Road extends Entity{
 	
 	public void setJunction(Junction junction) {
 		this.junction = junction;
+		int dir = Tools.getMooreDirection(grid.getLocation(junction), grid.getLocation(this));
+		if(this.getType().equals("roadNE")) {
+			if(		dir == Tools.NORTHWEST ||		// points:
+					dir == Tools.NORTH	 ||			// x x x
+					dir == Tools.NORTHEAST ||		// 0 0 x
+					dir == Tools.EAST		 ||		// 0 0 x
+					dir == Tools.SOUTHEAST) {
+				isExit = true;
+			}
+		}
+		else if(this.getType().equals("roadSW")) {
+			if(		dir == Tools.NORTHWEST ||		// points:
+					dir == Tools.WEST		 ||		// x 0 0
+					dir == Tools.SOUTHWEST ||		// x 0 0
+					dir == Tools.SOUTH	 ||			// x x x
+					dir == Tools.SOUTHEAST) {
+				isExit = true;
+			}
+		}
 	}
 	
 	public boolean isJunctionEdge() {
