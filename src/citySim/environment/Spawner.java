@@ -62,7 +62,7 @@ public class Spawner {
 	}
 	
 	//TODO: spawn frequency
-	@ScheduledMethod(start = 1, interval = 3)
+	@ScheduledMethod(start = 1, interval = 1)
 	public void spawn() {
 		
 		//Start and goal

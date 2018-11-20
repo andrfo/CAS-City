@@ -65,12 +65,12 @@ public class Car extends Agent{
 	private double speed;
 	private double maxSpeed;
 	
-	private double thresholdStop = 1.6;
-	private double thresholdDecelerate = 2;
-	private double thresholdAccelerate = 3;
+	public double thresholdStop = 1.6;
+	public double thresholdDecelerate = 2;
+	public double thresholdAccelerate = 3;
 	
-	private double forceDecelerate = 0.2;
-	private double forceAccelerate = 0.2;
+	public double forceDecelerate = 0.2;
+	public double forceAccelerate = 0.2;
 	
 	private String debugString = "";
 	
@@ -386,19 +386,6 @@ public class Car extends Agent{
 		
 		
 		return cType.equals(tType);
-		
-		/*
-		Vector2D cDir = c.getDirection();
-		if(cDir == null || this.direction == null) {
-			return false;
-		}
-		double angle = direction.angle(cDir);
-		
-		if(angle < Math.PI/2) {
-			return true;
-		}
-		return false;
-		*/
 	}
 	
 	public Vector2D getDirection() {
@@ -409,11 +396,8 @@ public class Car extends Agent{
 		this.isInQueue = isInQueue;
 		if(isInQueue) {
 			stop();
-//			System.out.println("Car in queue");
 		}
 		else {
-//			System.out.println("Car activated");
-			//pathIndex += 1;
 			setSpeed(maxSpeed);
 			step();
 		}

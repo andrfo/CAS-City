@@ -1,5 +1,7 @@
 package citySim.environment;
 
+import java.util.List;
+
 import citySim.agent.Car;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.Schedule;
@@ -7,6 +9,8 @@ import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.engine.watcher.Watch;
 import repast.simphony.engine.watcher.WatcherTriggerSchedule;
+import repast.simphony.query.space.grid.GridCell;
+import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
@@ -18,7 +22,8 @@ public class Road extends Entity{
 	
 	private String type;
 	private Junction junction;
-	private boolean isJunctionEdge;
+	private Roundabout roundabout;
+	private boolean isEdge;
 	GridPoint pt;
 	
 	private boolean isExit;
@@ -30,7 +35,7 @@ public class Road extends Entity{
 		super(space, grid);
 		this.space = space;
 		this.grid = grid;
-		this.isJunctionEdge = false;
+		this.isEdge = false;
 		this.isExit = false;
 	}
 	
@@ -48,9 +53,9 @@ public class Road extends Entity{
 			if(obj instanceof Car) {
 				Car c = (Car)obj;
 				c.addVisited(this);//TODO:have in car instead
-				if(isJunctionEdge && !type.equals("junction")) {
+				if(isEdge && !type.equals("junction") && !type.equals("roundabout")) {
 					if(!isExit) {
-						junction.addCar(c);							
+						roundabout.addCar(c);							
 					}
 				}				
 			}
@@ -100,10 +105,64 @@ public class Road extends Entity{
 //		return false;
 //	}
 	
+	
+	
 	public String getType() {
 		return type;
 	}
 	
+	public Roundabout getRoundabout() {
+		return roundabout;
+	}
+
+	public void setRoundabout(Roundabout roundabout) {
+		this.roundabout = roundabout;
+		if(getType().equals("roundabout")) {
+			return;
+		}
+		
+		GridPoint pt = grid.getLocation(this);
+		
+		GridCellNgh<Road> nghCreator = new GridCellNgh<Road>(grid, pt, Road.class, 1, 1);
+		List<GridCell<Road>> gridCells = nghCreator.getNeighborhood(false);
+		Road closestRoad = null;
+		Double minDist = Double.MAX_VALUE;
+		Double distance = 0d;
+		for (GridCell<Road> cell : gridCells) {
+			if(cell.size() <= 0) {
+				continue;
+			}
+			Road r = cell.items().iterator().next();
+			distance = Tools.distance(this.getLocation(), r.getLocation());
+			if(
+					distance < minDist &&
+					r.getType().equals("roundabout")) {
+				minDist = distance;
+				closestRoad = r;
+			}
+		}
+		
+		int dir = Tools.getMooreDirection(grid.getLocation(closestRoad), grid.getLocation(this));
+		if(this.getType().equals("roadNE")) {
+			if(		dir == Tools.NORTHWEST ||		// points:
+					dir == Tools.NORTH	 ||			// x x x
+					dir == Tools.NORTHEAST ||		// 0 0 x
+					dir == Tools.EAST		 ||		// 0 0 x
+					dir == Tools.SOUTHEAST) {
+				isExit = true;
+			}
+		}
+		else if(this.getType().equals("roadSW")) {
+			if(		dir == Tools.NORTHWEST ||		// points:
+					dir == Tools.WEST		 ||		// x 0 0
+					dir == Tools.SOUTHWEST ||		// x 0 0
+					dir == Tools.SOUTH	 ||			// x x x
+					dir == Tools.SOUTHEAST) {
+				isExit = true;
+			}
+		}
+	}
+
 	public void setType(String type) {
 		this.type = type;
 	}
@@ -136,11 +195,11 @@ public class Road extends Entity{
 	}
 	
 	public boolean isJunctionEdge() {
-		return isJunctionEdge;
+		return isEdge;
 	}
 	
 	public void setJunctionEdge(boolean isJunctionEdge) {
-		this.isJunctionEdge = isJunctionEdge;
+		this.isEdge = isJunctionEdge;
 	}
 	
 	public GridPoint getLocation() {

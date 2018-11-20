@@ -25,4 +25,8 @@ public class Vector2D {
 		
 	}
 	
+	public double signArea(Vector2D other) {
+		return (other.x  - x)*(other.y - y);
+	}
+	
 }
