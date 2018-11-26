@@ -10,19 +10,45 @@
       <string>citySim.environment.Road</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
+    <entry>
+      <string>citySim.environment.Junction</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
   </styles>
   <editedStyles>
     <entry>
       <string>citySim.agent.Car</string>
-      <string>citySim.agent.Car.style_2.xml</string>
+      <string>citySim.agent.Car.style_6.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.Road</string>
-      <string>citySim.environment.Road.style_1.xml</string>
+      <string>citySim.environment.Road.style_5.xml</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.Junction</string>
+      <string>citySim.environment.Junction.style_2.xml</string>
     </entry>
   </editedStyles>
-  <netStyles/>
-  <editedNetStyles/>
+  <netStyles>
+    <entry>
+      <string>debug network</string>
+      <string>repast.simphony.visualization.editedStyle.EditedEdgeStyle2D</string>
+    </entry>
+    <entry>
+      <string>road network</string>
+      <string>repast.simphony.visualization.editedStyle.EditedEdgeStyle2D</string>
+    </entry>
+  </netStyles>
+  <editedNetStyles>
+    <entry>
+      <string>debug network</string>
+      <string>debugnetwork.style_2.xml</string>
+    </entry>
+    <entry>
+      <string>road network</string>
+      <string>roadnetwork.style_3.xml</string>
+    </entry>
+  </editedNetStyles>
   <frequency>ON_MOVE</frequency>
   <schedParams>
     <start>1.0</start>
@@ -31,7 +57,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1445490690</hashCode>
+    <hashCode>-134062374</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
@@ -39,10 +65,14 @@
   <layerOrder>
     <entry>
       <string>citySim.agent.Car</string>
-      <int>1</int>
+      <int>2</int>
     </entry>
     <entry>
       <string>citySim.environment.Road</string>
+      <int>1</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.Junction</string>
       <int>0</int>
     </entry>
   </layerOrder>
@@ -52,11 +82,35 @@
       <attributes/>
       <type>continuous space</type>
     </repast.simphony.scenario.data.ProjectionData>
+    <repast.simphony.scenario.data.ProjectionData>
+      <id>road network</id>
+      <attributes/>
+      <type>network</type>
+    </repast.simphony.scenario.data.ProjectionData>
+    <repast.simphony.scenario.data.ProjectionData>
+      <id>debug network</id>
+      <attributes/>
+      <type>network</type>
+    </repast.simphony.scenario.data.ProjectionData>
   </projections>
   <visualizationProperties class="repast.simphony.visualization.UnitSizeLayoutProperties">
     <unitSize>15.0</unitSize>
   </visualizationProperties>
   <projectionDescriptors>
+    <entry>
+      <string>debug network</string>
+      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[3]"/>
+        <props/>
+      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+    </entry>
+    <entry>
+      <string>road network</string>
+      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[2]"/>
+        <props/>
+      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+    </entry>
     <entry>
       <string>space</string>
       <repast.simphony.visualization.continuous.ContinuousProjectionDescriptor>
