@@ -383,7 +383,9 @@ public class Car extends Agent{
 	private boolean isSameWay(Car c) {
 		String cType = c.getRoadType();
 		String tType = this.getRoadType();
-		
+		if(cType.equals("roundabout") || tType.equals("roundabout")) {
+			return false;
+		}
 		
 		return cType.equals(tType);
 	}
