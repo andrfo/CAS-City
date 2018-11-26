@@ -28,9 +28,9 @@ public class Tools {
 	
 	
 	public static List<RepastEdge<Object>> aStar(Road start, Road goal, Network<Object> net){
-		if(start == goal) {
-			System.out.println("SAME");
-		}
+//		if(start == goal) {
+//			System.out.println("SAME");
+//		}
 		
 		
 		// Will contain the shortest path
@@ -64,10 +64,8 @@ public class Tools {
 		fScore.put(start, distance(start.getLocation(), goal.getLocation()));
 		
 		open.add(start);
-		String tester = "";
 		
 		while(open.size() > 0) {
-			tester += "|";
 			open.sort((o1, o2) -> 
 			(fScore.get(o1).compareTo(fScore.get(o2))));
 			
@@ -116,7 +114,6 @@ public class Tools {
 							distance(neighbour.getLocation(), goal.getLocation()));
 			}
 		}
-		System.out.println("Path failed: " + tester);
 		return path;
 	}
 

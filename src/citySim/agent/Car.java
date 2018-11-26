@@ -4,7 +4,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.velocity.runtime.directive.Foreach;
 
 import citySim.environment.Road;
 import repast.simphony.context.Context;
@@ -17,11 +16,9 @@ import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
-import repast.simphony.space.graph.ShortestPath;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import repast.simphony.util.ContextUtils;
-import repast.simphony.util.SimUtilities;
 import utils.Tools;
 import utils.Vector2D;
 
@@ -94,10 +91,10 @@ public class Car extends Agent{
 			return;
 		}
 		
-		DecimalFormat df = new DecimalFormat("####0.0");
-		if(path != null) {
-			debugString = df.format(speed) + "; " + path.size();			
-		}
+//		DecimalFormat df = new DecimalFormat("####0.0");
+//		if(path != null) {
+//			debugString = df.format(speed) + "; " + path.size();			
+//		}
 		
 		isReachedGlobalGoal();
 		if(dead) { return;}
@@ -125,7 +122,6 @@ public class Car extends Agent{
 			int index = (int) Math.ceil(pathIndex);
 			GridPoint next = grid.getLocation((Road)path.get(index).getTarget());
 			direction = Tools.create2DVector(pt, next);
-			debugPointTo((Road)path.get(index).getTarget());
 			moveTowards(next);
 			
 		}
@@ -179,39 +175,25 @@ public class Car extends Agent{
 			}
 		}
 		open.remove(localGoal);
-		debugPointTo(localGoal);
-//		System.out.println(
-//				"Current: " + grid.getLocation(currentRoad).getX() + 
-//				", " + grid.getLocation(currentRoad).getY() + 
-//				" Goal: " + localGoal.getLocation().getX() + 
-//				", " + localGoal.getLocation().getY() +
-//				" Car: " + grid.getLocation(this).getX() + 
-//				", " + grid.getLocation(this).getY() + 
-//				" open size: " + open.size() + 
-//				" distance to goal: " + Tools.distance(grid.getLocation(this), grid.getLocation(globalGoal))
-//				);
 		
 		path = Tools.aStar(currentRoad, localGoal, net);
-		if(path.size() == 0) {
-//			for (Road r : open) {
-//				debugPointTo(r);
-//			}
-			System.out.println(
-					"Path is empty. currentRoad: (" + 
-			currentRoad.getLocation().getX() + 
-			", " + 
-			currentRoad.getLocation().getY() +
-			") localGoal: (" + 
-			localGoal.getLocation().getX() + 
-			", " + 
-			localGoal.getLocation().getY() +
-			")" + 
-			" Car: (" + 
-			grid.getLocation(this).getX() + 
-			", " + 
-			grid.getLocation(this).getY() +
-			")");
-		}
+//		if(path.size() == 0) {
+//			System.out.println(
+//					"Path is empty. currentRoad: (" + 
+//			currentRoad.getLocation().getX() + 
+//			", " + 
+//			currentRoad.getLocation().getY() +
+//			") localGoal: (" + 
+//			localGoal.getLocation().getX() + 
+//			", " + 
+//			localGoal.getLocation().getY() +
+//			")" + 
+//			" Car: (" + 
+//			grid.getLocation(this).getX() + 
+//			", " + 
+//			grid.getLocation(this).getY() +
+//			")");
+//		}
 		pathIndex = 0;			
 		
 	}
@@ -270,7 +252,7 @@ public class Car extends Agent{
 	
 	public void die(String message) {
 		Context<Object> context = ContextUtils.getContext(this);
-		System.out.println(message);
+//		System.out.println(message);
 		try {
 			context.remove(this);			
 		}
