@@ -62,7 +62,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	public Context build(Context<Object> context) {
 		
 		try {
-		    img = ImageIO.read(new File("maps/gridRoundabout.png"));
+		    img = ImageIO.read(new File("maps/tondheim.png"));
 		} catch (IOException e) {
 			System.out.println(e + ": Image file not found!");
 		}
