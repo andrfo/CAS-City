@@ -7,26 +7,58 @@
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
-      <string>citySim.environment.Road</string>
+      <string>citySim.environment.ParkingSpace</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
-      <string>citySim.environment.Junction</string>
+      <string>citySim.environment.Spawn</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.RoundaboutRoad</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.SouthWestRoad</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.NorthEastRoad</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.Despawn</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
   </styles>
   <editedStyles>
     <entry>
       <string>citySim.agent.Car</string>
-      <string>citySim.agent.Car.style_6.xml</string>
+      <string>citySim.agent.Car.style_7.xml</string>
     </entry>
     <entry>
-      <string>citySim.environment.Road</string>
-      <string>citySim.environment.Road.style_5.xml</string>
+      <string>citySim.environment.ParkingSpace</string>
+      <string>citySim.environment.ParkingSpace.style_1.xml</string>
     </entry>
     <entry>
-      <string>citySim.environment.Junction</string>
-      <string>citySim.environment.Junction.style_2.xml</string>
+      <string>citySim.environment.Spawn</string>
+      <string>citySim.environment.Spawn.style_1.xml</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.RoundaboutRoad</string>
+      <string>citySim.environment.RoundaboutRoad.style_1.xml</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.SouthWestRoad</string>
+      <string>citySim.environment.SouthWestRoad.style_1.xml</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.NorthEastRoad</string>
+      <string>citySim.environment.NorthEastRoad.style_1.xml</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.Despawn</string>
+      <string>citySim.environment.Despawn.style_2.xml</string>
     </entry>
   </editedStyles>
   <netStyles>
@@ -42,11 +74,11 @@
   <editedNetStyles>
     <entry>
       <string>debug network</string>
-      <string>debugnetwork.style_2.xml</string>
+      <string>debugnetwork.style_3.xml</string>
     </entry>
     <entry>
       <string>road network</string>
-      <string>roadnetwork.style_3.xml</string>
+      <string>roadnetwork.style_4.xml</string>
     </entry>
   </editedNetStyles>
   <frequency>ON_MOVE</frequency>
@@ -57,7 +89,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-134062374</hashCode>
+    <hashCode>841307903</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
@@ -65,15 +97,31 @@
   <layerOrder>
     <entry>
       <string>citySim.agent.Car</string>
+      <int>6</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.ParkingSpace</string>
+      <int>3</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.Spawn</string>
+      <int>0</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.RoundaboutRoad</string>
       <int>2</int>
     </entry>
     <entry>
-      <string>citySim.environment.Road</string>
+      <string>citySim.environment.SouthWestRoad</string>
       <int>1</int>
     </entry>
     <entry>
-      <string>citySim.environment.Junction</string>
-      <int>0</int>
+      <string>citySim.environment.NorthEastRoad</string>
+      <int>4</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.Despawn</string>
+      <int>5</int>
     </entry>
   </layerOrder>
   <projections>

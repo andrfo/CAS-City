@@ -8,14 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.media.protocol.SourceTransferHandler;
 
 import citySim.agent.Car;
 import utils.Tools;
 import utils.Vector2D;
-import citySim.environment.Junction;
-import citySim.environment.Road;
-import citySim.environment.Roundabout;
-import citySim.environment.Spawner;
+import citySim.environment.*;
 import repast.simphony.context.Context;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactory;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactoryFinder;
@@ -62,7 +60,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	public Context build(Context<Object> context) {
 		
 		try {
-		    img = ImageIO.read(new File("maps/tondheim.png"));
+		    img = ImageIO.read(new File("maps/smallCity.png"));
 		} catch (IOException e) {
 			System.out.println(e + ": Image file not found!");
 		}
@@ -128,51 +126,45 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 				
 				//get blue
 				int b = p & 0xff;
-				if(r >= 250 && g >= 250 && b >= 250) {//Nothing
+				if(r == 255 && g == 255 && b == 255) {//Nothing
 					continue;
 				}
-				else if(r < 10 && g < 10 && b > 250) {//Road, direction North-East
-					Road road = new Road(space, grid);
-					road.setType("roadNE");
+				else if(r == 0 && g == 0 && b == 255) {//Road, direction North-East
+					NorthEastRoad road = new NorthEastRoad(space, grid);
 					context.add(road);
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
 					
 				}
-				else if(r < 10 && g < 10 && b < 10) {//Road, direction South-West
-					Road road = new Road(space, grid);
-					road.setType("roadSW");
+				else if(r == 0 && g == 0 && b == 0) {//Road, direction South-West
+					SouthWestRoad road = new SouthWestRoad(space, grid);
 					context.add(road);
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
 					
 				}
-				else if(r <= 10 && g >= 250 && b <= 10) {//Start
-					Road road = new Road(space, grid);
+				else if(r == 0 && g == 255 && b == 0) {//Start
+					Spawn road = new Spawn(space, grid);
 					context.add(road);
-					road.setType("spawn");
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
 					spawnPoints.add(road);
 				}
-				else if(r >= 250 && g <= 10 && b <= 10) {//end
-					Road road = new Road(space, grid);
-					road.setType("despawn");
+				else if(r == 255 && g == 0 && b == 0) {//end
+					Despawn road = new Despawn(space, grid);
 					context.add(road);
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
 					goals.add(road);
 				}
-				else if(r >= 250 && g >= 250 && b <= 10) {//junction
-					Road road = new Road(space, grid);
-					road.setType("junction");
+				else if(r >= 250 && g <= 10 && b >= 250) {//roundabout
+					RoundaboutRoad road = new RoundaboutRoad(space, grid);
 					context.add(road);
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
 				}
-				else if(r >= 250 && g <= 10 && b >= 250) {//roundabout
-					Road road = new Road(space, grid);
-					road.setType("roundabout");
+				else if(r == 0 && g == 255 && b == 255) {//Parking Space
+					ParkingSpace road = new ParkingSpace(space, grid);
 					context.add(road);
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
@@ -191,11 +183,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					continue;
 				}
 				Road r = (Road)obj;
-				
-				if(r.getType().equals("junction")) {
-					buildJunction(r, context);							
-				}
-				if(r.getType().equals("roundabout")) {
+				if(r instanceof RoundaboutRoad) {
 					buildRoundabout(r, context);							
 				}
 			}
@@ -236,40 +224,35 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					}
 					Road cr = cell.items().iterator().next();
 					
-					if(r.getType().equals("roadNE") && cr.getType().equals("roadNE")) {
+					if(r instanceof NorthEastRoad && cr instanceof NorthEastRoad) {
 						int dir = Tools.getMooreDirection(grid.getLocation(r), grid.getLocation(cr));
-						if(		dir == Tools.NORTHWEST ||		// points:
-								dir == Tools.NORTH	 ||			// x x x
-								dir == Tools.NORTHEAST ||		// 0 0 x
-								dir == Tools.EAST		 ||		// 0 0 x
-								dir == Tools.SOUTHEAST) {
+						if(		dir == Tools.NORTH	 ||			// x x x
+								dir == Tools.EAST) {
 							addEdge(r, cr, net);
 						}
 					}
-					else if(r.getType().equals("roadSW") && cr.getType().equals("roadSW")) {
+					else if(r instanceof SouthWestRoad && cr instanceof SouthWestRoad) {
 						int dir = Tools.getMooreDirection(grid.getLocation(r), grid.getLocation(cr));
-						if(		dir == Tools.NORTHWEST ||		// points:
-								dir == Tools.WEST		 ||		// x 0 0
-								dir == Tools.SOUTHWEST ||		// x 0 0
-								dir == Tools.SOUTH	 ||			// x x x
-								dir == Tools.SOUTHEAST) {
+						if(		dir == Tools.WEST		 ||		// x 0 0
+								dir == Tools.SOUTH) {
 							addEdge(r, cr, net);
 						}
 					}
 					//Connect spawn and despawn to everything around them
 					//TODO: Clean up
-					if(r.getType().equals("spawn")){
+					if(r instanceof Spawn){
 						addEdge(r, cr, net);
 					}
-					else if(cr.getType().equals("despawn")){
+					else if(cr instanceof Despawn){
 						addEdge(r, cr, net);
 					}
-					else if(r.getType().equals("junction") || 
-							cr.getType().equals("junction")) {
+					else if(r instanceof ParkingSpace &&
+							!(cr instanceof ParkingSpace)){
 						addEdge(r, cr, net);
+						addEdge(cr, r, net);
 					}
-					else if(r.getType().equals("roundabout") && 
-							cr.getType().equals("roundabout")) {
+					else if(r instanceof RoundaboutRoad && 
+							cr instanceof RoundaboutRoad) {
 						
 						
 						//(a.x - center.x) * (b.y - center.y) - (b.x - center.x) * (a.y - center.y)
@@ -294,7 +277,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 							}
 						}
 					}
-					else if(r.getType().equals("roundabout")) {
+					else if(r instanceof RoundaboutRoad) {
 						int dir = Tools.getMooreDirection(grid.getLocation(r), grid.getLocation(cr));
 						if(		dir == Tools.NORTH	 ||		// points:
 								dir == Tools.EAST	 ||		// 0 x 0
@@ -303,7 +286,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 							if(cr.isExit()) {
 								addEdge(r, cr, net);
 							}
-							else if(cr.getType().equals("roadNE") || cr.getType().equals("roadSW")) {
+							else if(cr instanceof NorthEastRoad || cr instanceof SouthWestRoad) {
 								addEdge(cr, r, net);
 							}
 						}
@@ -312,16 +295,6 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 			}
 		}
 		return net;
-	}
-	
-	private void buildJunction(Road r, Context<Object> context) {
-		if(r.getJunction() == null) {
-			Junction junction = new Junction(space, grid);	
-			context.add(junction);
-			space.moveTo(junction, space.getLocation(r).getX(), space.getLocation(r).getY());
-			grid.moveTo(junction, grid.getLocation(r).getX(), grid.getLocation(r).getY());
-			recursiveBuildJunction(junction, r);
-		}
 	}
 	
 	private void buildRoundabout(Road r, Context<Object> context) {
@@ -342,7 +315,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		for (GridCell<Road> gridCell : gridCells) {
 			if(gridCell.items().iterator().hasNext()) {
 				Road road = gridCell.items().iterator().next();	
-				if(!road.getType().equals("roundabout")) {
+				if(!(road instanceof RoundaboutRoad)) {
 					roundabout.addEdgeRoad(road);
 					road.setJunctionEdge(true);
 					road.setRoundabout(roundabout);
@@ -356,30 +329,6 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 				}
 			}
 		}
-	}
-	
-	private void recursiveBuildJunction(Junction junction, Road r) {
-		GridCellNgh<Road> nghCreator = new GridCellNgh<Road>(grid, grid.getLocation(r), Road.class, 1, 1);
-		List<GridCell<Road>> gridCells = nghCreator.getNeighborhood(true);
-		
-		for (GridCell<Road> gridCell : gridCells) {
-			if(gridCell.items().iterator().hasNext()) {
-				Road road = gridCell.items().iterator().next();	
-				if(!road.getType().equals("junction")) {
-					junction.addEdgeRoad(road);
-					road.setJunction(junction);
-					road.setJunctionEdge(true);
-					continue;
-				}
-				if(road.getJunction() == null) {
-					road.setJunction(junction);
-					junction.addRoad(road);
-					
-					recursiveBuildJunction(junction, road);
-				}
-			}
-		}
-		
 	}
 	
 	private void addEdge(Object a, Object b, Network<Object> net) {

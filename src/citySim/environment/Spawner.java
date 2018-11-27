@@ -36,8 +36,9 @@ public class Spawner {
 	private Context<Object> context;
 	private List<Road> spawnPoints;
 	private List<Road> goals;
-	private ShortestPath<Object> shortestPath;
 	private Network<Object> net;
+	
+	private double frequency;
 	
 	
 	public Spawner(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context, List<Road> spawnPoints, List<Road> goals) {
@@ -56,13 +57,13 @@ public class Spawner {
 		
 		
 		
-		//TODO: Check instance of Agent?
-		//TODO: Variable start and interval?
+		
+	}
+	@ScheduledMethod(start = 1, interval = 1)
+	public void step() {
 		
 	}
 	
-	//TODO: spawn frequency
-	@ScheduledMethod(start = 1, interval = 1)
 	public void spawn() {
 		
 		//Start and goal

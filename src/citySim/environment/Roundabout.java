@@ -91,7 +91,7 @@ public class Roundabout {
 			distance = Tools.distance(grid.getLocation(c), grid.getLocation(car));
 			if(
 					distance < minDist &&
-					car.getRoadType().equals("roundabout")) {
+					car.getRoad().equals("roundabout")) {
 				minDist = distance;
 				closestCar = car;
 			}

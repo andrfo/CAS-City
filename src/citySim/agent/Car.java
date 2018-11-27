@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import citySim.environment.Road;
+import citySim.environment.*;
 import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.query.space.grid.GridCell;
@@ -46,7 +46,7 @@ public class Car extends Agent{
 	private Road localGoal;
 	private Road currentRoad;
 	
-	private int viewDistance = 20;
+	private int viewDistance = 8;
 	
 	private List<RepastEdge<Object>> path;
 	private Network<Object> net;
@@ -87,14 +87,9 @@ public class Car extends Agent{
 	
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step(){
-		if(isInQueue) {
+		if(isInQueue || dead) {
 			return;
 		}
-		
-//		DecimalFormat df = new DecimalFormat("####0.0");
-//		if(path != null) {
-//			debugString = df.format(speed) + "; " + path.size();			
-//		}
 		
 		isReachedGlobalGoal();
 		if(dead) { return;}
@@ -155,6 +150,7 @@ public class Car extends Agent{
 	}
 	
 	private void selectNewLocalGoal() {
+		debugString = "";
 		//TODO: account for other cars
 		debugRemoveEdges(this);
 		//Get the surrounding roads and add new roads
@@ -169,7 +165,7 @@ public class Car extends Agent{
 		Double dist = 0d;
 		for (Road road : open) {
 			dist = Tools.distance(grid.getLocation(globalGoal), grid.getLocation(road));
-			if(dist < minDist && !road.getType().equals("spawn")) {
+			if(dist < minDist && !(road instanceof Spawn)) {
 				localGoal = road;
 				minDist = dist;
 			}
@@ -177,7 +173,16 @@ public class Car extends Agent{
 		open.remove(localGoal);
 		
 		path = Tools.aStar(currentRoad, localGoal, net);
-//		if(path.size() == 0) {
+		if(path.size() == 0) {
+			
+			debugPointTo(globalGoal);
+			debugPointTo(localGoal);
+			DecimalFormat df = new DecimalFormat("####0.0");
+			if(path != null) {
+				debugString = df.format(speed) + "; " + path.size();			
+			}
+			
+			
 //			System.out.println(
 //					"Path is empty. currentRoad: (" + 
 //			currentRoad.getLocation().getX() + 
@@ -193,7 +198,7 @@ public class Car extends Agent{
 //			", " + 
 //			grid.getLocation(this).getY() +
 //			")");
-//		}
+		}
 		pathIndex = 0;			
 		
 	}
@@ -263,16 +268,16 @@ public class Car extends Agent{
 		dead = true;
 	}
 	
-	public String getRoadType() {
+	public Road getRoad() {
 		
 		if(currentRoad == null) {
 			getSurroundings();
 		}
 		if(currentRoad != null) {
-			return currentRoad.getType();
+			return currentRoad;
 		}
 		System.out.println("road is null");
-		return "";
+		return null;
 	}
 	
 	public String debugLabel() {
@@ -288,7 +293,6 @@ public class Car extends Agent{
 		double minDist = Double.MAX_VALUE;
 		for (GridCell<Agent> cell : agentGridCells) {
 			if(cell.size() <= 0) {
-				//minDist = Double.MAX_VALUE;
 				continue;
 			}
 			for(Agent a : cell.items()) {
@@ -335,6 +339,7 @@ public class Car extends Agent{
 	public void addVisited(Road r) {
 		if(!closed.contains(r)) {
 			closed.add(r);
+			open.remove(r);
 		}
 	}
 	
@@ -363,13 +368,13 @@ public class Car extends Agent{
 	}
 	
 	private boolean isSameWay(Car c) {
-		String cType = c.getRoadType();
-		String tType = this.getRoadType();
-		if(cType.equals("roundabout") || tType.equals("roundabout")) {
+		Road cR = c.getRoad();
+		Road tR = this.getRoad();
+		if(cR instanceof RoundaboutRoad || tR instanceof RoundaboutRoad) {
 			return false;
 		}
 		
-		return cType.equals(tType);
+		return cR.getClass() == tR.getClass();
 	}
 	
 	public Vector2D getDirection() {
