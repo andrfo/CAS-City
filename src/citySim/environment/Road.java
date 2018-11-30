@@ -136,6 +136,18 @@ public class Road extends Entity{
 		return grid.getLocation(this);
 	}
 	
+	public Car getCar() {
+		pt = grid.getLocation(this);
+		
+		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
+			if(obj instanceof Car) {	
+				Car c = (Car)obj;
+				return c;
+			}
+		}
+		return null;
+	}
+	
 	public boolean isOccupied() {
 		pt = grid.getLocation(this);
 		

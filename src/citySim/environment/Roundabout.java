@@ -12,6 +12,7 @@ import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.graph.Network;
+import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import repast.simphony.util.ContextUtils;
@@ -78,29 +79,20 @@ public class Roundabout {
 	private boolean isClear(Car c) {
 		GridPoint pt = grid.getLocation(c);
 				
-		GridCellNgh<Car> nghCreator = new GridCellNgh<Car>(grid, pt, Car.class, 2, 2);
+		GridCellNgh<Car> nghCreator = new GridCellNgh<Car>(grid, pt, Car.class, 1, 1);
 		List<GridCell<Car>> gridCells = nghCreator.getNeighborhood(false);
-		Car closestCar = null;
-		Double minDist = Double.MAX_VALUE;
-		Double distance = 0d;
 		for (GridCell<Car> cell : gridCells) {
-			if(cell.size() <= 0) {
+			if(cell.size() == 0) {
 				continue;
 			}
 			Car car = cell.items().iterator().next();
-			distance = Tools.distance(grid.getLocation(c), grid.getLocation(car));
-			if(
-					distance < minDist &&
-					car.getRoad().equals("roundabout")) {
-				minDist = distance;
-				closestCar = car;
+			if(car.getRoad() instanceof RoundaboutRoad && Tools.isPathIntersect(c, car, 3)) {
+				return false;
 			}
-		}
-		if(minDist < c.thresholdDecelerate) {
-			return false;
 		}
 		return true;
 	}
+	
 	
 	
 	

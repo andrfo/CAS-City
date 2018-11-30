@@ -271,20 +271,29 @@ public class Car extends Agent{
 		return debugString;
 	}
 	
+	
+	
+	
+	
 	private void speedControl() {
+		
 		GridPoint pt = grid.getLocation(this);
 		
-		GridCellNgh<Agent> agentNghCreator = new GridCellNgh<Agent>(grid, pt, Agent.class, 4, 4);
+		int pathDistance = 3;
+		
+		Double minDist = Double.MAX_VALUE;
+		GridCellNgh<Agent> agentNghCreator = new GridCellNgh<Agent>(grid, pt, Agent.class, 3, 3);
 		List<GridCell<Agent>> agentGridCells = agentNghCreator.getNeighborhood(false);
 		
-		double minDist = Double.MAX_VALUE;
+		
+		
 		for (GridCell<Agent> cell : agentGridCells) {
 			if(cell.size() <= 0) {
 				continue;
 			}
 			for(Agent a : cell.items()) {
 				Car c = (Car)a;
-				if(!isSameWay(c) || isBehind(c)) {
+				if(!isInPath(c, pathDistance) || !Tools.isPathIntersect(this, c, 3)) {
 					continue;
 				}
 				double dist = Tools.distance(cell.getPoint(), grid.getLocation(this));
@@ -340,6 +349,20 @@ public class Car extends Agent{
 		}
 	}
 	
+	private boolean isInPath(Car car, int pathDistance) {
+		int counter = 0;
+		for(RepastEdge<Object> edge : path) {
+			if(counter > pathDistance) {
+				break;
+			}
+			counter++;
+			Road r = (Road) edge.getTarget();
+			if(r.getCar() == car) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	private boolean isBehind(Car c) {
 		if(this.direction == null) {
@@ -424,7 +447,10 @@ public class Car extends Agent{
 		this.path = list;
 	}
 
-	
+	public List<RepastEdge<Object>> getPath() {
+		return path;
+	}
+
 	public void setNet(Network<Object> net) {
 //		int size = 0;
 //		for(RepastEdge<Object> edge: net.getEdges()) {
