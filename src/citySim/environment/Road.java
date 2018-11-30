@@ -20,7 +20,6 @@ import utils.Vector2D;
 public class Road extends Entity{
 	
 	
-	private String type;
 	private Junction junction;
 	private Roundabout roundabout;
 	private boolean isEdge;
@@ -53,63 +52,21 @@ public class Road extends Entity{
 			if(obj instanceof Car) {
 				Car c = (Car)obj;
 				c.addVisited(this);//TODO:have in car instead
-				if(isEdge && !type.equals("junction") && !type.equals("roundabout")) {
+				if(isEdge && !(this instanceof RoundaboutRoad)) {
 					if(!isExit) {
 						roundabout.addCar(c);							
 					}
 				}				
 			}
 		}
-		
-//		Schedule schedule = (Schedule) RunEnvironment.getInstance().getCurrentSchedule();
-//		int tick = (int) schedule.getTickCount();
-//		
-//		ScheduleParameters params = ScheduleParameters.createOneTime(tick, ScheduleParameters.FIRST_PRIORITY);
-//		schedule.schedule(params, this, "update");
 	}
-	
-//	public void update() {
-//		boolean containsCar = false;
-//		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
-//			if(obj instanceof Car) {
-//				containsCar = true;
-//			}
-//		}
-//		if(!containsCar) {
-//			isOccupied = false;
-//		}
-//	}
 	
 	public boolean isExit() {
 		return isExit;
 	}
 	
-//	private boolean isLeavingJunction(Car c) {
-//		
-//		
-//		
-//		
-//		
-//		
-//		Vector2D cDir = c.getDirection();
-//		if(cDir == null) { 
-//			return true;
-//		}
-//		Vector2D diff = Tools.create2DVector(grid.getLocation(junction), grid.getLocation(this));
-//		double angle = diff.angle(cDir);
-//		
-//		if(angle < Math.PI/2) {
-////			System.out.println("Car leaving junction");
-//			return true;
-//		}
-//		return false;
-//	}
 	
 	
-	
-	public String getType() {
-		return type;
-	}
 	
 	public Roundabout getRoundabout() {
 		return roundabout;
@@ -117,7 +74,7 @@ public class Road extends Entity{
 
 	public void setRoundabout(Roundabout roundabout) {
 		this.roundabout = roundabout;
-		if(getType().equals("roundabout")) {
+		if(this instanceof RoundaboutRoad) {
 			return;
 		}
 		
@@ -136,14 +93,14 @@ public class Road extends Entity{
 			distance = Tools.distance(this.getLocation(), r.getLocation());
 			if(
 					distance < minDist &&
-					r.getType().equals("roundabout")) {
+					r instanceof RoundaboutRoad) {
 				minDist = distance;
 				closestRoad = r;
 			}
 		}
 		
 		int dir = Tools.getMooreDirection(grid.getLocation(closestRoad), grid.getLocation(this));
-		if(this.getType().equals("roadNE")) {
+		if(this instanceof NorthEastRoad) {
 			if(		dir == Tools.NORTHWEST ||		// points:
 					dir == Tools.NORTH	 ||			// x x x
 					dir == Tools.NORTHEAST ||		// 0 0 x
@@ -152,7 +109,7 @@ public class Road extends Entity{
 				isExit = true;
 			}
 		}
-		else if(this.getType().equals("roadSW")) {
+		else if(this instanceof SouthWestRoad) {
 			if(		dir == Tools.NORTHWEST ||		// points:
 					dir == Tools.WEST		 ||		// x 0 0
 					dir == Tools.SOUTHWEST ||		// x 0 0
@@ -161,37 +118,10 @@ public class Road extends Entity{
 				isExit = true;
 			}
 		}
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 	
 	public Junction getJunction() {
 		return junction;
-	}
-	
-	public void setJunction(Junction junction) {
-		this.junction = junction;
-		int dir = Tools.getMooreDirection(grid.getLocation(junction), grid.getLocation(this));
-		if(this.getType().equals("roadNE")) {
-			if(		dir == Tools.NORTHWEST ||		// points:
-					dir == Tools.NORTH	 ||			// x x x
-					dir == Tools.NORTHEAST ||		// 0 0 x
-					dir == Tools.EAST		 ||		// 0 0 x
-					dir == Tools.SOUTHEAST) {
-				isExit = true;
-			}
-		}
-		else if(this.getType().equals("roadSW")) {
-			if(		dir == Tools.NORTHWEST ||		// points:
-					dir == Tools.WEST		 ||		// x 0 0
-					dir == Tools.SOUTHWEST ||		// x 0 0
-					dir == Tools.SOUTH	 ||			// x x x
-					dir == Tools.SOUTHEAST) {
-				isExit = true;
-			}
-		}
 	}
 	
 	public boolean isJunctionEdge() {
@@ -204,6 +134,18 @@ public class Road extends Entity{
 	
 	public GridPoint getLocation() {
 		return grid.getLocation(this);
+	}
+	
+	public Car getCar() {
+		pt = grid.getLocation(this);
+		
+		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
+			if(obj instanceof Car) {	
+				Car c = (Car)obj;
+				return c;
+			}
+		}
+		return null;
 	}
 	
 	public boolean isOccupied() {

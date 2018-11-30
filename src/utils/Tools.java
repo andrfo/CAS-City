@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.velocity.runtime.directive.Foreach;
 
+import citySim.agent.Car;
 import citySim.environment.Road;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
@@ -25,12 +26,31 @@ public class Tools {
 	public static final int SOUTH = 6;
 	public static final int SOUTHEAST = 7;
 	
-	
+	public static boolean isPathIntersect(Car a, Car b, int n) {
+		int counterA = 0;
+		int counterB = 0;
+		for(RepastEdge<Object> edgeA : a.getPath()) {
+			for(RepastEdge<Object> edgeB : b.getPath()) {
+				if(edgeA.getTarget() == edgeB.getTarget()) {
+					return true;
+				}
+				counterB++;
+				if(counterB > n) {
+					break;
+				}
+			}
+			counterA++;
+			if(counterA > n) {
+				break;
+			}
+		}
+		return false;
+	}
 	
 	public static List<RepastEdge<Object>> aStar(Road start, Road goal, Network<Object> net){
-		if(start == goal) {
-			System.out.println("SAME");
-		}
+//		if(start == goal) {
+//			System.out.println("SAME");
+//		}
 		
 		
 		// Will contain the shortest path
@@ -64,10 +84,8 @@ public class Tools {
 		fScore.put(start, distance(start.getLocation(), goal.getLocation()));
 		
 		open.add(start);
-		String tester = "";
 		
 		while(open.size() > 0) {
-			tester += "|";
 			open.sort((o1, o2) -> 
 			(fScore.get(o1).compareTo(fScore.get(o2))));
 			
@@ -116,7 +134,6 @@ public class Tools {
 							distance(neighbour.getLocation(), goal.getLocation()));
 			}
 		}
-		System.out.println("Path failed: " + tester);
 		return path;
 	}
 
