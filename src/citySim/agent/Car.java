@@ -94,7 +94,6 @@ public class Car extends Agent{
 		isReachedGlobalGoal();
 		if(dead) { return;}
 		getSurroundings();
-		if(dead) { return;}
 		selectNewLocalGoal();
 		if(dead) { return;}
 		move();	
@@ -109,9 +108,7 @@ public class Car extends Agent{
 		
 		//Follow path
 		if(pathIndex <= path.size() - 1) {
-//			System.out.print("path error, index: " + pathIndex + " Size: " + path.size());
 			selectNewLocalGoal();
-//			System.out.println("; new path size: " + path.size() + ", moving");
 		}	
 		if(pathIndex <= path.size() - 1) {
 			int index = (int) Math.ceil(pathIndex);
@@ -127,16 +124,6 @@ public class Car extends Agent{
 		}
 		
 		//================================
-	}
-	
-	private boolean isReachedLocalGoal() {
-		GridPoint pt = grid.getLocation(this);
-		if(Tools.distance(pt, grid.getLocation(localGoal)) < 1) {
-			isReachedGlobalGoal();
-			return true;
-		}
-		return false;
-		
 	}
 	
 	private boolean isReachedGlobalGoal() {
@@ -370,7 +357,7 @@ public class Car extends Agent{
 	private boolean isSameWay(Car c) {
 		Road cR = c.getRoad();
 		Road tR = this.getRoad();
-		if(cR instanceof RoundaboutRoad || tR instanceof RoundaboutRoad) {
+		if(cR instanceof RoundaboutRoad) {
 			return false;
 		}
 		
