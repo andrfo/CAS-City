@@ -7,6 +7,10 @@
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
+      <string>citySim.environment.Building</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
       <string>citySim.environment.ParkingSpace</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
@@ -35,6 +39,10 @@
     <entry>
       <string>citySim.agent.Car</string>
       <string>citySim.agent.Car.style_7.xml</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.Building</string>
+      <string>citySim.environment.Building.style_2.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.ParkingSpace</string>
@@ -89,7 +97,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-597259428</hashCode>
+    <hashCode>1124994611</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
@@ -97,31 +105,35 @@
   <layerOrder>
     <entry>
       <string>citySim.agent.Car</string>
-      <int>6</int>
+      <int>7</int>
     </entry>
     <entry>
-      <string>citySim.environment.ParkingSpace</string>
-      <int>3</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.Spawn</string>
+      <string>citySim.environment.Building</string>
       <int>0</int>
     </entry>
     <entry>
-      <string>citySim.environment.RoundaboutRoad</string>
-      <int>2</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.SouthWestRoad</string>
-      <int>1</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.NorthEastRoad</string>
+      <string>citySim.environment.ParkingSpace</string>
       <int>4</int>
     </entry>
     <entry>
-      <string>citySim.environment.Despawn</string>
+      <string>citySim.environment.Spawn</string>
+      <int>1</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.RoundaboutRoad</string>
+      <int>3</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.SouthWestRoad</string>
+      <int>2</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.NorthEastRoad</string>
       <int>5</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.Despawn</string>
+      <int>6</int>
     </entry>
   </layerOrder>
   <projections>

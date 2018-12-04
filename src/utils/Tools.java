@@ -8,8 +8,11 @@ import org.apache.velocity.runtime.directive.Foreach;
 
 import citySim.agent.Car;
 import citySim.environment.Road;
+import repast.simphony.query.space.grid.GridCell;
+import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
+import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 
 public class Tools {
@@ -137,6 +140,19 @@ public class Tools {
 		return path;
 	}
 
+	
+	/**
+	 * Randomly returns true based on the probability x [ x >= 0]
+	 * @param x
+	 * @return True if triggered
+	 */
+	public static boolean isTrigger(Double x) {
+		if(x < 0) {
+			throw new IllegalArgumentException("Cannot have a negative probablity");
+		}
+		return x - Math.random() > 0;
+	}
+	
 	public static int getMooreDirection(GridPoint a, GridPoint b) {
 		
 		/*	Grid Directions:

@@ -40,7 +40,9 @@ public class Spawner {
 	private Grid<Object> grid;
 	private Context<Object> context;
 	private List<Road> spawnPoints;
-	private List<Road> goals;
+	private List<Road> despawnPoints;
+	private List<Road> parkingSpaces;
+	private List<Building> buildings;
 	private Network<Object> net;
 	
 	
@@ -63,8 +65,7 @@ public class Spawner {
 	private Double morningFrequency;
 	private Double afternoonFrequency;
 	private Double eveningFrequency;
-	private Double morningRushFrequency;
-	private Double afternoonRushFrequency;
+	private Double rushFrequency;
 	
 	
 	
@@ -72,14 +73,16 @@ public class Spawner {
 	private double frequency; //Spawns per tick
 	
 	
-	public Spawner(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context, List<Road> spawnPoints, List<Road> goals) {
+	public Spawner(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context, List<Road> spawnPoints, List<Road> despawnPoints, List<Road> parkingSpaces, List<Building> buildings) {
 		super();
 		this.space = space;
 		this.grid = grid;
 		this.context = context;
 		this.spawnPoints = spawnPoints;
-		this.goals = goals;
-		if(spawnPoints.size() == 0 || goals.size() == 0) {
+		this.despawnPoints = despawnPoints;
+		this.parkingSpaces = parkingSpaces;
+		this.buildings = buildings;
+		if(spawnPoints.size() == 0 || despawnPoints.size() == 0) {
 			throw new IllegalArgumentException("no spawn or goal");
 		}
 		
@@ -92,8 +95,7 @@ public class Spawner {
 		this.morningFrequency = params.getDouble("Car_frequency_in_the_Morning");
 		this.afternoonFrequency = params.getDouble("Car_frequency_in_the_Afternoon");
 		this.eveningFrequency = params.getDouble("Car_frequency_in_the_Evening");
-		this.morningRushFrequency = params.getDouble("Car_frequency_in_the_Morning_Rush");
-		this.afternoonRushFrequency = params.getDouble("Car_frequency_in_the_Evening_rush");
+		this.rushFrequency = params.getDouble("Car_frequency_in_Rushhour");
 		
 		
 	}
@@ -111,12 +113,13 @@ public class Spawner {
 	
 	public void spawn() {
 		//TODO: fix that the cars don't spawn when blocked
+		//TODO: make it so that the cars return to near their spawn after work
 		
 		boolean blocked = false;
 		BigDecimal[] valRem = BigDecimal.valueOf(frequency).divideAndRemainder(BigDecimal.ONE);
 		
 		int  spawnCount = valRem[0].intValue();
-		if(valRem[1].doubleValue() - Math.random() > 0) { //Uses the remainder as a probability for an extra spawn
+		if(Tools.isTrigger(valRem[1].doubleValue())) { //Uses the remainder as a probability for an extra spawn
 			spawnCount++;
 		}
 		
@@ -124,9 +127,9 @@ public class Spawner {
 			blocked = false;
 			//Start and goal
 			int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
-			int despawnPointIndex = RandomHelper.nextIntFromTo(0,  goals.size() - 1);
+			int despawnPointIndex = RandomHelper.nextIntFromTo(0,  despawnPoints.size() - 1);
 			Road start = spawnPoints.get(spawnPointIndex);
-			Road goal = goals.get(despawnPointIndex);
+			Road endGoal = despawnPoints.get(despawnPointIndex);
 			NdPoint spacePt = space.getLocation(start);
 			GridPoint pt = grid.getLocation(start);
 			
@@ -151,8 +154,21 @@ public class Spawner {
 			grid.moveTo(car, pt.getX(), pt.getY());
 			
 			//Setup
-			car.setGoal(goal);
+			
+			int time = getTime();
+			
+			//work?
+			if(		(isInInterval(time, MORNING_RUSH) || 
+					isInInterval(time, AFTERNOON_RUSH)) &&
+					Tools.isTrigger(rushFrequency/frequency)) {
+				car.addGoal(buildings.get(RandomHelper.nextIntFromTo(0, buildings.size() - 1)));					
+			}
+			//errand?
+			else if(Tools.isTrigger(0.6d)){
+				car.addGoal(parkingSpaces.get(RandomHelper.nextIntFromTo(0, parkingSpaces.size() - 1)));
+			}
 			car.setStart(start);
+			car.addGoal(endGoal);
 			car.setNet(net);
 			
 		}
@@ -160,14 +176,20 @@ public class Spawner {
 		
 	}
 	
+	
 	public double getSpawnRate() {
 		return frequency*100d;
 	}
 	
-	
-	private void setFrequency() {
+	private int getTime() {
 		double currentTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
 		int time = (int) (currentTick % TICKS_PER_DAY);
+		return time;
+	}
+	
+	
+	private void setFrequency() {
+		int time = getTime();
 		frequency = 0;
 		
 		if(isInInterval(time, NIGHT)) {
@@ -184,10 +206,10 @@ public class Spawner {
 		}
 		
 		if(isInInterval(time, MORNING_RUSH)) {
-			frequency += morningRushFrequency;
+			frequency += rushFrequency;
 		}
 		else if(isInInterval(time, AFTERNOON_RUSH)) {
-			frequency += afternoonRushFrequency;
+			frequency += rushFrequency;
 		}
 		
 		
