@@ -12,6 +12,7 @@ import citySim.agent.Car;
 import repast.simphony.context.Context;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
+import repast.simphony.parameter.Parameters;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.random.RandomHelper;
@@ -58,6 +59,13 @@ public class Spawner {
 	private static final int[] MORNING_RUSH = {420, 510}; 		//07:00 - 08:30
 	private static final int[] AFTERNOON_RUSH = {930, 1020}; 	//15:30 - 17:00
 	
+	private Double nightFrequency;
+	private Double morningFrequency;
+	private Double afternoonFrequency;
+	private Double eveningFrequency;
+	private Double morningRushFrequency;
+	private Double afternoonRushFrequency;
+	
 	
 	
 	
@@ -78,7 +86,14 @@ public class Spawner {
 		
 		net = (Network<Object>)context.getProjection("road network");
 		
+		Parameters params = RunEnvironment.getInstance().getParameters();
 		
+		this.nightFrequency = params.getDouble("Car_frequency_at_Night");
+		this.morningFrequency = params.getDouble("Car_frequency_in_the_Morning");
+		this.afternoonFrequency = params.getDouble("Car_frequency_in_the_Afternoon");
+		this.eveningFrequency = params.getDouble("Car_frequency_in_the_Evening");
+		this.morningRushFrequency = params.getDouble("Car_frequency_in_the_Morning_Rush");
+		this.afternoonRushFrequency = params.getDouble("Car_frequency_in_the_Evening_rush");
 		
 		
 	}
@@ -156,23 +171,23 @@ public class Spawner {
 		frequency = 0;
 		
 		if(isInInterval(time, NIGHT)) {
-			frequency += 0.1;
+			frequency += nightFrequency;
 		}
 		else if(isInInterval(time, MORNING)) {
-			frequency += 0.4;
+			frequency += morningFrequency;
 		}
 		else if(isInInterval(time, AFTERNOON)) {
-			frequency += 0.6;		
+			frequency += afternoonFrequency;		
 		}
 		else if(isInInterval(time, EVENING)) {
-			frequency += 0.4;
+			frequency += eveningFrequency;
 		}
 		
 		if(isInInterval(time, MORNING_RUSH)) {
-			frequency += 1.2;
+			frequency += morningRushFrequency;
 		}
 		else if(isInInterval(time, AFTERNOON_RUSH)) {
-			frequency += 1.2;
+			frequency += afternoonRushFrequency;
 		}
 		
 		
