@@ -54,7 +54,7 @@ public class Road extends Entity{
 				c.addVisited(this);//TODO:have in car instead
 				if(isEdge && !(this instanceof RoundaboutRoad)) {
 					if(!isExit) {
-						roundabout.addCar(c);							
+						c.setInQueue(true);							
 					}
 				}				
 			}
@@ -64,9 +64,6 @@ public class Road extends Entity{
 	public boolean isExit() {
 		return isExit;
 	}
-	
-	
-	
 	
 	public Roundabout getRoundabout() {
 		return roundabout;

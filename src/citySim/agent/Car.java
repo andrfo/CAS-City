@@ -47,6 +47,7 @@ public class Car extends Agent{
 	private Road localGoal;
 	private Road currentRoad;
 	
+	
 	private int viewDistance = 8;
 	
 	private List<RepastEdge<Object>> path;
@@ -60,6 +61,11 @@ public class Car extends Agent{
 	private boolean dead = false;
 	private boolean parked;
 	private boolean goingToWork;
+	private boolean hasRightOfWay = false;
+	
+	private int rightOfWayCounter = 0;
+	private int rightOfWayTime = 3;
+	private Car blockingCar;
 	
 	private int parkedTimer;
 	
@@ -74,7 +80,7 @@ public class Car extends Agent{
 	public double forceDecelerate = 0.2;
 	public double forceAccelerate = 0.2;
 	
-	private String debugString = "";
+	public String debugString = "";
 	
 	
 	private List<Road> open;
@@ -92,18 +98,20 @@ public class Car extends Agent{
 		this.parked = false;
 		this.parkedTimer = 0;
 		this.goingToWork = false;
+		this.blockingCar = null;
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step(){
 		debugString = "";
-//		DecimalFormat df = new DecimalFormat("####0.0");
-//		if(path != null) {
-//			debugString += " " + df.format(speed) + "; " + path.size();			
-//		}
 		
-		if(isInQueue || dead) {
-			return;
+		if(isInQueue) {
+			if(isClear(this)) {
+				setInQueue(false);
+			}
+			else {
+				return;				
+			}
 		}
 		if(parked) {
 			debugString += " !P! ";
@@ -120,8 +128,8 @@ public class Car extends Agent{
 		
 		
 		if(isReachedGlobalGoal()) {
+			debugString += " G ";
 			if(dead) { return;}
-			
 		}
 		getSurroundings();
 		selectNewLocalGoal();
@@ -139,23 +147,157 @@ public class Car extends Agent{
 		speedControl();	
 		
 		//Follow path
-		if(pathIndex <= path.size() - 1) {
+		if(pathIndex >= path.size() - 1) {
 			selectNewLocalGoal();
 		}	
-		if(pathIndex <= path.size() - 1) {
+		else{
 			int index = (int) Math.ceil(pathIndex);
 			GridPoint next = grid.getLocation((Road)path.get(index).getTarget());
-			direction = Tools.create2DVector(pt, next);
-			moveTowards(next);
+//			direction = Tools.create2DVector(pt, next);
 			
+//			try {
+//				for(int i = getPathIndex(); i < getPathIndex() + 3; i++) {
+//					debugPointTo(path.get(i).getTarget());
+//				}
+//			}
+//			catch (IndexOutOfBoundsException e) {
+//				// TODO: handle exception
+//			}
+			
+			boolean s = moveTowards(next);
+			if(!s) {
+				pathIndex += 1;
+				move();
+			}
+			
+		}
+	}
+	
+	public boolean moveTowards(GridPoint pt) {
+		// only move if we are not already in this grid location
+		if(pt.equals(grid.getLocation(currentRoad))) {
+			return false;
+		}
+		//current and target
+		NdPoint myPoint = space.getLocation(this);
+		NdPoint otherPoint = new NdPoint(pt.getX(), pt.getY());
+		
+		//Movement Geometry
+		double angle = SpatialMath.calcAngleFor2DMovement(space, myPoint, otherPoint);
+		double dx = otherPoint.getX() - myPoint.getX();
+		double dy = otherPoint.getY() - myPoint.getY();
+		double distance = Math.sqrt(dx*dx + dy*dy);
+		
+		double distanceToMove;
+		if(distance >= speed) {
+			distanceToMove = speed;
 		}
 		else {
+			distanceToMove = distance;
+		}
+
+		pathIndex += distanceToMove;
+		
+		space.moveByVector(this, distanceToMove, angle, 0);
+		myPoint = space.getLocation(this);
+		grid.moveTo(this, (int)myPoint.getX(), (int)myPoint.getY());
+		moved = true;
+		return true;
+	}
+	
+	private void speedControl() {
+		
+		GridPoint pt = grid.getLocation(currentRoad);
+		
+		int pathDistance = 3;
+		
+		Double minDist = Double.MAX_VALUE;
+		GridCellNgh<Agent> agentNghCreator = new GridCellNgh<Agent>(grid, pt, Agent.class, 3, 3);
+		List<GridCell<Agent>> agentGridCells = agentNghCreator.getNeighborhood(false);
+		
+		
+		
+		for (GridCell<Agent> cell : agentGridCells) {
+			if(cell.size() <= 0) {
+				continue;
+			}
+			for(Agent a : cell.items()) {
+				Car c = (Car)a;
+				if(c.isParked() || c.getRoad() instanceof ParkingSpace) {continue;}
+				if(
+						!isInPath(c, pathDistance) || 
+						!Tools.isPathIntersect(this, c, pathDistance)) {
+					continue;
+				}
+				double dist = Tools.distance(cell.getPoint(), grid.getLocation(this));
+				if(dist < minDist) {
+					minDist = dist;	
+					blockingCar = c;
+				}
+			}
+		}
+		if(minDist <= thresholdStop) {
+			checkDeadlock();
+		}
+		if(hasRightOfWay) {
+			debugString = "§§§§§§§§§§§§§§§";
+			if (rightOfWayCounter > 0) {
+				rightOfWayCounter--;
+				minDist = Double.MAX_VALUE;
+				blockingCar = null;
+			}
+			else {
+				hasRightOfWay = false;
+			}
 			
-			//Goal reached, die
-			//die("Path ended, car dies");
+		}
+		if(minDist <= thresholdStop) {
+			stop();
+		}
+		else if(minDist >= thresholdAccelerate) {
+			blockingCar = null;
+			accelerate(minDist);
+		}
+		else if(minDist <= thresholdDecelerate) {
+			blockingCar = null;
+			descelerate(minDist);
 		}
 		
-		//================================
+//		DecimalFormat df = new DecimalFormat("####0.0");
+//			debugString += " " + df.format(speed) + " ";			
+	}
+
+	private void stop() {
+//		debugString += " S " + c + " ";
+		speed = 0;
+//		debugPointTo(goals.get(0));
+//		debugPointTo(localGoal);
+	}
+	
+	private void descelerate(Double minDist) {
+//		debugString += " B ";
+		if(speed >= forceDecelerate) {
+			speed -= forceDecelerate;			
+		}
+		else {
+			speed = 0;
+		}
+		if(speed >= minDist + 0.5) {
+			speed = minDist;
+		}
+	}
+	
+	private void accelerate(Double minDist) {
+//		debugString += " A ";
+		if(speed <= (maxSpeed - forceAccelerate) ){
+			speed += forceAccelerate;
+		}
+		else {
+			speed = maxSpeed;
+		}
+		if(speed >= minDist + 0.5) {
+			speed = minDist;
+		}
 	}
 	
 	private boolean isReachedGlobalGoal() {
@@ -200,15 +342,26 @@ public class Car extends Agent{
 	}
 	
 	private void selectNewLocalGoal() {
-		//TODO: account for other cars
-		//Get the surrounding roads and add new roads
+
+		//Debug
+//		DecimalFormat df = new DecimalFormat("####0.0");
+//		if(path != null) {
+//			debugString += " " + df.format(speed) + "; " + path.size();			
+//		}
 		debugRemoveEdges(this);
+		
+		
+		
 		if(open.size() == 0) {
 			die("no new goal");
 			return;
 		}
 		
 		Entity goal = goals.get(0);
+//		debugPointTo(goal);
+		if(localGoal != null) {
+			debugPointTo(localGoal);
+		}
 		
 		//Pick the road within view that is closest to goal
 		Double minDist;
@@ -223,62 +376,29 @@ public class Car extends Agent{
 		for (Road road : open) {
 			dist = Tools.distance(grid.getLocation(goal), grid.getLocation(road));
 			if(dist < minDist && !(road instanceof Spawn)) {
+				if(road instanceof ParkingSpace && road != goal) {
+					continue;
+				}
 				localGoal = road;
 				minDist = dist;
 				updated = true;
 			}
 		}
-		if(!updated) {return;}
-		
-		/**
-		 * CONTNINUE HERE!
-		 * the updated thing broke something
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * !!!!!!!!!!!!!!!!!!!!!!!!!!!
-		 */
+//		if(path != null) {
+//			debugString += " " + getPathIndex() + ", " + path.size();
+//		}
+		if(!updated) {
+			return;
+		}
 		
 		
-		
-		
-		
-		open.remove(localGoal);
+//		closed.add(localGoal);
+//		open.remove(localGoal);
 		
 		path = Tools.aStar(currentRoad, localGoal, net);
-		debugPointTo(goal);
-		debugPointTo(localGoal);
 		if(path.size() == 0) {
 			
-			DecimalFormat df = new DecimalFormat("####0.0");
-			if(path != null) {
-				debugString = df.format(speed) + "; " + path.size();			
-			}
-			
-			
-//			System.out.println(
-//					"Path is empty. currentRoad: (" + 
-//			currentRoad.getLocation().getX() + 
-//			", " + 
-//			currentRoad.getLocation().getY() +
-//			") localGoal: (" + 
-//			localGoal.getLocation().getX() + 
-//			", " + 
-//			localGoal.getLocation().getY() +
-//			")" + 
-//			" Car: (" + 
-//			grid.getLocation(this).getX() + 
-//			", " + 
-//			grid.getLocation(this).getY() +
-//			")");
+			debugString = "ØØØØØH";	
 		}
 		pathIndex = 0;			
 		
@@ -304,41 +424,10 @@ public class Car extends Agent{
 		}
 	}
 	
-	public void moveTowards(GridPoint pt) {
-		// only move if we are not already in this grid location
-		if(!pt.equals(grid.getLocation(this))) {
-			
-			
-			NdPoint myPoint = space.getLocation(this);
-			NdPoint otherPoint = new NdPoint(pt.getX(), pt.getY());
-			
-			double angle = SpatialMath.calcAngleFor2DMovement(space, myPoint, otherPoint);
-			
-			double dx = otherPoint.getX() - myPoint.getX();
-			double dy = otherPoint.getY() - myPoint.getY();
-			
-			double distance = Math.sqrt(dx*dx + dy*dy);
-			
-			double distanceToMove;
-			if(distance >= speed) {
-				distanceToMove = speed;
-			}
-			else {
-				distanceToMove = distance;
-			}
-
-			pathIndex = pathIndex + distanceToMove;
-			
-			space.moveByVector(this, distanceToMove, angle, 0);
-			myPoint = space.getLocation(this);
-			grid.moveTo(this, (int)myPoint.getX(), (int)myPoint.getY());
-			moved = true;
-		}
-	}
-	
 	public void die(String message) {
 		Context<Object> context = ContextUtils.getContext(this);
-//		System.out.println(message);
+		System.out.println(message);
+		debugString += " D ";
 		try {
 			context.remove(this);			
 		}
@@ -347,6 +436,37 @@ public class Car extends Agent{
 			// TODO: handle exception
 		}
 		dead = true;
+	}
+	
+	private void checkDeadlock() {
+		if(		blockingCar.getBlockingCar() != null &&
+				blockingCar != null) {
+//			if(blockingCar.getBlockingCar() == this) {
+//				debugString = "SSSSSSSSSSSSSSSSSSSSSSSSSSSSS";
+//				blockingCar.giveWay();	
+//			}
+			int counter = 0;
+			Car b = blockingCar;
+			while(b != null && counter < 10) {
+				if(b.getBlockingCar() == this) {
+					b.giveWay();
+					break;
+				}
+				if(b.getBlockingCar() != null) {
+					b = b.getBlockingCar();					
+				}
+				else {
+					break;
+				}
+			}
+		}
+		
+		
+	}
+	
+	public void giveWay() {
+		this.hasRightOfWay = true;
+		rightOfWayCounter = rightOfWayTime;
 	}
 	
 	public Road getRoad() {
@@ -360,6 +480,7 @@ public class Car extends Agent{
 		System.out.println("road is null");
 		return null;
 	}
+	
 	
 	public String debugLabel() {
 		return debugString;
@@ -376,68 +497,6 @@ public class Car extends Agent{
 	}
 	
 	
-	
-	private void speedControl() {
-		
-		GridPoint pt = grid.getLocation(this);
-		
-		int pathDistance = 3;
-		
-		Double minDist = Double.MAX_VALUE;
-		GridCellNgh<Agent> agentNghCreator = new GridCellNgh<Agent>(grid, pt, Agent.class, 3, 3);
-		List<GridCell<Agent>> agentGridCells = agentNghCreator.getNeighborhood(false);
-		
-		
-		
-		for (GridCell<Agent> cell : agentGridCells) {
-			if(cell.size() <= 0) {
-				continue;
-			}
-			for(Agent a : cell.items()) {
-				Car c = (Car)a;
-				if(
-						!isInPath(c, pathDistance) || 
-						!Tools.isPathIntersect(this, c, 3) ||
-						c.isParked()) {
-					continue;
-				}
-				double dist = Tools.distance(cell.getPoint(), grid.getLocation(this));
-				if(dist < minDist) {
-					minDist = dist;		
-				}
-			}
-		}
-		if(isInJunction) {
-			minDist = Double.MAX_VALUE;
-		}
-		if(minDist >= thresholdAccelerate) {
-			accelerate();
-		}
-		else if(minDist <= thresholdStop) {
-			stop();
-		}
-		else if(minDist <= thresholdDecelerate) {
-			descelerate();
-		}
-	}
-
-	private void stop() {
-		speed = 0;
-//		debugPointTo(goals.get(0));
-//		debugPointTo(localGoal);
-	}
-	
-	private void descelerate() {
-		if(speed >= forceDecelerate) {
-			speed -= forceDecelerate;			
-		}
-	}
-	
-	private void accelerate() {
-		if(speed <= (maxSpeed - forceAccelerate) ){
-			speed += forceAccelerate;
-		}
-	}
 	
 	public void addVisited(Road r) {
 		if(!closed.contains(r)) {
@@ -456,19 +515,28 @@ public class Car extends Agent{
 		}
 	}
 	
+	
 	private boolean isInPath(Car car, int pathDistance) {
-		int counter = 0;
-		for(RepastEdge<Object> edge : path) {
-			if(counter > pathDistance) {
-				break;
-			}
-			counter++;
-			Road r = (Road) edge.getTarget();
+		for(	int i = getPathIndex(); 
+				i < getPathIndex() + pathDistance &&
+				i < path.size() - 1; 
+				i++) {
+			Road r = (Road) path.get(i).getTarget();
 			if(r.getCar() == car) {
 				return true;
 			}
 		}
 		return false;
+//		for(RepastEdge<Object> edge : path) {
+//			if(counter > pathDistance) {
+//				break;
+//			}
+//			counter++;
+//		}
+	}
+	
+	public int getPathIndex() {
+		return (int) Math.ceil(pathIndex);
 	}
 	
 	private boolean isBehind(Car c) {
@@ -484,19 +552,10 @@ public class Car extends Agent{
 		return false;
 	}
 	
-	private boolean isSameWay(Car c) {
-		Road cR = c.getRoad();
-		Road tR = this.getRoad();
-		if(cR instanceof RoundaboutRoad) {
-			return false;
-		}
-		
-		return cR.getClass() == tR.getClass();
+	public Car getBlockingCar() {
+		return this.blockingCar;
 	}
 	
-	public Vector2D getDirection() {
-		return direction;
-	}
 	
 	public void setInQueue(boolean isInQueue) {
 		this.isInQueue = isInQueue;
@@ -507,6 +566,24 @@ public class Car extends Agent{
 			setSpeed(maxSpeed);
 			step();
 		}
+	}
+	
+	private boolean isClear(Car c) {
+		GridPoint pt = grid.getLocation(c);
+				
+		GridCellNgh<Car> nghCreator = new GridCellNgh<Car>(grid, pt, Car.class, 1, 1);
+		List<GridCell<Car>> gridCells = nghCreator.getNeighborhood(false);
+		for (GridCell<Car> cell : gridCells) {
+			if(cell.size() == 0) {
+				continue;
+			}
+			Car car = cell.items().iterator().next();
+			if(car.getRoad() instanceof RoundaboutRoad && Tools.isPathIntersect(c, car, 3)) {
+//				c.debugString += " C ";
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	private ParkingSpace findParking(GridPoint target) {
@@ -553,6 +630,7 @@ public class Car extends Agent{
 		return isInQueue;
 	}
 
+	
 	public void addGoal(Entity goal) {
 		this.goals.add(goal);
 	}
