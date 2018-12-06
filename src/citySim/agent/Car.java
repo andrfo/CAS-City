@@ -130,14 +130,14 @@ public class Car extends Agent{
 		if(pathIndex <= path.size() - 1) {
 			int index = (int) Math.ceil(pathIndex);
 			GridPoint next = grid.getLocation((Road)path.get(index).getTarget());
-			direction = Tools.create2DVector(pt, next);
+//			direction = Tools.create2DVector(pt, next);
 			moveTowards(next);
+			boolean s = moveTowards(next);
+			if(!s) {
+				pathIndex += 1;
+				move();
+			}
 			
-		}
-		else {
-			
-			//Goal reached, die
-			//die("Path ended, car dies");
 		}
 		
 		//================================
@@ -202,10 +202,24 @@ public class Car extends Agent{
 			return;
 		}
 		
-		if(calcCounter > 0) {
-			calcCounter--;
+//		debugPointTo(goals.get(0));
+//		if(localGoal != null) {
+//			debugPointTo(localGoal);
+//		}
+//		if(path != null && path.size() > 3) {
+//			for(int i = 0; i<3;i++) {
+//				debugPointTo(path.get(i).getTarget());
+//			}
+//		}
+		
+		if(currentRoad instanceof RoundaboutRoad && path.size() > 3) {
 			return;
 		}
+		
+//		if(calcCounter > 0) {
+//			calcCounter--;
+//			return;
+//		}
 		
 		//Pick the road within view that is closest to goal
 		Double minDist = Double.MAX_VALUE;
@@ -220,17 +234,6 @@ public class Car extends Agent{
 		open.remove(localGoal);
 		
 		path = Tools.aStar(currentRoad, localGoal, net);
-//		debugPointTo(goals.get(0));
-		debugPointTo(localGoal);
-		
-		try {
-			for(int i = 0; i<3;i++) {
-				debugPointTo(path.get(i).getTarget());
-			}
-		}
-		catch (IndexOutOfBoundsException e) {
-			// TODO: handle exception
-		}
 		if(path.size() == 0) {
 			
 			debugPointTo(goals.get(0));
@@ -257,8 +260,7 @@ public class Car extends Agent{
 //			grid.getLocation(this).getY() +
 //			")");
 		}
-		pathIndex = 0;		
-		calcCounter = 3;
+		pathIndex = 0;
 		
 	}
 	
@@ -282,36 +284,38 @@ public class Car extends Agent{
 		}
 	}
 	
-	public void moveTowards(GridPoint pt) {
+	public boolean moveTowards(GridPoint pt) {
 		// only move if we are not already in this grid location
-		if(!pt.equals(grid.getLocation(this))) {
-			
-			
-			NdPoint myPoint = space.getLocation(this);
-			NdPoint otherPoint = new NdPoint(pt.getX(), pt.getY());
-			
-			double angle = SpatialMath.calcAngleFor2DMovement(space, myPoint, otherPoint);
-			
-			double dx = otherPoint.getX() - myPoint.getX();
-			double dy = otherPoint.getY() - myPoint.getY();
-			
-			double distance = Math.sqrt(dx*dx + dy*dy);
-			
-			double distanceToMove;
-			if(distance >= speed) {
-				distanceToMove = speed;
-			}
-			else {
-				distanceToMove = distance;
-			}
-
-			pathIndex = pathIndex + distanceToMove;
-			
-			space.moveByVector(this, distanceToMove, angle, 0);
-			myPoint = space.getLocation(this);
-			grid.moveTo(this, (int)myPoint.getX(), (int)myPoint.getY());
-			moved = true;
+		if(pt.equals(grid.getLocation(this))) {
+			return false;
 		}
+			
+			
+		NdPoint myPoint = space.getLocation(this);
+		NdPoint otherPoint = new NdPoint(pt.getX(), pt.getY());
+		
+		double angle = SpatialMath.calcAngleFor2DMovement(space, myPoint, otherPoint);
+		
+		double dx = otherPoint.getX() - myPoint.getX();
+		double dy = otherPoint.getY() - myPoint.getY();
+		
+		double distance = Math.sqrt(dx*dx + dy*dy);
+		
+		double distanceToMove;
+		if(distance >= speed) {
+			distanceToMove = speed;
+		}
+		else {
+			distanceToMove = distance;
+		}
+
+		pathIndex = pathIndex + distanceToMove;
+		
+		space.moveByVector(this, distanceToMove, angle, 0);
+		myPoint = space.getLocation(this);
+		grid.moveTo(this, (int)myPoint.getX(), (int)myPoint.getY());
+		moved = true;
+		return true;
 	}
 	
 	public void die(String message) {
@@ -325,6 +329,10 @@ public class Car extends Agent{
 			// TODO: handle exception
 		}
 		dead = true;
+	}
+	
+	public int getPathIndex() {
+		return (int) Math.ceil(pathIndex);
 	}
 	
 	public Road getRoad() {
@@ -421,18 +429,22 @@ public class Car extends Agent{
 	}
 	
 	private boolean isInPath(Car car, int pathDistance) {
-		int counter = 0;
-		for(RepastEdge<Object> edge : path) {
-			if(counter > pathDistance) {
-				break;
-			}
-			counter++;
-			Road r = (Road) edge.getTarget();
+		for(	int i = getPathIndex(); 
+				i < getPathIndex() + pathDistance &&
+				i < path.size() - 1; 
+				i++) {
+			Road r = (Road) path.get(i).getTarget();
 			if(r.getCar() == car) {
 				return true;
 			}
 		}
 		return false;
+//		for(RepastEdge<Object> edge : path) {
+//			if(counter > pathDistance) {
+//				break;
+//			}
+//			counter++;
+//		}
 	}
 	
 	private boolean isBehind(Car c) {
