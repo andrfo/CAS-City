@@ -4,18 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import citySim.agent.Car;
-import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
-import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.continuous.NdPoint;
-import repast.simphony.space.graph.Network;
-import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
-import repast.simphony.util.ContextUtils;
 import utils.Tools;
 
 public class Roundabout {
@@ -27,9 +22,6 @@ public class Roundabout {
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
 	
-	private final int ACTIVATION_DELAY = 2;
-	
-	private int waitCounter = 0;
 	
 	private NdPoint center;
 	
@@ -39,7 +31,6 @@ public class Roundabout {
 		this.queue = new ArrayList<Car>();
 		this.space = space;
 		this.grid = grid;
-		// TODO Auto-generated constructor stub
 	}
 	
 	

@@ -25,18 +25,7 @@ import utils.Vector2D;
 public class Car extends Agent{
 
 
-	/**
-	 * TODO:local naviation: 
-	 * 		large grid neighbourhood that detects the surrounding area
-	 * 		This can also be a tweakable variable!
-	 * TODO: remove cars from memory:
-	 * 		Seems the cars are not being removed from the memory and we are running out of memory.
-	 * 			- Memory leak
-	 * 			- Force garbage collector to collect cars?
-	 * 			- Remove all references of car and set them to null when dead
-	 * TODO: use floyd-warshall algorithm to calc shortest path in local navigation instead of A*
-	 * 
-	 */
+	
 	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
