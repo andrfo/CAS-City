@@ -19,6 +19,7 @@ import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import repast.simphony.util.ContextUtils;
+import repast.simphony.util.SimUtilities;
 import utils.Tools;
 import utils.Vector2D;
 
@@ -41,7 +42,7 @@ public class Car extends Agent{
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
 	
-	private Road globalGoal;
+//	private Road globalGoal;
 	private Road start;
 	private Road localGoal;
 	private Road currentRoad;
@@ -49,6 +50,7 @@ public class Car extends Agent{
 	private int viewDistance = 8;
 	
 	private List<RepastEdge<Object>> path;
+	private List<Entity> goals;
 	private Network<Object> net;
 	
 	private double pathIndex;
@@ -74,6 +76,10 @@ public class Car extends Agent{
 	
 	private List<Road> open;
 	private List<Road> closed;
+	private boolean goingToWork;
+	private boolean parked;
+	private int parkedTimer;
+	private int calcCounter;
 	
 	public Car(ContinuousSpace<Object> space, Grid<Object> grid) {
 		super(space, grid);
@@ -83,12 +89,23 @@ public class Car extends Agent{
 		this.speed = maxSpeed = 0.5 + RandomHelper.nextDouble();
 		this.open = new ArrayList<Road>();
 		this.closed = new ArrayList<Road>();
+		this.goals = new ArrayList<Entity>();
+		this.calcCounter = 0;
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step(){
 		if(isInQueue || dead) {
 			return;
+		}
+		if(parked) {
+			if(parkedTimer > 0) {
+				parkedTimer--;
+				return;
+			}
+			else {
+				parked = false;
+			}
 		}
 		
 		isReachedGlobalGoal();
@@ -107,7 +124,7 @@ public class Car extends Agent{
 		speedControl();	
 		
 		//Follow path
-		if(pathIndex <= path.size() - 1) {
+		if(pathIndex >= path.size() - 1) {
 			selectNewLocalGoal();
 		}	
 		if(pathIndex <= path.size() - 1) {
@@ -128,14 +145,52 @@ public class Car extends Agent{
 	
 	private boolean isReachedGlobalGoal() {
 		
+//		GridPoint pt = grid.getLocation(this);
+//		if(Tools.distance(pt, grid.getLocation(globalGoal)) < 2) {
+//			die("Arrived at global goal, car dies");
+//			return true;
+//		}
+//		return false;
 		GridPoint pt = grid.getLocation(this);
-		if(Tools.distance(pt, grid.getLocation(globalGoal)) < 2) {
-			die("Arrived at global goal, car dies");
-			return true;
+		Entity goal = goals.get(0);
+		double triggerDistance = 2;
+		if(goal instanceof Building) {
+			triggerDistance = 10;
+		}
+		if(Tools.distance(pt, grid.getLocation(goal)) < triggerDistance) {
+			
+			
+			if(goal instanceof Building) {
+				ParkingSpace p = findParking(grid.getLocation(goal));
+				if(p == null) {
+					return false;
+				}
+				goals.remove(goal);
+				goals.add(0, p);
+				goingToWork = true;
+			}
+			else if (goal instanceof ParkingSpace) {
+				closed.clear();
+				open.clear();
+				path.clear();
+				stop();
+				space.moveTo(this, space.getLocation(goal).getX(), space.getLocation(goal).getY());
+				grid.moveTo(this, pt.getX(), pt.getY());
+				park(480);//8h
+				goals.remove(0);
+			}
+			else if (goal instanceof Despawn) {
+				die("");
+				return true;
+			}
+			else{
+				die("");
+				return true;
+			}
 		}
 		return false;
 	}
-	
+
 	private void selectNewLocalGoal() {
 		debugString = "";
 		//TODO: account for other cars
@@ -147,11 +202,16 @@ public class Car extends Agent{
 			return;
 		}
 		
+		if(calcCounter > 0) {
+			calcCounter--;
+			return;
+		}
+		
 		//Pick the road within view that is closest to goal
 		Double minDist = Double.MAX_VALUE;
 		Double dist = 0d;
 		for (Road road : open) {
-			dist = Tools.distance(grid.getLocation(globalGoal), grid.getLocation(road));
+			dist = Tools.distance(grid.getLocation(goals.get(0)), grid.getLocation(road));
 			if(dist < minDist && !(road instanceof Spawn)) {
 				localGoal = road;
 				minDist = dist;
@@ -160,9 +220,20 @@ public class Car extends Agent{
 		open.remove(localGoal);
 		
 		path = Tools.aStar(currentRoad, localGoal, net);
+//		debugPointTo(goals.get(0));
+		debugPointTo(localGoal);
+		
+		try {
+			for(int i = 0; i<3;i++) {
+				debugPointTo(path.get(i).getTarget());
+			}
+		}
+		catch (IndexOutOfBoundsException e) {
+			// TODO: handle exception
+		}
 		if(path.size() == 0) {
 			
-			debugPointTo(globalGoal);
+			debugPointTo(goals.get(0));
 			debugPointTo(localGoal);
 			DecimalFormat df = new DecimalFormat("####0.0");
 			if(path != null) {
@@ -186,7 +257,8 @@ public class Car extends Agent{
 //			grid.getLocation(this).getY() +
 //			")");
 		}
-		pathIndex = 0;			
+		pathIndex = 0;		
+		calcCounter = 3;
 		
 	}
 	
@@ -271,10 +343,6 @@ public class Car extends Agent{
 		return debugString;
 	}
 	
-	
-	
-	
-	
 	private void speedControl() {
 		
 		GridPoint pt = grid.getLocation(this);
@@ -293,6 +361,9 @@ public class Car extends Agent{
 			}
 			for(Agent a : cell.items()) {
 				Car c = (Car)a;
+				if(c.isParked() || c.getRoad() instanceof ParkingSpace) {
+					continue;
+				}
 				if(!isInPath(c, pathDistance) || !Tools.isPathIntersect(this, c, 3)) {
 					continue;
 				}
@@ -402,14 +473,63 @@ public class Car extends Agent{
 		}
 	}
 	
+	private void park(int time) {
+		parked = true;
+		if(goingToWork) {
+			parkedTimer = time;			
+		}
+		else {
+			parkedTimer = 90;
+		}
+		goingToWork = false;
+	}
 	
+	private ParkingSpace findParking(GridPoint target) {
+		double min = Double.MAX_VALUE;
+		ParkingSpace p = null;
+		for (Road road : open) {
+			if(road instanceof ParkingSpace && !road.isOccupied()) {
+				Double distance = Tools.distance(grid.getLocation(this), target);
+				if(distance < min) {
+					min = distance;
+					p = (ParkingSpace) road;
+				}
+			}
+		}
+		int range = 5;
+		while(p == null) {
+			p = findRandomProximateParking(target, range);
+			range += 10;
+		}
+		return p;
+	}
+	
+	private ParkingSpace findRandomProximateParking(GridPoint target, int range) {
+		GridPoint pt = grid.getLocation(this);
+		GridCellNgh<Road> roadNghCreator = new GridCellNgh<Road>(grid, pt, Road.class, range, range);
+		List<GridCell<Road>> roadGridCells = roadNghCreator.getNeighborhood(true);
+		SimUtilities.shuffle(roadGridCells, RandomHelper.getUniform());
+		for (GridCell<Road> gridCell : roadGridCells) {
+			if(gridCell.items().iterator().hasNext()) {
+				Road r = gridCell.items().iterator().next();
+				if(r instanceof ParkingSpace && !r.isOccupied()) {
+					return (ParkingSpace) r;
+				}
+			}
+		}
+		return null;
+	}
+
+	public boolean isParked() {
+		return parked;
+	}
 	
 	public boolean isInQueue() {
 		return isInQueue;
 	}
 
-	public void setGoal(Road goal) {
-		this.globalGoal = goal;
+	public void addGoal(Entity goal) {
+		this.goals.add(goal);
 	}
 	
 	public void debugPointTo(Object obj) {

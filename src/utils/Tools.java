@@ -136,6 +136,18 @@ public class Tools {
 		}
 		return path;
 	}
+	
+	/**
+	 * Randomly returns true based on the probability x [ x >= 0]
+	 * @param x
+	 * @return True if triggered
+	 */
+	public static boolean isTrigger(Double x) {
+		if(x < 0) {
+			throw new IllegalArgumentException("Cannot have a negative probablity");
+		}
+		return x - Math.random() > 0;
+	}
 
 	public static int getMooreDirection(GridPoint a, GridPoint b) {
 		

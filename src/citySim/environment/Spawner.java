@@ -12,6 +12,7 @@ import citySim.agent.Car;
 import repast.simphony.context.Context;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
+import repast.simphony.parameter.Parameters;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.random.RandomHelper;
@@ -39,7 +40,9 @@ public class Spawner {
 	private Grid<Object> grid;
 	private Context<Object> context;
 	private List<Road> spawnPoints;
-	private List<Road> goals;
+	private List<Road> despawnPoints;
+	private List<Road> parkingSpaces;
+	private List<Building> buildings;
 	private Network<Object> net;
 	
 	
@@ -59,26 +62,38 @@ public class Spawner {
 	private static final int[] AFTERNOON_RUSH = {930, 1020}; 	//15:30 - 17:00
 	
 	
-	
+	private Double nightFrequency;
+	private Double morningFrequency;
+	private Double afternoonFrequency;
+	private Double eveningFrequency;
+	private Double rushFrequency;
 	
 	private double frequency; //Spawns per tick
 	
 	
-	public Spawner(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context, List<Road> spawnPoints, List<Road> goals) {
+	public Spawner(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context, List<Road> spawnPoints, List<Road> despawnPoints, List<Road> parkingSpaces, List<Building> buildings) {
 		super();
 		this.space = space;
 		this.grid = grid;
 		this.context = context;
 		this.spawnPoints = spawnPoints;
-		this.goals = goals;
-		if(spawnPoints.size() == 0 || goals.size() == 0) {
+		this.despawnPoints = despawnPoints;
+		this.parkingSpaces = parkingSpaces;
+		this.buildings = buildings;
+		if(spawnPoints.size() == 0 || despawnPoints.size() == 0) {
 			throw new IllegalArgumentException("no spawn or goal");
 		}
 		
 		
 		net = (Network<Object>)context.getProjection("road network");
 		
+		Parameters params = RunEnvironment.getInstance().getParameters();
 		
+		this.nightFrequency = params.getDouble("Car_frequency_at_Night");
+		this.morningFrequency = params.getDouble("Car_frequency_in_the_Morning");
+		this.afternoonFrequency = params.getDouble("Car_frequency_in_the_Afternoon");
+		this.eveningFrequency = params.getDouble("Car_frequency_in_the_Evening");
+		this.rushFrequency = params.getDouble("Car_frequency_in_Rushhour");
 		
 		
 	}
@@ -96,12 +111,12 @@ public class Spawner {
 	
 	public void spawn() {
 		//TODO: fix that the cars don't spawn when blocked
-		
+		int time = getTime();
 		boolean blocked = false;
 		BigDecimal[] valRem = BigDecimal.valueOf(frequency).divideAndRemainder(BigDecimal.ONE);
 		
 		int  spawnCount = valRem[0].intValue();
-		if(valRem[1].doubleValue() - Math.random() > 0) { //Uses the remainder as a probability for an extra spawn
+		if(Tools.isTrigger(valRem[1].doubleValue())) { //Uses the remainder as a probability for an extra spawn
 			spawnCount++;
 		}
 		
@@ -109,9 +124,9 @@ public class Spawner {
 			blocked = false;
 			//Start and goal
 			int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
-			int despawnPointIndex = RandomHelper.nextIntFromTo(0,  goals.size() - 1);
+			int despawnPointIndex = RandomHelper.nextIntFromTo(0,  despawnPoints.size() - 1);
 			Road start = spawnPoints.get(spawnPointIndex);
-			Road goal = goals.get(despawnPointIndex);
+			Road endGoal = despawnPoints.get(despawnPointIndex);
 			NdPoint spacePt = space.getLocation(start);
 			GridPoint pt = grid.getLocation(start);
 			
@@ -136,8 +151,20 @@ public class Spawner {
 			grid.moveTo(car, pt.getX(), pt.getY());
 			
 			//Setup
-			car.setGoal(goal);
+			
+			
+			//work?
+			if(		(isInInterval(time, MORNING_RUSH) || 
+					isInInterval(time, AFTERNOON_RUSH)) &&
+					Tools.isTrigger(rushFrequency/frequency)) {
+				car.addGoal(buildings.get(RandomHelper.nextIntFromTo(0, buildings.size() - 1)));					
+			}
+			//errand?
+			else if(Tools.isTrigger(0.6d)){
+				car.addGoal(parkingSpaces.get(RandomHelper.nextIntFromTo(0, parkingSpaces.size() - 1)));
+			}
 			car.setStart(start);
+			car.addGoal(endGoal); //TODO:make cars return to near start
 			car.setNet(net);
 			
 		}
@@ -149,30 +176,34 @@ public class Spawner {
 		return frequency*100d;
 	}
 	
-	
-	private void setFrequency() {
+	private int getTime() {
 		double currentTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
 		int time = (int) (currentTick % TICKS_PER_DAY);
+		return time;
+	}
+	
+	private void setFrequency() {
+		int time = getTime();
 		frequency = 0;
 		
 		if(isInInterval(time, NIGHT)) {
-			frequency += 0.1;
+			frequency += nightFrequency;
 		}
 		else if(isInInterval(time, MORNING)) {
-			frequency += 0.4;
+			frequency += morningFrequency;
 		}
 		else if(isInInterval(time, AFTERNOON)) {
-			frequency += 0.6;		
+			frequency += afternoonFrequency;		
 		}
 		else if(isInInterval(time, EVENING)) {
-			frequency += 0.4;
+			frequency += eveningFrequency;
 		}
 		
 		if(isInInterval(time, MORNING_RUSH)) {
-			frequency += 1.2;
+			frequency += rushFrequency;
 		}
 		else if(isInInterval(time, AFTERNOON_RUSH)) {
-			frequency += 1.2;
+			frequency += rushFrequency;
 		}
 		
 		
