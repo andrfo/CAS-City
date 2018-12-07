@@ -67,6 +67,7 @@ public class Car extends Agent{
 	private int rightOfWayTime = 3;
 	private Car blockingCar;
 	
+	private int deadlockTimer;
 	private int parkedTimer;
 	
 	//Speed control
@@ -85,6 +86,7 @@ public class Car extends Agent{
 	
 	private List<Road> open;
 	private List<Road> closed;
+	private int deadlockTime = 8;
 	
 	public Car(ContinuousSpace<Object> space, Grid<Object> grid) {
 		super(space, grid);
@@ -99,47 +101,54 @@ public class Car extends Agent{
 		this.parkedTimer = 0;
 		this.goingToWork = false;
 		this.blockingCar = null;
+		this.deadlockTimer = deadlockTime;
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step(){
 		debugString = "";
+		getSurroundings();
 		
-		if(isInQueue) {
-			if(isClear(this)) {
-				setInQueue(false);
-			}
-			else {
-				return;				
-			}
-		}
+		
+		if(!isMovable()) {return;}
+		
+		
+		
+		
+		if(isReachedGlobalGoal());
+		if(dead) { return;}
+		selectNewLocalGoal();
+		if(dead) { return;}
+		move();	
+	}
+	
+	private boolean isMovable() {
 		if(parked) {
 			debugString += " !P! ";
 			if(parkedTimer > 0) {
 				parkedTimer--;
-				return;
+				return false;
 			}
 			else {
 				parked = false;
 				setSpeed(maxSpeed);
 			}
 		}
-		
-		
-		
-		if(isReachedGlobalGoal()) {
-			debugString += " G ";
-			if(dead) { return;}
+		if(isInQueue) {
+//			debugString += " Q ";
+			if(isClear(this)) {
+				setInQueue(false);
+			}
+			else {
+				return false;				
+			}
 		}
-		getSurroundings();
-		selectNewLocalGoal();
-		if(dead) { return;}
-		move();	
+		return true;
 	}
 	
 	private void move() {
 		// get the grid location of this Agent
-		GridPoint pt = grid.getLocation(currentRoad);
+//		GridPoint pt = grid.getLocation(currentRoad);
 		
 		
 		
@@ -310,8 +319,6 @@ public class Car extends Agent{
 		}
 		if(Tools.distance(pt, grid.getLocation(goal)) < triggerDistance) {
 			
-			closed.clear();
-			open.clear();
 			
 			if(goal instanceof Building) {
 				ParkingSpace p = findParking(grid.getLocation(goal));
@@ -323,6 +330,18 @@ public class Car extends Agent{
 				goingToWork = true;
 			}
 			else if (goal instanceof ParkingSpace) {
+				if(((ParkingSpace) goal).isOccupied()) {
+					ParkingSpace p = findParking(grid.getLocation(this));
+					if(p == null) {
+						//TODO: don't die when no parking is available
+						die("No parking");
+					}
+					goals.remove(goal);
+					goals.add(0, p);
+				}
+				closed.clear();
+				open.clear();
+				getSurroundings();
 				stop();
 				space.moveTo(this, space.getLocation(goal).getX(), space.getLocation(goal).getY());
 				grid.moveTo(this, pt.getX(), pt.getY());
@@ -357,21 +376,18 @@ public class Car extends Agent{
 			return;
 		}
 		
-		Entity goal = goals.get(0);
-//		debugPointTo(goal);
-		if(localGoal != null) {
-			debugPointTo(localGoal);
+		if(currentRoad instanceof RoundaboutRoad && path.size() > 3) {
+			return;
 		}
 		
+		Entity goal = goals.get(0);
+//		debugPointTo(goal);
+//		if(localGoal != null) {
+//			debugPointTo(localGoal);
+//		}
+		
 		//Pick the road within view that is closest to goal
-		Double minDist;
-		if(localGoal == null) {
-			minDist = Double.MAX_VALUE;
-		}
-		else {
-			minDist = Tools.distance(grid.getLocation(goal), grid.getLocation(localGoal));
-		}
-		boolean updated = false;
+		Double minDist = Double.MAX_VALUE;
 		Double dist = 0d;
 		for (Road road : open) {
 			dist = Tools.distance(grid.getLocation(goal), grid.getLocation(road));
@@ -381,15 +397,11 @@ public class Car extends Agent{
 				}
 				localGoal = road;
 				minDist = dist;
-				updated = true;
 			}
 		}
 //		if(path != null) {
 //			debugString += " " + getPathIndex() + ", " + path.size();
 //		}
-		if(!updated) {
-			return;
-		}
 		
 		
 //		closed.add(localGoal);
@@ -422,6 +434,13 @@ public class Car extends Agent{
 				}
 			}
 		}
+		
+		addVisited(currentRoad);
+		if(currentRoad.isEdge() && !currentRoad.isExit()) {
+			setInQueue(true);
+		}
+		
+		
 	}
 	
 	public void die(String message) {
@@ -439,6 +458,20 @@ public class Car extends Agent{
 	}
 	
 	private void checkDeadlock() {
+		
+		if(deadlockTimer > 0) {
+			if(currentRoad instanceof RoundaboutRoad) {
+				deadlockTimer--;
+			}
+			else {
+				deadlockTimer = deadlockTime;
+			}
+		}
+		else {
+			giveWay();
+		}
+		
+		
 		if(		blockingCar.getBlockingCar() != null &&
 				blockingCar != null) {
 //			if(blockingCar.getBlockingCar() == this) {
@@ -458,6 +491,7 @@ public class Car extends Agent{
 				else {
 					break;
 				}
+				counter++;
 			}
 		}
 		
@@ -564,7 +598,7 @@ public class Car extends Agent{
 		}
 		else {
 			setSpeed(maxSpeed);
-			step();
+//			step();
 		}
 	}
 	
@@ -602,6 +636,9 @@ public class Car extends Agent{
 		while(p == null) {
 			p = findRandomProximateParking(target, range);
 			range += 10;
+			if(range >= 1000) {
+				die("cannot find parking within 10000");
+			}
 		}
 		return p;
 	}
