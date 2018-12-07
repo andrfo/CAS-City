@@ -60,7 +60,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	public Context build(Context<Object> context) {
 		
 		try {
-		    img = ImageIO.read(new File("maps/smallCity.png"));
+		    img = ImageIO.read(new File("maps/smallCityPark.png"));
 		} catch (IOException e) {
 			System.out.println(e + ": Image file not found!");
 		}
@@ -103,7 +103,9 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	private void readImage(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context) {
 		
 		List<Road> spawnPoints = new ArrayList<Road>();
-		List<Road> goals = new ArrayList<Road>();
+		List<Road> despawnPoints = new ArrayList<Road>();
+		List<Road> parkingSpaces = new ArrayList<Road>();
+		List<Building> buildings = new ArrayList<Building>();
 		
 		
 		for (int i = 0; i < height; i++) {
@@ -155,7 +157,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					context.add(road);
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
-					goals.add(road);
+					despawnPoints.add(road);
 				}
 				else if(r >= 250 && g <= 10 && b >= 250) {//roundabout
 					RoundaboutRoad road = new RoundaboutRoad(space, grid);
@@ -168,6 +170,15 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					context.add(road);
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
+					parkingSpaces.add(road);
+				}
+				else if(r == 128 && g == 64 && b == 0) {//Building
+					//TODO: make buildings be more than one pixel
+					Building building = new Building(space, grid);
+					context.add(building);
+					space.moveTo(building, x, y);
+					grid.moveTo(building, x, y);
+					buildings.add(building);
 				}
 				else {
 					System.out.println("r: " + r + " g: " + g + " b: " + b);
@@ -189,7 +200,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 			}
 		}
 		buildGraph(grid, context);
-		spawner = new Spawner(space, grid, context, spawnPoints, goals);
+		spawner = new Spawner(space, grid, context, spawnPoints, despawnPoints, parkingSpaces, buildings);
 		context.add(spawner);
 	}
 	
@@ -241,15 +252,15 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					//Connect spawn and despawn to everything around them
 					//TODO: Clean up
 					if(r instanceof Spawn){
-						addEdge(r, cr, net);
+						addEdge(r, cr, net).setWeight(50);
 					}
 					else if(cr instanceof Despawn){
-						addEdge(r, cr, net);
+						addEdge(r, cr, net).setWeight(50);
 					}
 					else if(r instanceof ParkingSpace &&
 							!(cr instanceof ParkingSpace)){
-						addEdge(r, cr, net);
-						addEdge(cr, r, net);
+						addEdge(r, cr, net).setWeight(50);
+						addEdge(cr, r, net).setWeight(50);
 					}
 					else if(r instanceof RoundaboutRoad && 
 							cr instanceof RoundaboutRoad) {
@@ -331,7 +342,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		}
 	}
 	
-	private void addEdge(Object a, Object b, Network<Object> net) {
+	private RepastEdge<Object> addEdge(Object a, Object b, Network<Object> net) {
 		if(net.getEdge(a, b) == null) {
 			RepastEdge<Object> edge = net.addEdge(a, b);
 			int dir = Tools.getMooreDirection(grid.getLocation(a), grid.getLocation(b));
@@ -344,7 +355,9 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 			else {
 				edge.setWeight(1.3);
 			}
+			return edge;
 		}
+		return null;
 	}
 
 }

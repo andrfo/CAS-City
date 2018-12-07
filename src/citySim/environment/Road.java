@@ -38,35 +38,32 @@ public class Road extends Entity{
 		this.isExit = false;
 	}
 	
-	@Watch(
-			watcheeClassName = "citySim.agent.Car", 
-			watcheeFieldNames = "moved",
-			query = "colocated",
-			whenToTrigger = WatcherTriggerSchedule.IMMEDIATE)
-	@ScheduledMethod
-	public void onTriggerEnter() {
-		
-		pt = grid.getLocation(this);
-		
-		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
-			if(obj instanceof Car) {
-				Car c = (Car)obj;
-				c.addVisited(this);//TODO:have in car instead
-				if(isEdge && !(this instanceof RoundaboutRoad)) {
-					if(!isExit) {
-						roundabout.addCar(c);							
-					}
-				}				
-			}
-		}
-	}
+//	@Watch(
+//			watcheeClassName = "citySim.agent.Car", 
+//			watcheeFieldNames = "moved",
+//			query = "colocated",
+//			whenToTrigger = WatcherTriggerSchedule.IMMEDIATE)
+//	@ScheduledMethod
+//	public void onTriggerEnter() {
+//		
+//		pt = grid.getLocation(this);
+//		
+//		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
+//			if(obj instanceof Car) {
+//				Car c = (Car)obj;
+//				c.addVisited(this);//TODO:have in car instead
+//				if(isEdge && !(this instanceof RoundaboutRoad)) {
+//					if(!isExit) {
+//						c.setInQueue(true);							
+//					}
+//				}				
+//			}
+//		}
+//	}
 	
 	public boolean isExit() {
 		return isExit;
 	}
-	
-	
-	
 	
 	public Roundabout getRoundabout() {
 		return roundabout;
@@ -124,7 +121,7 @@ public class Road extends Entity{
 		return junction;
 	}
 	
-	public boolean isJunctionEdge() {
+	public boolean isEdge() {
 		return isEdge;
 	}
 	

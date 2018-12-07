@@ -8,8 +8,11 @@ import org.apache.velocity.runtime.directive.Foreach;
 
 import citySim.agent.Car;
 import citySim.environment.Road;
+import repast.simphony.query.space.grid.GridCell;
+import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
+import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 
 public class Tools {
@@ -26,32 +29,26 @@ public class Tools {
 	public static final int SOUTH = 6;
 	public static final int SOUTHEAST = 7;
 	
-	public static boolean isPathIntersect(Car a, Car b, int n) {
-		int counterA = 0;
-		int counterB = 0;
-		for(RepastEdge<Object> edgeA : a.getPath()) {
-			for(RepastEdge<Object> edgeB : b.getPath()) {
-				if(edgeA.getTarget() == edgeB.getTarget()) {
+	public static boolean isPathIntersect(Car a, Car b, int distance) {
+		
+		for(	int i = a.getPathIndex(); 
+				i < a.getPathIndex() + distance &&
+				i < a.getPath().size() - 1; 
+				i++) {
+			for(	int j = b.getPathIndex(); 
+					j < b.getPathIndex() + distance &&
+					j < b.getPath().size() - 1; 
+					j++) {
+				if(a.getPath().get(i).getTarget() == b.getPath().get(j).getTarget()) {
 					return true;
 				}
-				counterB++;
-				if(counterB > n) {
-					break;
-				}
 			}
-			counterA++;
-			if(counterA > n) {
-				break;
-			}
+			
 		}
 		return false;
 	}
 	
 	public static List<RepastEdge<Object>> aStar(Road start, Road goal, Network<Object> net){
-//		if(start == goal) {
-//			System.out.println("SAME");
-//		}
-		
 		
 		// Will contain the shortest path
 		ArrayList<RepastEdge<Object>> path = new ArrayList<RepastEdge<Object>>();
@@ -137,6 +134,19 @@ public class Tools {
 		return path;
 	}
 
+	
+	/**
+	 * Randomly returns true based on the probability x [ x >= 0]
+	 * @param x
+	 * @return True if triggered
+	 */
+	public static boolean isTrigger(Double x) {
+		if(x < 0) {
+			throw new IllegalArgumentException("Cannot have a negative probablity");
+		}
+		return x - Math.random() > 0;
+	}
+	
 	public static int getMooreDirection(GridPoint a, GridPoint b) {
 		
 		/*	Grid Directions:
