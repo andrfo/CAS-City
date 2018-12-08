@@ -46,7 +46,7 @@ public class Car extends Agent{
 	private Road start;
 	private Road localGoal;
 	private Road currentRoad;
-	
+	private ParkingSpace parkingSpace;
 	
 	private int viewDistance = 8;
 	
@@ -102,6 +102,7 @@ public class Car extends Agent{
 		this.goingToWork = false;
 		this.blockingCar = null;
 		this.deadlockTimer = deadlockTime;
+		this.moved = true;
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
@@ -110,7 +111,10 @@ public class Car extends Agent{
 		getSurroundings();
 		
 		
-		if(!isMovable()) {return;}
+		if(!isMovable()) {
+			moved = false;
+			return;
+			}
 		
 		
 		
@@ -131,6 +135,8 @@ public class Car extends Agent{
 			}
 			else {
 				parked = false;
+				parkingSpace.vacate();
+				parkingSpace = null;
 				setSpeed(maxSpeed);
 			}
 		}
@@ -180,6 +186,7 @@ public class Car extends Agent{
 			}
 			
 		}
+		moved = true;
 	}
 	
 	public boolean moveTowards(GridPoint pt) {
@@ -313,9 +320,12 @@ public class Car extends Agent{
 		
 		GridPoint pt = grid.getLocation(this);
 		Entity goal = goals.get(0);
-		double triggerDistance = 2d;
+		double triggerDistance;
 		if(goal instanceof Building) {
 			triggerDistance = 10;
+		}
+		else {
+			triggerDistance = 2d;
 		}
 		if(Tools.distance(pt, grid.getLocation(goal)) < triggerDistance) {
 			
@@ -330,7 +340,7 @@ public class Car extends Agent{
 				goingToWork = true;
 			}
 			else if (goal instanceof ParkingSpace) {
-				if(((ParkingSpace) goal).isOccupied()) {
+				if(!((ParkingSpace) goal).reserve()) {
 					ParkingSpace p = findParking(grid.getLocation(this));
 					if(p == null) {
 						//TODO: don't die when no parking is available
@@ -338,22 +348,39 @@ public class Car extends Agent{
 					}
 					goals.remove(goal);
 					goals.add(0, p);
+					return false;
 				}
-				closed.clear();
-				open.clear();
-				getSurroundings();
+				/**
+				 * Cars are not parking afting adding the reserve thing.
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 * ======================================
+				 */
 				stop();
 				space.moveTo(this, space.getLocation(goal).getX(), space.getLocation(goal).getY());
 				grid.moveTo(this, pt.getX(), pt.getY());
-				park(480);//8h
+				park(480, (ParkingSpace) goals.get(0));//8h
 				goals.remove(0);
+				
+				closed.clear();
+				open.clear();
+				getSurroundings();
 			}
 			else if (goal instanceof Despawn) {
 				die("");
 				return true;
 			}
 			else{
-				die("");
+				die("Unknown Goal");
 				return true;
 			}
 		}
@@ -376,7 +403,7 @@ public class Car extends Agent{
 			return;
 		}
 		
-		if(currentRoad instanceof RoundaboutRoad && path.size() > 3) {
+		if(currentRoad instanceof RoundaboutRoad && path.size() > 1) {
 			return;
 		}
 		
@@ -418,6 +445,10 @@ public class Car extends Agent{
 	
 	private void getSurroundings() {
 		
+		if(!moved) {
+			return;
+		}
+		
 		GridPoint pt = grid.getLocation(this);
 		Double minDist = Double.MAX_VALUE;
 		Double dist = 0d;
@@ -434,13 +465,10 @@ public class Car extends Agent{
 				}
 			}
 		}
-		
 		addVisited(currentRoad);
 		if(currentRoad.isEdge() && !currentRoad.isExit()) {
 			setInQueue(true);
 		}
-		
-		
 	}
 	
 	public void die(String message) {
@@ -520,8 +548,9 @@ public class Car extends Agent{
 		return debugString;
 	}
 	
-	private void park(int time) {
+	private void park(int time, ParkingSpace p) {
 		parked = true;
+		this.parkingSpace = p;
 		if(goingToWork) {
 			parkedTimer = time;			
 		}
@@ -624,20 +653,24 @@ public class Car extends Agent{
 		double min = Double.MAX_VALUE;
 		ParkingSpace p = null;
 		for (Road road : open) {
-			if(road instanceof ParkingSpace && !road.isOccupied()) {
-				Double distance = Tools.distance(grid.getLocation(this), target);
-				if(distance < min) {
-					min = distance;
-					p = (ParkingSpace) road;
+			ParkingSpace parking;
+			if(road instanceof ParkingSpace) {
+				parking = (ParkingSpace) road;
+				if(parking.reserve()) {
+					Double distance = Tools.distance(grid.getLocation(this), target);
+					if(distance < min) {
+						min = distance;
+						p = parking;
+					}
 				}
 			}
 		}
-		int range = 5;
+		int range = 8;
 		while(p == null) {
 			p = findRandomProximateParking(target, range);
 			range += 10;
-			if(range >= 1000) {
-				die("cannot find parking within 10000");
+			if(range >= 100) {
+				die("cannot find parking within 100");
 			}
 		}
 		return p;
