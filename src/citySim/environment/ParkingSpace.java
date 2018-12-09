@@ -24,5 +24,9 @@ public class ParkingSpace extends Road {
 	public void vacate() {
 		isReserved = false;
 	}
+	
+	public boolean isReserved() {
+		return isReserved;
+	}
 
 }

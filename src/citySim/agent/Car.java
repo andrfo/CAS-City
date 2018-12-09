@@ -107,17 +107,12 @@ public class Car extends Agent{
 	
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step(){
-		debugString = "";
 		getSurroundings();
-		
 		
 		if(!isMovable()) {
 			moved = false;
 			return;
-			}
-		
-		
-		
+		}
 		
 		if(isReachedGlobalGoal());
 		if(dead) { return;}
@@ -128,7 +123,6 @@ public class Car extends Agent{
 	
 	private boolean isMovable() {
 		if(parked) {
-			debugString += " !P! ";
 			if(parkedTimer > 0) {
 				parkedTimer--;
 				return false;
@@ -141,7 +135,6 @@ public class Car extends Agent{
 			}
 		}
 		if(isInQueue) {
-//			debugString += " Q ";
 			if(isClear(this)) {
 				setInQueue(false);
 			}
@@ -162,24 +155,15 @@ public class Car extends Agent{
 		speedControl();	
 		
 		//Follow path
-		if(pathIndex >= path.size() - 1) {
+		int index = (int) Math.ceil(pathIndex);
+		if(index > path.size() - 1) {
 			selectNewLocalGoal();
 		}	
 		else{
-			int index = (int) Math.ceil(pathIndex);
 			GridPoint next = grid.getLocation((Road)path.get(index).getTarget());
-//			direction = Tools.create2DVector(pt, next);
-			
-//			try {
-//				for(int i = getPathIndex(); i < getPathIndex() + 3; i++) {
-//					debugPointTo(path.get(i).getTarget());
-//				}
-//			}
-//			catch (IndexOutOfBoundsException e) {
-//				// TODO: handle exception
-//			}
 			
 			boolean s = moveTowards(next);
+			addVisited((Road)path.get(index).getTarget());
 			if(!s) {
 				pathIndex += 1;
 				move();
@@ -195,7 +179,7 @@ public class Car extends Agent{
 			return false;
 		}
 		//current and target
-		NdPoint myPoint = space.getLocation(this);
+		NdPoint myPoint = space.getLocation(currentRoad);
 		NdPoint otherPoint = new NdPoint(pt.getX(), pt.getY());
 		
 		//Movement Geometry
@@ -256,7 +240,7 @@ public class Car extends Agent{
 			checkDeadlock();
 		}
 		if(hasRightOfWay) {
-			debugString = "§§§§§§§§§§§§§§§";
+//			debugString = "§§§§§§§§§§§§§§§";
 			if (rightOfWayCounter > 0) {
 				rightOfWayCounter--;
 				minDist = Double.MAX_VALUE;
@@ -284,10 +268,7 @@ public class Car extends Agent{
 	}
 
 	private void stop() {
-//		debugString += " S " + c + " ";
 		speed = 0;
-//		debugPointTo(goals.get(0));
-//		debugPointTo(localGoal);
 	}
 	
 	private void descelerate(Double minDist) {
@@ -325,22 +306,26 @@ public class Car extends Agent{
 			triggerDistance = 10;
 		}
 		else {
-			triggerDistance = 2d;
+			triggerDistance = 2;
 		}
 		if(Tools.distance(pt, grid.getLocation(goal)) < triggerDistance) {
 			
 			
 			if(goal instanceof Building) {
 				ParkingSpace p = findParking(grid.getLocation(goal));
+				
 				if(p == null) {
+					System.out.println("Did not find parking for building.");
 					return false;
 				}
 				goals.remove(goal);
 				goals.add(0, p);
-				goingToWork = true;
+				goingToWork = true;					
+				
 			}
 			else if (goal instanceof ParkingSpace) {
-				if(!((ParkingSpace) goal).reserve()) {
+				if(((ParkingSpace) goal).isReserved()) {
+					System.out.println("taken");
 					ParkingSpace p = findParking(grid.getLocation(this));
 					if(p == null) {
 						//TODO: don't die when no parking is available
@@ -350,21 +335,6 @@ public class Car extends Agent{
 					goals.add(0, p);
 					return false;
 				}
-				/**
-				 * Cars are not parking afting adding the reserve thing.
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 * ======================================
-				 */
 				stop();
 				space.moveTo(this, space.getLocation(goal).getX(), space.getLocation(goal).getY());
 				grid.moveTo(this, pt.getX(), pt.getY());
@@ -388,30 +358,21 @@ public class Car extends Agent{
 	}
 	
 	private void selectNewLocalGoal() {
-
-		//Debug
-//		DecimalFormat df = new DecimalFormat("####0.0");
-//		if(path != null) {
-//			debugString += " " + df.format(speed) + "; " + path.size();			
-//		}
-		debugRemoveEdges(this);
-		
-		
 		
 		if(open.size() == 0) {
 			die("no new goal");
 			return;
 		}
 		
-		if(currentRoad instanceof RoundaboutRoad && path.size() > 1) {
+		//Do not calculate new route if in a roundabout
+		if((	currentRoad instanceof RoundaboutRoad ||
+				currentRoad.isEdge()) &&
+				path.size() > 1 &&
+				Math.ceil(pathIndex) < path.size() ) {
 			return;
 		}
 		
 		Entity goal = goals.get(0);
-//		debugPointTo(goal);
-//		if(localGoal != null) {
-//			debugPointTo(localGoal);
-//		}
 		
 		//Pick the road within view that is closest to goal
 		Double minDist = Double.MAX_VALUE;
@@ -426,19 +387,8 @@ public class Car extends Agent{
 				minDist = dist;
 			}
 		}
-//		if(path != null) {
-//			debugString += " " + getPathIndex() + ", " + path.size();
-//		}
-		
-		
-//		closed.add(localGoal);
-//		open.remove(localGoal);
 		
 		path = Tools.aStar(currentRoad, localGoal, net);
-		if(path.size() == 0) {
-			
-			debugString = "ØØØØØH";	
-		}
 		pathIndex = 0;			
 		
 	}
@@ -465,7 +415,6 @@ public class Car extends Agent{
 				}
 			}
 		}
-		addVisited(currentRoad);
 		if(currentRoad.isEdge() && !currentRoad.isExit()) {
 			setInQueue(true);
 		}
@@ -474,7 +423,6 @@ public class Car extends Agent{
 	public void die(String message) {
 		Context<Object> context = ContextUtils.getContext(this);
 		System.out.println(message);
-		debugString += " D ";
 		try {
 			context.remove(this);			
 		}
@@ -656,7 +604,7 @@ public class Car extends Agent{
 			ParkingSpace parking;
 			if(road instanceof ParkingSpace) {
 				parking = (ParkingSpace) road;
-				if(parking.reserve()) {
+				if(parking.isReserved()){
 					Double distance = Tools.distance(grid.getLocation(this), target);
 					if(distance < min) {
 						min = distance;
@@ -669,8 +617,8 @@ public class Car extends Agent{
 		while(p == null) {
 			p = findRandomProximateParking(target, range);
 			range += 10;
-			if(range >= 100) {
-				die("cannot find parking within 100");
+			if(range >= 10000) {
+				die("cannot find parking within 10000");
 			}
 		}
 		return p;
@@ -684,7 +632,7 @@ public class Car extends Agent{
 		for (GridCell<Road> gridCell : roadGridCells) {
 			if(gridCell.items().iterator().hasNext()) {
 				Road r = gridCell.items().iterator().next();
-				if(r instanceof ParkingSpace && !r.isOccupied()) {
+				if(r instanceof ParkingSpace && !((ParkingSpace) r).isReserved()) {
 					return (ParkingSpace) r;
 				}
 			}

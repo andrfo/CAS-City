@@ -158,8 +158,7 @@ public class Spawner {
 			int time = getTime();
 			
 			//work?
-			if(		(isInInterval(time, MORNING_RUSH) || 
-					isInInterval(time, AFTERNOON_RUSH)) &&
+			if(		isInInterval(time, MORNING_RUSH) &&
 					Tools.isTrigger(rushFrequency/frequency)) {
 				car.addGoal(buildings.get(RandomHelper.nextIntFromTo(0, buildings.size() - 1)));					
 			}
