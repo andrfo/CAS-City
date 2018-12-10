@@ -2,7 +2,7 @@ package citySim.environment;
 
 import java.util.List;
 
-import citySim.agent.Car;
+import citySim.agent.Vehicle;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.Schedule;
 import repast.simphony.engine.schedule.ScheduleParameters;
@@ -133,12 +133,12 @@ public class Road extends Entity{
 		return grid.getLocation(this);
 	}
 	
-	public Car getCar() {
+	public Vehicle getCar() {
 		pt = grid.getLocation(this);
 		
 		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
-			if(obj instanceof Car) {	
-				Car c = (Car)obj;
+			if(obj instanceof Vehicle) {	
+				Vehicle c = (Vehicle)obj;
 				return c;
 			}
 		}
@@ -149,7 +149,7 @@ public class Road extends Entity{
 		pt = grid.getLocation(this);
 		
 		for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
-			if(obj instanceof Car) {	
+			if(obj instanceof Vehicle) {	
 				return true;
 			}
 		}

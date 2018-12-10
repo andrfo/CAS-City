@@ -3,12 +3,11 @@ package citySim.environment;
 
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.ivy.plugins.matcher.MapMatcher;
-
-import citySim.agent.Agent;
-import citySim.agent.Car;
+import citySim.agent.Person;
+import citySim.agent.Vehicle;
 import repast.simphony.context.Context;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
@@ -19,8 +18,6 @@ import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.graph.Network;
-import repast.simphony.space.graph.RepastEdge;
-import repast.simphony.space.graph.ShortestPath;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import utils.Tools;
@@ -51,7 +48,6 @@ public class Spawner {
 	 * 	1 Tick = 1 Minute
 	 * 	24h = 1440 minutes
 	 */
-	private static final int TICKS_PER_DAY = 1440;
 	
 	private static final int[] NIGHT = {0, 360}; 				//00:00 - 06:00
 	private static final int[] MORNING = {360, 720}; 			//06:00 - 12:00
@@ -66,13 +62,16 @@ public class Spawner {
 	private Double afternoonFrequency;
 	private Double eveningFrequency;
 	private Double rushFrequency;
+	private int populationStartCount;
 	
 	
+	private List<Person> population;
 	
 	
 	private double frequency; //Spawns per tick
 	
 	
+	@SuppressWarnings("unchecked")
 	public Spawner(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context, List<Road> spawnPoints, List<Road> despawnPoints, List<Road> parkingSpaces, List<Building> buildings) {
 		super();
 		this.space = space;
@@ -86,6 +85,8 @@ public class Spawner {
 			throw new IllegalArgumentException("no spawn or goal");
 		}
 		
+		this.population = new ArrayList<Person>();
+		generatePopulation();
 		
 		net = (Network<Object>)context.getProjection("road network");
 		
@@ -96,9 +97,12 @@ public class Spawner {
 		this.afternoonFrequency = params.getDouble("Car_frequency_in_the_Afternoon");
 		this.eveningFrequency = params.getDouble("Car_frequency_in_the_Evening");
 		this.rushFrequency = params.getDouble("Car_frequency_in_Rushhour");
+		this.populationStartCount = params.getInteger("population_start_count");
 		
 		
 	}
+	
+	
 	
 	
 	
@@ -111,7 +115,15 @@ public class Spawner {
 		
 	}
 	
-	public void spawn() {
+	
+	private void generatePopulation() {
+		for(int i = 0; i < populationStartCount; i++) {
+			population.add(new Person(space, grid));
+			
+		}
+	}
+	
+	private void spawn() {
 		//TODO: fix that the cars don't spawn when blocked
 		//TODO: make it so that the cars return to near their spawn after work
 		
@@ -134,9 +146,9 @@ public class Spawner {
 			GridPoint pt = grid.getLocation(start);
 			
 			//Check surroundings
-			GridCellNgh<Car> roadNghCreator = new GridCellNgh<Car>(grid, pt, Car.class, 1, 1);
-			List<GridCell<Car>> roadGridCells = roadNghCreator.getNeighborhood(true);
-			for (GridCell<Car> gridCell : roadGridCells) {
+			GridCellNgh<Vehicle> roadNghCreator = new GridCellNgh<Vehicle>(grid, pt, Vehicle.class, 1, 1);
+			List<GridCell<Vehicle>> roadGridCells = roadNghCreator.getNeighborhood(true);
+			for (GridCell<Vehicle> gridCell : roadGridCells) {
 				if(gridCell.items().iterator().hasNext()) {
 					//There is a car close to spawn, wait
 					blocked = true;
@@ -148,14 +160,14 @@ public class Spawner {
 			}
 			
 			//Add the agent to the context
-			Car car = new Car(space, grid);
+			Vehicle car = new Vehicle(space, grid, 5);
 			context.add(car);
 			space.moveTo(car, spacePt.getX(), spacePt.getY());
 			grid.moveTo(car, pt.getX(), pt.getY());
 			
 			//Setup
 			
-			int time = getTime();
+			int time = Tools.getTime();
 			
 			//work?
 			if(		isInInterval(time, MORNING_RUSH) &&
@@ -180,15 +192,8 @@ public class Spawner {
 		return frequency*100d;
 	}
 	
-	private int getTime() {
-		double currentTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
-		int time = (int) (currentTick % TICKS_PER_DAY);
-		return time;
-	}
-	
-	
 	private void setFrequency() {
-		int time = getTime();
+		int time = Tools.getTime();
 		frequency = 0;
 		
 		if(isInInterval(time, NIGHT)) {

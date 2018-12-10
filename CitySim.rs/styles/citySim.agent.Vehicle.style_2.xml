@@ -6,15 +6,15 @@
   <sizeScale>1.0</sizeScale>
   <label></label>
   <labelPosition>bottom</labelPosition>
-  <labelPrecision>1</labelPrecision>
-  <labelOffset>0.0</labelOffset>
+  <labelPrecision>3</labelPrecision>
+  <labelOffset>5.0</labelOffset>
   <labelFontSize>14</labelFontSize>
   <labelFontType>0</labelFontType>
   <labelFontFamily>Arial</labelFontFamily>
   <labelColor>
-    <float>0.2</float>
-    <float>0.2</float>
-    <float>1.0</float>
+    <float>0.0</float>
+    <float>0.0</float>
+    <float>0.0</float>
   </labelColor>
   <color>
     <float>0.0</float>
@@ -36,5 +36,5 @@
     <float>1.0</float>
     <float>1.0</float>
   </colorScale>
-  <iconFile2D>./icons/iconfinder__55ui_2303160.png</iconFile2D>
+  <iconFile2D>./icons/bus.png</iconFile2D>
 </repast.simphony.visualization.editedStyle.DefaultEditedStyleData2D>

@@ -3,7 +3,7 @@ package citySim.environment;
 import java.util.ArrayList;
 import java.util.List;
 
-import citySim.agent.Car;
+import citySim.agent.Vehicle;
 import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.query.space.grid.GridCell;

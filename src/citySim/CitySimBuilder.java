@@ -10,7 +10,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.media.protocol.SourceTransferHandler;
 
-import citySim.agent.Car;
+import citySim.agent.Vehicle;
 import utils.Tools;
 import utils.Vector2D;
 import citySim.environment.*;
@@ -60,7 +60,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	public Context build(Context<Object> context) {
 		
 		try {
-		    img = ImageIO.read(new File("maps/trondheimv2.png"));
+		    img = ImageIO.read(new File("maps/smallCityPark.png"));
 		} catch (IOException e) {
 			System.out.println(e + ": Image file not found!");
 		}

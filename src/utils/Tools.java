@@ -4,19 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.velocity.runtime.directive.Foreach;
-
-import citySim.agent.Car;
+import citySim.agent.Vehicle;
 import citySim.environment.Road;
-import repast.simphony.query.space.grid.GridCell;
-import repast.simphony.query.space.grid.GridCellNgh;
+import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
-import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 
 public class Tools {
 	
+	public static final int TICKS_PER_DAY = 1440;
 	
 	public static final int NORTHWEST = 0;
 	public static final int NORTH = 1;
@@ -29,7 +26,14 @@ public class Tools {
 	public static final int SOUTH = 6;
 	public static final int SOUTHEAST = 7;
 	
-	public static boolean isPathIntersect(Car a, Car b, int distance) {
+	
+	public static int getTime() {
+		double currentTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
+		int time = (int) (currentTick % TICKS_PER_DAY);
+		return time;
+	}
+	
+	public static boolean isPathIntersect(Vehicle a, Vehicle b, int distance) {
 		
 		for(	int i = a.getPathIndex(); 
 				i < a.getPathIndex() + distance &&
