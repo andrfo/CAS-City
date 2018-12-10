@@ -18,7 +18,20 @@ public class Person extends Agent{
 	
 	public Person(ContinuousSpace<Object> space, Grid<Object> grid) {
 		super(space, grid);
+		workPlace = null;
 		// TODO Auto-generated constructor stub
+	}
+
+
+
+	public Building getWorkPlace() {
+		return workPlace;
+	}
+
+
+
+	public void setWorkPlace(Building workPlace) {
+		this.workPlace = workPlace;
 	}
 	
 	

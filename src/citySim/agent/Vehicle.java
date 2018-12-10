@@ -175,7 +175,7 @@ public class Vehicle extends Agent{
 			return false;
 		}
 		//current and target
-		NdPoint myPoint = space.getLocation(currentRoad);
+		NdPoint myPoint = space.getLocation(this);
 		NdPoint otherPoint = new NdPoint(pt.getX(), pt.getY());
 		
 		//Movement Geometry
@@ -238,9 +238,7 @@ public class Vehicle extends Agent{
 			checkDeadlock();
 		}
 		if(hasRightOfWay) {
-//			debugString = "§§§§§§§§§§§§§§§";
-			if (rightOfWayCounter > 0) {
-				rightOfWayCounter--;
+			if ((currentRoad instanceof RoundaboutRoad) || currentRoad.isEdge()) {
 				minDist = Double.MAX_VALUE;
 				blockingCar = null;
 			}
@@ -474,7 +472,7 @@ public class Vehicle extends Agent{
 	
 	public void giveWay() {
 		this.hasRightOfWay = true;
-		rightOfWayCounter = rightOfWayTime;
+//		rightOfWayCounter = rightOfWayTime;
 	}
 	
 	public Road getRoad() {

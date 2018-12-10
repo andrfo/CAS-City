@@ -69,6 +69,8 @@ public class Spawner {
 	
 	
 	private double frequency; //Spawns per tick
+	private ArrayList<Person> workers;
+	private ArrayList<Person> shoppers;
 	
 	
 	@SuppressWarnings("unchecked")
@@ -98,6 +100,8 @@ public class Spawner {
 		this.populationStartCount = params.getInteger("population_start_count");
 		
 		this.population = new ArrayList<Person>(populationStartCount);
+		this.workers = new ArrayList<Person>();
+		this.shoppers = new ArrayList<Person>();
 		generatePopulation();
 		
 	}
@@ -118,7 +122,19 @@ public class Spawner {
 	
 	private void generatePopulation() {
 		for(int i = 0; i < populationStartCount; i++) {
-			population.add(new Person(space, grid));
+			Person p = new Person(space, grid);
+			if(Tools.isTrigger(0.75d)) {
+				//Worker
+				p.setWorkPlace(buildings.get(RandomHelper.nextIntFromTo(0, buildings.size() - 1)));
+				population.add(p);
+				workers.add(p);
+			}
+			else {
+				//Shopper
+				population.add(p);
+				shoppers.add(p);
+				
+			}
 			
 		}
 	}
@@ -146,20 +162,20 @@ public class Spawner {
 			GridPoint pt = grid.getLocation(start);
 			
 			//Check surroundings
-//			for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
-//				if(obj instanceof Vehicle) {	
-//					blocked = true;
-//					//There is a car close to spawn, wait
-//				}
-//			}
-			GridCellNgh<Vehicle> roadNghCreator = new GridCellNgh<Vehicle>(grid, pt, Vehicle.class, 1, 1);
-			List<GridCell<Vehicle>> roadGridCells = roadNghCreator.getNeighborhood(true);
-			for (GridCell<Vehicle> gridCell : roadGridCells) {
-				if(gridCell.items().iterator().hasNext()) {
+			for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
+				if(obj instanceof Vehicle) {	
 					blocked = true;
 					//There is a car close to spawn, wait
 				}
 			}
+//			GridCellNgh<Vehicle> roadNghCreator = new GridCellNgh<Vehicle>(grid, pt, Vehicle.class, 1, 1);
+//			List<GridCell<Vehicle>> roadGridCells = roadNghCreator.getNeighborhood(true);
+//			for (GridCell<Vehicle> gridCell : roadGridCells) {
+//				if(gridCell.items().iterator().hasNext()) {
+//					blocked = true;
+//					//There is a car close to spawn, wait
+//				}
+//			}
 			
 			if(blocked) {
 				continue;
