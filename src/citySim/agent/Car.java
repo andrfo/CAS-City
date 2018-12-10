@@ -1,7 +1,5 @@
 package citySim.agent;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;

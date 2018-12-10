@@ -85,8 +85,6 @@ public class Spawner {
 			throw new IllegalArgumentException("no spawn or goal");
 		}
 		
-		this.population = new ArrayList<Person>();
-		generatePopulation();
 		
 		net = (Network<Object>)context.getProjection("road network");
 		
@@ -99,6 +97,8 @@ public class Spawner {
 		this.rushFrequency = params.getDouble("Car_frequency_in_Rushhour");
 		this.populationStartCount = params.getInteger("population_start_count");
 		
+		this.population = new ArrayList<Person>(populationStartCount);
+		generatePopulation();
 		
 	}
 	
@@ -146,12 +146,18 @@ public class Spawner {
 			GridPoint pt = grid.getLocation(start);
 			
 			//Check surroundings
+//			for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
+//				if(obj instanceof Vehicle) {	
+//					blocked = true;
+//					//There is a car close to spawn, wait
+//				}
+//			}
 			GridCellNgh<Vehicle> roadNghCreator = new GridCellNgh<Vehicle>(grid, pt, Vehicle.class, 1, 1);
 			List<GridCell<Vehicle>> roadGridCells = roadNghCreator.getNeighborhood(true);
 			for (GridCell<Vehicle> gridCell : roadGridCells) {
 				if(gridCell.items().iterator().hasNext()) {
-					//There is a car close to spawn, wait
 					blocked = true;
+					//There is a car close to spawn, wait
 				}
 			}
 			

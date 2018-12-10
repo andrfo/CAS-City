@@ -8,6 +8,7 @@ public class Person extends Agent{
 
 	private Building workPlace;
 	private Double dailyBudget;
+	private Double yesterdaysCost;
 	private Double accumulatedCostToday;
 	private boolean isInstantiated;
 	

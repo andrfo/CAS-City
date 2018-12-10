@@ -28,7 +28,7 @@
     </entry>
     <entry>
       <string>citySim.agent.Vehicle</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
       <string>citySim.environment.NorthEastRoad</string>
@@ -66,7 +66,7 @@
     </entry>
     <entry>
       <string>citySim.agent.Vehicle</string>
-      <null/>
+      <string>citySim.agent.Vehicle.style_3.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.NorthEastRoad</string>
