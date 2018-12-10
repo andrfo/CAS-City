@@ -107,6 +107,8 @@ public class Car extends Agent{
 	
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step(){
+		debugString = "(" + space.getLocation(this).getX() + ", " + space.getLocation(this).getY() + ")";
+		
 		getSurroundings();
 		
 		if(!isMovable()) {
@@ -179,7 +181,7 @@ public class Car extends Agent{
 			return false;
 		}
 		//current and target
-		NdPoint myPoint = space.getLocation(currentRoad);
+		NdPoint myPoint = space.getLocation(this);
 		NdPoint otherPoint = new NdPoint(pt.getX(), pt.getY());
 		
 		//Movement Geometry
