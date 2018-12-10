@@ -8,8 +8,8 @@ public abstract class Agent {
 	
 	
 	
-	private ContinuousSpace<Object> space;
-	private Grid<Object> grid;
+	protected ContinuousSpace<Object> space;
+	protected Grid<Object> grid;
 	public Agent(ContinuousSpace<Object> space, Grid<Object> grid) {
 		super();
 		this.space = space;

@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -105,6 +106,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		List<Road> spawnPoints = new ArrayList<Road>();
 		List<Road> despawnPoints = new ArrayList<Road>();
 		List<Road> parkingSpaces = new ArrayList<Road>();
+		List<Road> sideWalks = new ArrayList<Road>();
 		List<Building> buildings = new ArrayList<Building>();
 		
 		
@@ -171,6 +173,13 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
 					parkingSpaces.add(road);
+				}
+				else if(r == 255 && g == 128 && b == 0) {//Side Walk
+					SideWalk road = new SideWalk(space, grid);
+					context.add(road);
+					space.moveTo(road, x, y);
+					grid.moveTo(road, x, y);
+					sideWalks.add(road);
 				}
 				else if(r == 128 && g == 64 && b == 0) {//Building
 					//TODO: make buildings be more than one pixel

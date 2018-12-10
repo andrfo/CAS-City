@@ -101,26 +101,55 @@ public class Vehicle extends Agent{
 		this.occupants = new ArrayList<Person>(occupantLimit);
 	}
 	
+	/**
+	 * Runs every step
+	 */
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step(){
-		getSurroundings();
 		
-		if(!isMovable()) {
-			moved = false;
+		getSurroundings(); 		if(!isMovable()) {return;}
+		
+		isReachedGoal(); 		if(dead) { return;}
+		
+		selectNewLocalGoal(); 	if(dead) { return;}
+		
+		move();	
+	}
+	
+	//Main functions
+	
+	private void getSurroundings() {
+		
+		if(!moved) {
 			return;
 		}
 		
-		if(isReachedGlobalGoal());
-		if(dead) { return;}
-		selectNewLocalGoal();
-		if(dead) { return;}
-		move();	
+		GridPoint pt = grid.getLocation(this);
+		Double minDist = Double.MAX_VALUE;
+		Double dist = 0d;
+		GridCellNgh<Road> roadNghCreator = new GridCellNgh<Road>(grid, pt, Road.class, viewDistance, viewDistance);
+		List<GridCell<Road>> roadGridCells = roadNghCreator.getNeighborhood(true);
+		for (GridCell<Road> gridCell : roadGridCells) {
+			if(gridCell.items().iterator().hasNext()) {
+				Road r = gridCell.items().iterator().next();
+				addOpen(r);
+				dist = Tools.distance(pt, grid.getLocation(r));
+				if(dist < minDist) {
+					minDist = dist;
+					currentRoad = r;
+				}
+			}
+		}
+		if(currentRoad.isEdge() && !currentRoad.isExit()) {
+			setInQueue(true);
+		}
 	}
 	
 	private boolean isMovable() {
 		if(parked) {
 			if(parkedTimer > 0) {
 				parkedTimer--;
+				moved = false;
 				return false;
 			}
 			else {
@@ -128,6 +157,7 @@ public class Vehicle extends Agent{
 				parkingSpace.vacate();
 				parkingSpace = null;
 				setSpeed(maxSpeed);
+				gatherOccupants();
 			}
 		}
 		if(isInQueue) {
@@ -135,10 +165,114 @@ public class Vehicle extends Agent{
 				setInQueue(false);
 			}
 			else {
+				moved = false;
 				return false;				
 			}
 		}
 		return true;
+	}
+	
+	private boolean isReachedGoal() {
+		
+		GridPoint pt = grid.getLocation(this);
+		Entity goal = goals.get(0);
+		double triggerDistance;
+		
+		if(goal instanceof Building) {
+			triggerDistance = 10;
+		}
+		else {
+			triggerDistance = 2;
+		}
+		if(Tools.distance(pt, grid.getLocation(goal)) < triggerDistance) {
+			
+			
+			if(goal instanceof Building) {
+				ParkingSpace p = findParking(grid.getLocation(goal));
+				
+				if(p == null) {
+					System.out.println("Did not find parking for building.");
+					return false;
+				}
+				goals.remove(goal);
+				goals.add(0, p);
+				goingToWork = true;					
+				
+			}
+			else if (goal instanceof ParkingSpace) {
+				if(((ParkingSpace) goal).isReserved()) {
+					System.out.println("taken");
+					ParkingSpace p = findParking(grid.getLocation(this));
+					if(p == null) {
+						//TODO: don't die when no parking is available
+						die("No parking");
+					}
+					goals.remove(goal);
+					goals.add(0, p);
+					return false;
+				}
+				stop();
+				space.moveTo(this, space.getLocation(goal).getX(), space.getLocation(goal).getY());
+				grid.moveTo(this, pt.getX(), pt.getY());
+				for(Person p : occupants) {
+					p.setReachedGoal(this, false);
+				}
+				park(480, (ParkingSpace) goals.get(0));//8h
+				goals.remove(0);
+				
+				closed.clear();
+				open.clear();
+				getSurroundings();
+			}
+			else if (goal instanceof Despawn) {
+				for(Person p : occupants) {
+					p.setReachedGoal(this, true);
+				}
+				die("");
+				return true;
+			}
+			else{
+				die("Unknown Goal");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private void selectNewLocalGoal() {
+		
+		if(open.size() == 0) {
+			die("no new goal");
+			return;
+		}
+		
+		//Do not calculate new route if in a roundabout
+		if((	currentRoad instanceof RoundaboutRoad ||
+				currentRoad.isEdge()) &&
+				path.size() > 1 &&
+				Math.ceil(pathIndex) < path.size() ) {
+			return;
+		}
+		
+		Entity goal = goals.get(0);
+		
+		//Pick the road within view that is closest to goal
+		Double minDist = Double.MAX_VALUE;
+		Double dist = 0d;
+		for (Road road : open) {
+			dist = Tools.distance(grid.getLocation(goal), grid.getLocation(road));
+			if(dist < minDist && !(road instanceof Spawn)) {
+				if(road instanceof ParkingSpace && road != goal) {
+					continue;
+				}
+				localGoal = road;
+				minDist = dist;
+			}
+		}
+		
+		path = Tools.aStar(currentRoad, localGoal, net);
+		pathIndex = 0;			
+		
 	}
 	
 	private void move() {
@@ -168,6 +302,20 @@ public class Vehicle extends Agent{
 		}
 		moved = true;
 	}
+	
+	//===========================
+	
+	/**
+	 * removes the persons that are bound to this car from the context.(They get back in the car)
+	 */
+	private void gatherOccupants() {
+		@SuppressWarnings("unchecked")
+		Context<Object> context = ContextUtils.getContext(this);
+		for(Person p : occupants) {
+			context.remove(p);
+		}
+	}
+	
 	
 	public boolean moveTowards(GridPoint pt) {
 		// only move if we are not already in this grid location
@@ -293,132 +441,11 @@ public class Vehicle extends Agent{
 		}
 	}
 	
-	private boolean isReachedGlobalGoal() {
-		
-		GridPoint pt = grid.getLocation(this);
-		Entity goal = goals.get(0);
-		double triggerDistance;
-		if(goal instanceof Building) {
-			triggerDistance = 10;
-		}
-		else {
-			triggerDistance = 2;
-		}
-		if(Tools.distance(pt, grid.getLocation(goal)) < triggerDistance) {
-			
-			
-			if(goal instanceof Building) {
-				ParkingSpace p = findParking(grid.getLocation(goal));
-				
-				if(p == null) {
-					System.out.println("Did not find parking for building.");
-					return false;
-				}
-				goals.remove(goal);
-				goals.add(0, p);
-				goingToWork = true;					
-				
-			}
-			else if (goal instanceof ParkingSpace) {
-				if(((ParkingSpace) goal).isReserved()) {
-					System.out.println("taken");
-					ParkingSpace p = findParking(grid.getLocation(this));
-					if(p == null) {
-						//TODO: don't die when no parking is available
-						die("No parking");
-					}
-					goals.remove(goal);
-					goals.add(0, p);
-					return false;
-				}
-				stop();
-				space.moveTo(this, space.getLocation(goal).getX(), space.getLocation(goal).getY());
-				grid.moveTo(this, pt.getX(), pt.getY());
-				park(480, (ParkingSpace) goals.get(0));//8h
-				goals.remove(0);
-				
-				closed.clear();
-				open.clear();
-				getSurroundings();
-			}
-			else if (goal instanceof Despawn) {
-				die("");
-				return true;
-			}
-			else{
-				die("Unknown Goal");
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private void selectNewLocalGoal() {
-		
-		if(open.size() == 0) {
-			die("no new goal");
-			return;
-		}
-		
-		//Do not calculate new route if in a roundabout
-		if((	currentRoad instanceof RoundaboutRoad ||
-				currentRoad.isEdge()) &&
-				path.size() > 1 &&
-				Math.ceil(pathIndex) < path.size() ) {
-			return;
-		}
-		
-		Entity goal = goals.get(0);
-		
-		//Pick the road within view that is closest to goal
-		Double minDist = Double.MAX_VALUE;
-		Double dist = 0d;
-		for (Road road : open) {
-			dist = Tools.distance(grid.getLocation(goal), grid.getLocation(road));
-			if(dist < minDist && !(road instanceof Spawn)) {
-				if(road instanceof ParkingSpace && road != goal) {
-					continue;
-				}
-				localGoal = road;
-				minDist = dist;
-			}
-		}
-		
-		path = Tools.aStar(currentRoad, localGoal, net);
-		pathIndex = 0;			
-		
-	}
-	
-	private void getSurroundings() {
-		
-		if(!moved) {
-			return;
-		}
-		
-		GridPoint pt = grid.getLocation(this);
-		Double minDist = Double.MAX_VALUE;
-		Double dist = 0d;
-		GridCellNgh<Road> roadNghCreator = new GridCellNgh<Road>(grid, pt, Road.class, viewDistance, viewDistance);
-		List<GridCell<Road>> roadGridCells = roadNghCreator.getNeighborhood(true);
-		for (GridCell<Road> gridCell : roadGridCells) {
-			if(gridCell.items().iterator().hasNext()) {
-				Road r = gridCell.items().iterator().next();
-				addOpen(r);
-				dist = Tools.distance(pt, grid.getLocation(r));
-				if(dist < minDist) {
-					minDist = dist;
-					currentRoad = r;
-				}
-			}
-		}
-		if(currentRoad.isEdge() && !currentRoad.isExit()) {
-			setInQueue(true);
-		}
-	}
-	
 	public void die(String message) {
+		@SuppressWarnings("unchecked")
 		Context<Object> context = ContextUtils.getContext(this);
 		System.out.println(message);
+		occupants.clear();
 		try {
 			context.remove(this);			
 		}

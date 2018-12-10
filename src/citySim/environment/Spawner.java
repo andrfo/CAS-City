@@ -69,8 +69,8 @@ public class Spawner {
 	
 	
 	private double frequency; //Spawns per tick
-	private ArrayList<Person> workers;
-	private ArrayList<Person> shoppers;
+	private ArrayList<Person> idleWorkers;
+	private ArrayList<Person> idleShoppers;
 	
 	
 	@SuppressWarnings("unchecked")
@@ -100,8 +100,8 @@ public class Spawner {
 		this.populationStartCount = params.getInteger("population_start_count");
 		
 		this.population = new ArrayList<Person>(populationStartCount);
-		this.workers = new ArrayList<Person>();
-		this.shoppers = new ArrayList<Person>();
+		this.idleWorkers = new ArrayList<Person>();
+		this.idleShoppers = new ArrayList<Person>();
 		generatePopulation();
 		
 	}
@@ -127,12 +127,12 @@ public class Spawner {
 				//Worker
 				p.setWorkPlace(buildings.get(RandomHelper.nextIntFromTo(0, buildings.size() - 1)));
 				population.add(p);
-				workers.add(p);
+				idleWorkers.add(p);
 			}
 			else {
 				//Shopper
 				population.add(p);
-				shoppers.add(p);
+				idleShoppers.add(p);
 				
 			}
 			
