@@ -60,6 +60,8 @@ public class Person extends Agent{
 			}
 			return;
 		}
+		
+		
 		@SuppressWarnings("unchecked")
 		Context<Object> context = ContextUtils.getContext(v);
 		GridPoint pt = grid.getLocation(v);
