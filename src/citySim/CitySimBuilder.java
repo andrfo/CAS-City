@@ -5,12 +5,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.media.protocol.SourceTransferHandler;
 
-import citySim.agent.Car;
+import citySim.agent.Vehicle;
 import utils.Tools;
 import utils.Vector2D;
 import citySim.environment.*;
@@ -93,7 +94,10 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 						true,
 						width + 10, 
 						height + 10));
-		
+		InformationLabel info = new InformationLabel(space, grid, context);
+		context.add(info);
+		space.moveTo(info, width - 15, height - 15);
+		grid.moveTo(info, width - 15, height - 15);
 		
 		readImage(space, grid, context);
 		
@@ -105,6 +109,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		List<Road> spawnPoints = new ArrayList<Road>();
 		List<Road> despawnPoints = new ArrayList<Road>();
 		List<Road> parkingSpaces = new ArrayList<Road>();
+		List<Road> sideWalks = new ArrayList<Road>();
 		List<Building> buildings = new ArrayList<Building>();
 		
 		
@@ -146,7 +151,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					
 				}
 				else if(r == 0 && g == 255 && b == 0) {//Start
-					Spawn road = new Spawn(space, grid);
+					Spawn road = new Spawn(space, grid, context);
 					context.add(road);
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
@@ -171,6 +176,13 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
 					parkingSpaces.add(road);
+				}
+				else if(r == 255 && g == 128 && b == 0) {//Side Walk
+					SideWalk road = new SideWalk(space, grid);
+					context.add(road);
+					space.moveTo(road, x, y);
+					grid.moveTo(road, x, y);
+					sideWalks.add(road);
 				}
 				else if(r == 128 && g == 64 && b == 0) {//Building
 					//TODO: make buildings be more than one pixel

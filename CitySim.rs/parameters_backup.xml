@@ -12,6 +12,12 @@
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 									
 		/>
+				<parameter name="population_start_count" displayName="population start count" type="int" 
+						defaultValue="500" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+									
+		/>
 				<parameter name="Car_frequency_in_Rushhour" displayName="Car frequency in Rushhour" type="double" 
 						defaultValue="2.0" 
 						isReadOnly="false" 

@@ -3,7 +3,7 @@ package citySim.environment;
 import java.util.ArrayList;
 import java.util.List;
 
-import citySim.agent.Car;
+import citySim.agent.Vehicle;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.ContinuousSpace;
@@ -12,7 +12,7 @@ import repast.simphony.space.grid.Grid;
 public class Junction extends Entity {
 	private List<Road> edgeRoads;
 	private List<Road> roads;
-	private List<Car> queue; 
+	private List<Vehicle> queue; 
 	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
@@ -25,18 +25,18 @@ public class Junction extends Entity {
 		super(space, grid);
 		this.edgeRoads = new ArrayList<Road>();
 		this.roads =  new ArrayList<Road>();
-		this.queue = new ArrayList<Car>();
+		this.queue = new ArrayList<Vehicle>();
 		// TODO Auto-generated constructor stub
 	}
 
-	public void addCar(Car car) {
+	public void addCar(Vehicle car) {
 		if(!queue.contains(car)) {
 			queue.add(car);
 			car.setInQueue(true);
 		}
 	}
 	
-	private void activate(Car car) {
+	private void activate(Vehicle car) {
 		car.setInQueue(false);
 		queue.remove(car);
 	}
@@ -60,7 +60,7 @@ public class Junction extends Entity {
 		int s = queue.size();
 		if(s > 0) {
 			int index = RandomHelper.nextIntFromTo(0, s - 1);
-			Car c = queue.get(index);
+			Vehicle c = queue.get(index);
 			queue.remove(c);
 			activate(c);
 			wait(ACTIVATION_DELAY);

@@ -3,7 +3,7 @@
   <type>2D</type>
   <styles>
     <entry>
-      <string>citySim.agent.Car</string>
+      <string>citySim.agent.Person</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
@@ -15,15 +15,39 @@
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
-      <string>citySim.environment.Spawn</string>
-      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
-    </entry>
-    <entry>
       <string>citySim.environment.RoundaboutRoad</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
+      <string>citySim.agent.Bus</string>
+      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+    </entry>
+    <entry>
+      <string>citySim.agent.Car</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.SideWalk</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.BusStop</string>
+      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.Spawn</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
       <string>citySim.environment.SouthWestRoad</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
+      <string>citySim.agent.Vehicle</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.InformationLabel</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
@@ -37,8 +61,8 @@
   </styles>
   <editedStyles>
     <entry>
-      <string>citySim.agent.Car</string>
-      <string>citySim.agent.Car.style_7.xml</string>
+      <string>citySim.agent.Person</string>
+      <string>citySim.agent.Person.style_1.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.Building</string>
@@ -49,16 +73,36 @@
       <string>citySim.environment.ParkingSpace.style_1.xml</string>
     </entry>
     <entry>
-      <string>citySim.environment.Spawn</string>
-      <string>citySim.environment.Spawn.style_1.xml</string>
-    </entry>
-    <entry>
       <string>citySim.environment.RoundaboutRoad</string>
       <string>citySim.environment.RoundaboutRoad.style_1.xml</string>
     </entry>
     <entry>
+      <string>citySim.agent.Bus</string>
+      <null/>
+    </entry>
+    <entry>
+      <string>citySim.agent.Car</string>
+      <string>citySim.agent.Car.style_7.xml</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.SideWalk</string>
+      <string>citySim.environment.SideWalk.style_2.xml</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.Spawn</string>
+      <string>citySim.environment.Spawn.style_1.xml</string>
+    </entry>
+    <entry>
       <string>citySim.environment.SouthWestRoad</string>
       <string>citySim.environment.SouthWestRoad.style_1.xml</string>
+    </entry>
+    <entry>
+      <string>citySim.agent.Vehicle</string>
+      <string>citySim.agent.Vehicle.style_3.xml</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.InformationLabel</string>
+      <string>citySim.environment.InformationLabel.style_2.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.NorthEastRoad</string>
@@ -104,36 +148,60 @@
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
-      <string>citySim.agent.Car</string>
-      <int>7</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.Building</string>
-      <int>0</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.ParkingSpace</string>
-      <int>4</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.Spawn</string>
-      <int>1</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.RoundaboutRoad</string>
+      <string>citySim.agent.Person</string>
       <int>3</int>
     </entry>
     <entry>
-      <string>citySim.environment.SouthWestRoad</string>
-      <int>2</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.NorthEastRoad</string>
+      <string>citySim.environment.Building</string>
       <int>5</int>
     </entry>
     <entry>
-      <string>citySim.environment.Despawn</string>
+      <string>citySim.environment.ParkingSpace</string>
+      <int>9</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.RoundaboutRoad</string>
+      <int>8</int>
+    </entry>
+    <entry>
+      <string>citySim.agent.Bus</string>
+      <int>4</int>
+    </entry>
+    <entry>
+      <string>citySim.agent.Car</string>
+      <int>13</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.SideWalk</string>
+      <int>2</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.BusStop</string>
+      <int>0</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.Spawn</string>
       <int>6</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.SouthWestRoad</string>
+      <int>7</int>
+    </entry>
+    <entry>
+      <string>citySim.agent.Vehicle</string>
+      <int>12</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.InformationLabel</string>
+      <int>1</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.NorthEastRoad</string>
+      <int>10</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.Despawn</string>
+      <int>11</int>
     </entry>
   </layerOrder>
   <projections>

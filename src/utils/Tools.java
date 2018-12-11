@@ -4,19 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.velocity.runtime.directive.Foreach;
-
-import citySim.agent.Car;
+import citySim.agent.Vehicle;
 import citySim.environment.Road;
-import repast.simphony.query.space.grid.GridCell;
-import repast.simphony.query.space.grid.GridCellNgh;
+import repast.simphony.engine.environment.RunEnvironment;
+import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
-import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 
 public class Tools {
 	
+	public static final int TICKS_PER_DAY = 1440;
 	
 	public static final int NORTHWEST = 0;
 	public static final int NORTH = 1;
@@ -29,7 +27,14 @@ public class Tools {
 	public static final int SOUTH = 6;
 	public static final int SOUTHEAST = 7;
 	
-	public static boolean isPathIntersect(Car a, Car b, int distance) {
+	
+	public static int getTime() {
+		double currentTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
+		int time = (int) (currentTick % TICKS_PER_DAY);
+		return time;
+	}
+	
+	public static boolean isPathIntersect(Vehicle a, Vehicle b, int distance) {
 		
 		for(	int i = a.getPathIndex(); 
 				i < a.getPathIndex() + distance &&
@@ -78,7 +83,7 @@ public class Tools {
 		HashMap<Road, Double> fScore = new HashMap<Road, Double>();
 		
 		gScore.put(start, 0d);
-		fScore.put(start, distance(start.getLocation(), goal.getLocation()));
+		fScore.put(start, gridDistance(start.getLocation(), goal.getLocation()));
 		
 		open.add(start);
 		
@@ -128,7 +133,7 @@ public class Tools {
 				fScore.put(
 						neighbour, 
 						gScore.getOrDefault(neighbour, Double.MAX_VALUE) + 
-							distance(neighbour.getLocation(), goal.getLocation()));
+							gridDistance(neighbour.getLocation(), goal.getLocation()));
 			}
 		}
 		return path;
@@ -201,9 +206,17 @@ public class Tools {
 		return v;
 	}
 	
-	public static Double distance(GridPoint a, GridPoint b) {
+	public static Double gridDistance(GridPoint a, GridPoint b) {
 		Double dx = (double) (b.getX() - a.getX());
 		Double dy = (double) (b.getY() - a.getY());
 		return Math.sqrt((dx*dx) + (dy*dy));
 	}
+	
+	public static Double spaceDistance(NdPoint a, NdPoint b) {
+		Double dx = (double) (b.getX() - a.getX());
+		Double dy = (double) (b.getY() - a.getY());
+		return Math.sqrt((dx*dx) + (dy*dy));
+	}
+	
+	
 }
