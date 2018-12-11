@@ -7,6 +7,7 @@ import java.util.List;
 import citySim.agent.Vehicle;
 import citySim.environment.Road;
 import repast.simphony.engine.environment.RunEnvironment;
+import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.space.grid.GridPoint;
@@ -82,7 +83,7 @@ public class Tools {
 		HashMap<Road, Double> fScore = new HashMap<Road, Double>();
 		
 		gScore.put(start, 0d);
-		fScore.put(start, distance(start.getLocation(), goal.getLocation()));
+		fScore.put(start, gridDistance(start.getLocation(), goal.getLocation()));
 		
 		open.add(start);
 		
@@ -132,7 +133,7 @@ public class Tools {
 				fScore.put(
 						neighbour, 
 						gScore.getOrDefault(neighbour, Double.MAX_VALUE) + 
-							distance(neighbour.getLocation(), goal.getLocation()));
+							gridDistance(neighbour.getLocation(), goal.getLocation()));
 			}
 		}
 		return path;
@@ -205,9 +206,17 @@ public class Tools {
 		return v;
 	}
 	
-	public static Double distance(GridPoint a, GridPoint b) {
+	public static Double gridDistance(GridPoint a, GridPoint b) {
 		Double dx = (double) (b.getX() - a.getX());
 		Double dy = (double) (b.getY() - a.getY());
 		return Math.sqrt((dx*dx) + (dy*dy));
 	}
+	
+	public static Double spaceDistance(NdPoint a, NdPoint b) {
+		Double dx = (double) (b.getX() - a.getX());
+		Double dy = (double) (b.getY() - a.getY());
+		return Math.sqrt((dx*dx) + (dy*dy));
+	}
+	
+	
 }

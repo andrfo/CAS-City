@@ -94,7 +94,10 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 						true,
 						width + 10, 
 						height + 10));
-		
+		InformationLabel info = new InformationLabel(space, grid, context);
+		context.add(info);
+		space.moveTo(info, width - 15, height - 15);
+		grid.moveTo(info, width - 15, height - 15);
 		
 		readImage(space, grid, context);
 		
@@ -148,7 +151,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					
 				}
 				else if(r == 0 && g == 255 && b == 0) {//Start
-					Spawn road = new Spawn(space, grid);
+					Spawn road = new Spawn(space, grid, context);
 					context.add(road);
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);

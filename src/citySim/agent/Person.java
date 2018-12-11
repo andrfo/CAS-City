@@ -4,6 +4,7 @@ import java.util.List;
 
 import citySim.environment.Building;
 import citySim.environment.SideWalk;
+import citySim.environment.Spawner;
 import repast.simphony.context.Context;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
@@ -22,13 +23,18 @@ public class Person extends Agent{
 	private Double accumulatedCostToday;
 	private boolean isInstantiated;
 	
+	private Spawner spawner;
+	
 	private String travelPreference;
 	
 	
 	
-	public Person(ContinuousSpace<Object> space, Grid<Object> grid) {
+	public Person(ContinuousSpace<Object> space, Grid<Object> grid, Spawner spawner) {
 		super(space, grid);
+		this.space = space;
+		this.grid = grid;
 		workPlace = null;
+		this.spawner = spawner;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -46,11 +52,17 @@ public class Person extends Agent{
 	
 	public void setReachedGoal(Vehicle v, boolean isEndGoal) {
 		if(isEndGoal) {
+			if(workPlace == null) {
+				spawner.returnShopper(this);
+			}
+			else {
+				spawner.returnWorker(this);
+			}
 			return;
 		}
 		@SuppressWarnings("unchecked")
-		Context<Object> context = ContextUtils.getContext(this);
-		GridPoint pt = grid.getLocation(this);
+		Context<Object> context = ContextUtils.getContext(v);
+		GridPoint pt = grid.getLocation(v);
 		GridCellNgh<SideWalk> roadNghCreator = new GridCellNgh<SideWalk>(grid, pt, SideWalk.class, 1, 1);
 		List<GridCell<SideWalk>> roadGridCells = roadNghCreator.getNeighborhood(false);
 		SimUtilities.shuffle(roadGridCells, RandomHelper.getUniform());

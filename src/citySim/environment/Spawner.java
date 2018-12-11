@@ -6,13 +6,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import citySim.agent.Car;
 import citySim.agent.Person;
 import citySim.agent.Vehicle;
 import repast.simphony.context.Context;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.parameter.Parameters;
-import repast.simphony.query.space.grid.GridCell;
+
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.ContinuousSpace;
@@ -63,6 +64,7 @@ public class Spawner {
 	private Double eveningFrequency;
 	private Double rushFrequency;
 	private int populationStartCount;
+	private int personsPerCar;
 	
 	
 	private List<Person> population;
@@ -122,7 +124,7 @@ public class Spawner {
 	
 	private void generatePopulation() {
 		for(int i = 0; i < populationStartCount; i++) {
-			Person p = new Person(space, grid);
+			Person p = new Person(space, grid, this);
 			if(Tools.isTrigger(0.75d)) {
 				//Worker
 				p.setWorkPlace(buildings.get(RandomHelper.nextIntFromTo(0, buildings.size() - 1)));
@@ -140,10 +142,9 @@ public class Spawner {
 	}
 	
 	private void spawn() {
-		//TODO: fix that the cars don't spawn when blocked
-		//TODO: make it so that the cars return to near their spawn after work
+		//TODO: implement car pooling
 		
-		boolean blocked = false;
+		
 		BigDecimal[] valRem = BigDecimal.valueOf(frequency).divideAndRemainder(BigDecimal.ONE);
 		
 		int  spawnCount = valRem[0].intValue();
@@ -152,63 +153,62 @@ public class Spawner {
 		}
 		
 		for (int i = 0; i < spawnCount; i++) {
-			blocked = false;
-			//Start and goal
-			int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
-			int despawnPointIndex = RandomHelper.nextIntFromTo(0,  despawnPoints.size() - 1);
-			Road start = spawnPoints.get(spawnPointIndex);
-			Road endGoal = despawnPoints.get(despawnPointIndex);
-			NdPoint spacePt = space.getLocation(start);
-			GridPoint pt = grid.getLocation(start);
-			
-			//Check surroundings
-			for (Object obj: grid.getObjectsAt(pt.getX(), pt.getY())) {
-				if(obj instanceof Vehicle) {	
-					blocked = true;
-					//There is a car close to spawn, wait
-				}
-			}
-//			GridCellNgh<Vehicle> roadNghCreator = new GridCellNgh<Vehicle>(grid, pt, Vehicle.class, 1, 1);
-//			List<GridCell<Vehicle>> roadGridCells = roadNghCreator.getNeighborhood(true);
-//			for (GridCell<Vehicle> gridCell : roadGridCells) {
-//				if(gridCell.items().iterator().hasNext()) {
-//					blocked = true;
-//					//There is a car close to spawn, wait
-//				}
-//			}
-			
-			if(blocked) {
+			if(idleShoppers.size() == 0) {
 				continue;
 			}
 			
+			//Start and goal
+			int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
+			Spawn start = (Spawn) spawnPoints.get(spawnPointIndex);
+			
+			
+			
 			//Add the agent to the context
-			Vehicle car = new Vehicle(space, grid, 5);
-			context.add(car);
-			space.moveTo(car, spacePt.getX(), spacePt.getY());
-			grid.moveTo(car, pt.getX(), pt.getY());
+			Car car = new Car(space, grid, 5);
+			
+			
+			car.addOccupant(idleShoppers.remove(0));
 			
 			//Setup
 			
-			int time = Tools.getTime();
-			
-			//work?
-			if(		isInInterval(time, MORNING_RUSH) &&
-					Tools.isTrigger(rushFrequency/frequency)) {
-				car.addGoal(buildings.get(RandomHelper.nextIntFromTo(0, buildings.size() - 1)));					
-			}
-			//errand?
-			else if(Tools.isTrigger(0.6d)){
-				car.addGoal(parkingSpaces.get(RandomHelper.nextIntFromTo(0, parkingSpaces.size() - 1)));
-			}
+			car.addGoal(parkingSpaces.get(RandomHelper.nextIntFromTo(0, parkingSpaces.size() - 1)));
 			car.setStart(start);
-			car.addGoal(endGoal);
 			car.setNet(net);
+			
+			start.addToQueue(car);
+			
+		}
+		int time = Tools.getTime();
+		
+		if(isInInterval(time, MORNING_RUSH)) {
+			//98% of the workers are going to work over an hour
+			Double workers = (double) idleWorkers.size();
+			spawnCount = (int) Math.ceil(workers*0.98d*(1d/60d));
+			for (int i = 0; i < spawnCount; i++) {
+				if(idleWorkers.size() == 0) {
+					return;
+				}
+				//Start and goal
+				int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
+				Spawn start = (Spawn) spawnPoints.get(spawnPointIndex);
+				
+				
+				Car car = new Car(space, grid, 5);
+				car.addOccupant(idleWorkers.remove(0));
+				
+				//Setup
+				
+				car.addGoal(buildings.get(RandomHelper.nextIntFromTo(0, buildings.size() - 1)));
+				car.setStart(start);
+				car.setNet(net);
+				
+				start.addToQueue(car);
+				
+			}
 			
 		}
 		
-		
 	}
-	
 	
 	public double getSpawnRate() {
 		return frequency*100d;
@@ -231,12 +231,12 @@ public class Spawner {
 			frequency += eveningFrequency;
 		}
 		
-		if(isInInterval(time, MORNING_RUSH)) {
-			frequency += rushFrequency;
-		}
-		else if(isInInterval(time, AFTERNOON_RUSH)) {
-			frequency += rushFrequency;
-		}
+//		if(isInInterval(time, MORNING_RUSH)) {
+//			frequency += rushFrequency;
+//		}
+//		else if(isInInterval(time, AFTERNOON_RUSH)) {
+//			frequency += rushFrequency;
+//		}
 		
 		
 	}
@@ -244,6 +244,15 @@ public class Spawner {
 	
 	private boolean isInInterval(int n, int[] interval) {
 		return n >= interval[0] && n < interval[1];
+	}
+	
+	
+	public void returnShopper(Person p) {
+		idleShoppers.add(p);
+	}
+	
+	public void returnWorker(Person p) {
+		idleWorkers.add(p);
 	}
 }
 

@@ -133,8 +133,8 @@ public class Vehicle extends Agent{
 			if(gridCell.items().iterator().hasNext()) {
 				Road r = gridCell.items().iterator().next();
 				addOpen(r);
-				dist = Tools.distance(pt, grid.getLocation(r));
-				if(dist < minDist) {
+				dist = Tools.gridDistance(pt, grid.getLocation(r));
+				if(dist < minDist && !(r instanceof SideWalk)) {
 					minDist = dist;
 					currentRoad = r;
 				}
@@ -184,7 +184,7 @@ public class Vehicle extends Agent{
 		else {
 			triggerDistance = 2;
 		}
-		if(Tools.distance(pt, grid.getLocation(goal)) < triggerDistance) {
+		if(Tools.gridDistance(pt, grid.getLocation(goal)) < triggerDistance) {
 			
 			
 			if(goal instanceof Building) {
@@ -260,8 +260,8 @@ public class Vehicle extends Agent{
 		Double minDist = Double.MAX_VALUE;
 		Double dist = 0d;
 		for (Road road : open) {
-			dist = Tools.distance(grid.getLocation(goal), grid.getLocation(road));
-			if(dist < minDist && !(road instanceof Spawn)) {
+			dist = Tools.gridDistance(grid.getLocation(goal), grid.getLocation(road));
+			if(dist < minDist && !(road instanceof Spawn) && !(road instanceof SideWalk)) {
 				if(road instanceof ParkingSpace && road != goal) {
 					continue;
 				}
@@ -271,7 +271,7 @@ public class Vehicle extends Agent{
 		}
 		
 		path = Tools.aStar(currentRoad, localGoal, net);
-		pathIndex = 0;			
+		pathIndex = 0;	
 		
 	}
 	
@@ -368,6 +368,9 @@ public class Vehicle extends Agent{
 				continue;
 			}
 			for(Agent a : cell.items()) {
+				if(a instanceof Person) {//Run over people for now
+					continue;
+				}
 				Vehicle c = (Vehicle)a;
 				if(c.isParked() || c.getRoad() instanceof ParkingSpace) {continue;}
 				if(
@@ -375,7 +378,7 @@ public class Vehicle extends Agent{
 						!Tools.isPathIntersect(this, c, pathDistance)) {
 					continue;
 				}
-				double dist = Tools.distance(cell.getPoint(), grid.getLocation(this));
+				double dist = Tools.gridDistance(cell.getPoint(), grid.getLocation(this));
 				if(dist < minDist) {
 					minDist = dist;	
 					blockingCar = c;
@@ -628,7 +631,7 @@ public class Vehicle extends Agent{
 			if(road instanceof ParkingSpace) {
 				parking = (ParkingSpace) road;
 				if(parking.isReserved()){
-					Double distance = Tools.distance(grid.getLocation(this), target);
+					Double distance = Tools.gridDistance(grid.getLocation(this), target);
 					if(distance < min) {
 						min = distance;
 						p = parking;

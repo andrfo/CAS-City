@@ -23,7 +23,7 @@ public class Road extends Entity{
 	private Junction junction;
 	private Roundabout roundabout;
 	private boolean isEdge;
-	GridPoint pt;
+	private GridPoint pt;
 	
 	private boolean isExit;
 	
@@ -87,7 +87,7 @@ public class Road extends Entity{
 				continue;
 			}
 			Road r = cell.items().iterator().next();
-			distance = Tools.distance(this.getLocation(), r.getLocation());
+			distance = Tools.gridDistance(this.getLocation(), r.getLocation());
 			if(
 					distance < minDist &&
 					r instanceof RoundaboutRoad) {
