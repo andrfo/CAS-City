@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import citySim.agent.Bus;
 import citySim.agent.Car;
 import citySim.agent.Person;
 import citySim.agent.Vehicle;
@@ -41,6 +42,7 @@ public class Spawner {
 	private List<Road> despawnPoints;
 	private List<Road> parkingSpaces;
 	private List<Building> buildings;
+	private List<BusStop> busStops;
 	private Network<Object> net;
 	
 	
@@ -57,6 +59,8 @@ public class Spawner {
 	
 	private static final int[] MORNING_RUSH = {420, 510}; 		//07:00 - 08:30
 	private static final int[] AFTERNOON_RUSH = {930, 1020}; 	//15:30 - 17:00
+	
+	private static final int[] BUS =  {360, 1200};
 	
 	private Double nightFrequency;
 	private Double morningFrequency;
@@ -76,7 +80,7 @@ public class Spawner {
 	
 	
 	@SuppressWarnings("unchecked")
-	public Spawner(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context, List<Road> spawnPoints, List<Road> despawnPoints, List<Road> parkingSpaces, List<Building> buildings) {
+	public Spawner(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context, List<Road> spawnPoints, List<Road> despawnPoints, List<Road> parkingSpaces, List<Building> buildings, List<BusStop> busStops) {
 		super();
 		this.space = space;
 		this.grid = grid;
@@ -85,6 +89,7 @@ public class Spawner {
 		this.despawnPoints = despawnPoints;
 		this.parkingSpaces = parkingSpaces;
 		this.buildings = buildings;
+		this.busStops = busStops;
 		if(spawnPoints.size() == 0 || despawnPoints.size() == 0) {
 			throw new IllegalArgumentException("no spawn or goal");
 		}
@@ -143,70 +148,93 @@ public class Spawner {
 	
 	private void spawn() {
 		//TODO: implement car pooling
-		
-		
-		BigDecimal[] valRem = BigDecimal.valueOf(frequency).divideAndRemainder(BigDecimal.ONE);
-		
-		int  spawnCount = valRem[0].intValue();
-		if(Tools.isTrigger(valRem[1].doubleValue())) { //Uses the remainder as a probability for an extra spawn
-			spawnCount++;
-		}
-		
-		for (int i = 0; i < spawnCount; i++) {
-			if(idleShoppers.size() == 0) {
-				continue;
-			}
-			
-			//Start and goal
-			int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
-			Spawn start = (Spawn) spawnPoints.get(spawnPointIndex);
-			
-			
-			
-			//Add the agent to the context
-			Car car = new Car(space, grid, 5);
-			
-			
-			car.addOccupant(idleShoppers.remove(0));
-			
-			//Setup
-			
-			car.addGoal(parkingSpaces.get(RandomHelper.nextIntFromTo(0, parkingSpaces.size() - 1)));
-			car.setStart(start);
-			car.setNet(net);
-			
-			start.addToQueue(car);
-			
-		}
+		int  spawnCount;
 		int time = Tools.getTime();
-		
 		if(isInInterval(time, MORNING_RUSH)) {
 			//98% of the workers are going to work over an hour
 			Double workers = (double) idleWorkers.size();
 			spawnCount = (int) Math.ceil(workers*0.98d*(1d/60d));
+			spawnAgent(true, spawnCount);
+		}
+		else if(time % 30 == 0 && isInInterval(time, BUS)) {
+			for(Road r : spawnPoints) {
+				Spawn s = (Spawn) r;
+				Bus bus = new Bus(space, grid, 50);
+				for(Road b : busStops) {
+					bus.addGoal(b);
+				}
+				s.addToVehicleQueue(bus);
+				
+			}
+		}
+		else {
+			BigDecimal[] valRem = BigDecimal.valueOf(frequency).divideAndRemainder(BigDecimal.ONE);
+			spawnCount = valRem[0].intValue();
+			if(Tools.isTrigger(valRem[1].doubleValue())) { //Uses the remainder as a probability for an extra spawn
+				spawnCount++;
+			}
+			spawnAgent(false, spawnCount);
+		}
+	}
+	
+	private void spawnAgent(boolean isWorker, int spawnCount) {
+		if(isWorker) {
 			for (int i = 0; i < spawnCount; i++) {
 				if(idleWorkers.size() == 0) {
 					return;
 				}
+				Person p = idleWorkers.remove(0);
+				//Start and goal
+				int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
+				Spawn start = (Spawn) spawnPoints.get(spawnPointIndex);
+				if(p.getTravelChoice().equals("bus")) {
+					start.addToBusQueue(p);
+				}
+				else {
+					
+					Car car = new Car(space, grid, 5);
+					car.addOccupant(p);
+					
+					//Setup
+					
+					car.addGoal(p.getWorkPlace());
+					car.setStart(start);
+					car.setNet(net);
+					
+					start.addToVehicleQueue(car);
+				}
+			}
+		}
+		else {
+			for (int i = 0; i < spawnCount; i++) {
+				if(idleShoppers.size() == 0) {
+					continue;
+				}
+				
 				//Start and goal
 				int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
 				Spawn start = (Spawn) spawnPoints.get(spawnPointIndex);
 				
 				
+				
+				//Add the agent to the context
 				Car car = new Car(space, grid, 5);
-				car.addOccupant(idleWorkers.remove(0));
+				
+				Person p = idleShoppers.remove(0);
+				car.addOccupant(p);
 				
 				//Setup
 				
-				car.addGoal(buildings.get(RandomHelper.nextIntFromTo(0, buildings.size() - 1)));
+				car.addGoal(parkingSpaces.get(RandomHelper.nextIntFromTo(0, parkingSpaces.size() - 1)));
 				car.setStart(start);
 				car.setNet(net);
 				
-				start.addToQueue(car);
+				start.addToVehicleQueue(car);
 				
 			}
-			
 		}
+		
+		
 		
 	}
 	

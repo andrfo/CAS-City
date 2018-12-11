@@ -20,7 +20,7 @@
     </entry>
     <entry>
       <string>citySim.agent.Bus</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
       <string>citySim.agent.Car</string>
@@ -32,7 +32,7 @@
     </entry>
     <entry>
       <string>citySim.environment.BusStop</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
       <string>citySim.environment.Spawn</string>
@@ -78,7 +78,7 @@
     </entry>
     <entry>
       <string>citySim.agent.Bus</string>
-      <null/>
+      <string>citySim.agent.Bus.style_1.xml</string>
     </entry>
     <entry>
       <string>citySim.agent.Car</string>
@@ -87,6 +87,10 @@
     <entry>
       <string>citySim.environment.SideWalk</string>
       <string>citySim.environment.SideWalk.style_2.xml</string>
+    </entry>
+    <entry>
+      <string>citySim.environment.BusStop</string>
+      <string>citySim.environment.BusStop.style_1.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.Spawn</string>
@@ -153,19 +157,19 @@
     </entry>
     <entry>
       <string>citySim.environment.Building</string>
-      <int>5</int>
+      <int>4</int>
     </entry>
     <entry>
       <string>citySim.environment.ParkingSpace</string>
-      <int>9</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.RoundaboutRoad</string>
       <int>8</int>
     </entry>
     <entry>
+      <string>citySim.environment.RoundaboutRoad</string>
+      <int>7</int>
+    </entry>
+    <entry>
       <string>citySim.agent.Bus</string>
-      <int>4</int>
+      <int>11</int>
     </entry>
     <entry>
       <string>citySim.agent.Car</string>
@@ -181,11 +185,11 @@
     </entry>
     <entry>
       <string>citySim.environment.Spawn</string>
-      <int>6</int>
+      <int>5</int>
     </entry>
     <entry>
       <string>citySim.environment.SouthWestRoad</string>
-      <int>7</int>
+      <int>6</int>
     </entry>
     <entry>
       <string>citySim.agent.Vehicle</string>
@@ -197,11 +201,11 @@
     </entry>
     <entry>
       <string>citySim.environment.NorthEastRoad</string>
-      <int>10</int>
+      <int>9</int>
     </entry>
     <entry>
       <string>citySim.environment.Despawn</string>
-      <int>11</int>
+      <int>10</int>
     </entry>
   </layerOrder>
   <projections>

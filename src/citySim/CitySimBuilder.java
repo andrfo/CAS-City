@@ -11,6 +11,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.media.protocol.SourceTransferHandler;
 
+import citySim.agent.Bus;
 import citySim.agent.Vehicle;
 import utils.Tools;
 import utils.Vector2D;
@@ -61,7 +62,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	public Context build(Context<Object> context) {
 		
 		try {
-		    img = ImageIO.read(new File("maps/smallCityPark.png"));
+		    img = ImageIO.read(new File("maps/smallCityParkBus.png"));
 		} catch (IOException e) {
 			System.out.println(e + ": Image file not found!");
 		}
@@ -110,6 +111,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		List<Road> despawnPoints = new ArrayList<Road>();
 		List<Road> parkingSpaces = new ArrayList<Road>();
 		List<Road> sideWalks = new ArrayList<Road>();
+		List<BusStop> busStops = new ArrayList<BusStop>();
 		List<Building> buildings = new ArrayList<Building>();
 		
 		
@@ -177,6 +179,13 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					grid.moveTo(road, x, y);
 					parkingSpaces.add(road);
 				}
+				else if(r == 0 && g == 64 && b == 0) {//Bus stop
+					BusStop road = new BusStop(space, grid);
+					context.add(road);
+					space.moveTo(road, x, y);
+					grid.moveTo(road, x, y);
+					busStops.add(road);
+				}
 				else if(r == 255 && g == 128 && b == 0) {//Side Walk
 					SideWalk road = new SideWalk(space, grid);
 					context.add(road);
@@ -212,7 +221,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 			}
 		}
 		buildGraph(grid, context);
-		spawner = new Spawner(space, grid, context, spawnPoints, despawnPoints, parkingSpaces, buildings);
+		spawner = new Spawner(space, grid, context, spawnPoints, despawnPoints, parkingSpaces, buildings, busStops);
 		context.add(spawner);
 	}
 	
@@ -271,6 +280,11 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					}
 					else if(r instanceof ParkingSpace &&
 							!(cr instanceof ParkingSpace)){
+						addEdge(r, cr, net).setWeight(50);
+						addEdge(cr, r, net).setWeight(50);
+					}
+					else if(r instanceof BusStop &&
+							!(cr instanceof BusStop)){
 						addEdge(r, cr, net).setWeight(50);
 						addEdge(cr, r, net).setWeight(50);
 					}

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import citySim.agent.Agent;
+import citySim.agent.Bus;
+import citySim.agent.Car;
 import citySim.agent.Person;
 import citySim.agent.Vehicle;
 import repast.simphony.query.space.grid.GridCell;
@@ -22,7 +24,8 @@ import utils.Tools;
 
 public class Spawn extends Road {
 	
-	private List<Vehicle> queue;
+	private List<Vehicle> vehicleQueue;
+	private List<Person> busQueue;
 	
 	private Despawn despawn;
 	private ContinuousSpace<Object> space;
@@ -36,7 +39,8 @@ public class Spawn extends Road {
 		this.space = space;
 		this.grid = grid;
 		this.context = context;
-		queue = new ArrayList<Vehicle>();
+		vehicleQueue = new ArrayList<Vehicle>();
+		busQueue = new ArrayList<Person>();
 		despawn = null;
 		net = (Network<Object>)context.getProjection("road network");
 	}
@@ -49,13 +53,17 @@ public class Spawn extends Road {
 		spawn();
 	}
 	
-	public void addToQueue(Vehicle v) {//Have a dedicated queue item class instead of storing stuff in this?
-		queue.add(v);
+	public void addToBusQueue(Person p) {
+		this.busQueue.add(p);
+	}
+	
+	public void addToVehicleQueue(Vehicle v) {//Have a dedicated queue item class instead of storing stuff in this?
+		vehicleQueue.add(v);
 	}
 	
 	private void spawn() {
 		
-		if(queue.size() == 0) {
+		if(vehicleQueue.size() == 0) {
 			return;
 		}
 		//Check surroundings
@@ -78,15 +86,25 @@ public class Spawn extends Road {
 		
 		
 		//Add the agent to the context
-		Vehicle vehicle = queue.remove(0);
+		Vehicle vehicle = vehicleQueue.remove(0);
 		context.add(vehicle);
 		space.moveTo(vehicle, spacePt.getX(), spacePt.getY());
 		grid.moveTo(vehicle, pt.getX(), pt.getY());
+		vehicle.setStart(this);
+		vehicle.setNet(net);
 		
 		//Setup
-		vehicle.setStart(this);
+		if(vehicle instanceof Car) {
+			//something
+		}
+		else if(vehicle instanceof Bus) {
+			for(int i = 0; i < busQueue.size(); i++) {
+				if(busQueue.size() > 0 && !vehicle.isFull()) {
+					vehicle.addOccupant(busQueue.remove(i));
+				}
+			}
+		}
 		vehicle.addGoal(getNearestDespawn());
-		vehicle.setNet(net);
 		
 	}
 	
@@ -108,7 +126,7 @@ public class Spawn extends Road {
 	}
 	
 	public int getQueueSize() {
-		return queue.size();
+		return vehicleQueue.size();
 	}
 
 }

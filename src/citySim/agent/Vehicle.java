@@ -134,6 +134,9 @@ public class Vehicle extends Agent{
 				Road r = gridCell.items().iterator().next();
 				addOpen(r);
 				dist = Tools.gridDistance(pt, grid.getLocation(r));
+				if(!(this instanceof Bus) && r instanceof BusStop) {
+					continue;
+				}
 				if(dist < minDist && !(r instanceof SideWalk)) {
 					minDist = dist;
 					currentRoad = r;
@@ -230,6 +233,18 @@ public class Vehicle extends Agent{
 				}
 				die("");
 				return true;
+			}
+			else if (goal instanceof BusStop) {
+				stop();
+				space.moveTo(this, space.getLocation(goal).getX(), space.getLocation(goal).getY());
+				grid.moveTo(this, pt.getX(), pt.getY());
+				for(Person p : occupants) {
+					p.setReachedGoal(this, false);
+				}
+				goals.remove(0);
+				closed.clear();
+				open.clear();
+				getSurroundings();
 			}
 			else{
 				die("Unknown Goal");
@@ -447,7 +462,9 @@ public class Vehicle extends Agent{
 	public void die(String message) {
 		@SuppressWarnings("unchecked")
 		Context<Object> context = ContextUtils.getContext(this);
-		System.out.println(message);
+		if(message.length() > 0) {
+			System.out.println(message);			
+		}
 		occupants.clear();
 		try {
 			context.remove(this);			
@@ -739,5 +756,8 @@ public class Vehicle extends Agent{
 		return false;
 	}
 	
+	public boolean isFull() {
+		return !(occupants.size() < occupantLimit);
+	}
 	
 }

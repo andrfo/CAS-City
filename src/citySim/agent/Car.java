@@ -18,10 +18,9 @@ public class Car extends Vehicle{
 	public Double getDistanceMoved() {
 		return distanceMoved;
 	}
-
 	
-	
-	
-	
-
+	public Double getTollCost() {
+		//TODO: Add Tolls
+		return 12d;
+	}
 }
