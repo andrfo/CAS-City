@@ -1,4 +1,4 @@
-<repast.simphony.visualization.engine.CartesianDisplayDescriptor simphonyVersion="2.5.0">
+<repast.simphony.visualization.engine.CartesianDisplayDescriptor simphonyVersion="2.6.0">
   <name>Space Display</name>
   <type>2D</type>
   <styles>

@@ -1,5 +1,5 @@
-<repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.5.0">
-  <name>Count and Rate</name>
+<repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.6.0">
+  <name>Counts</name>
   <type>AGGREGATE</type>
   <inclTick>true</inclTick>
   <inclBatchRun>false</inclBatchRun>
@@ -11,14 +11,14 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1024855298</hashCode>
+    <hashCode>-1905619093</hashCode>
   </scheduleParams>
   <atEnd>false</atEnd>
   <methodDataSources class="linked-hash-map">
     <entry>
-      <string>Rate</string>
+      <string>SpawnRate</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>Rate</id>
+        <id>SpawnRate</id>
         <className>citySim.environment.Spawner</className>
         <methodName>getSpawnRate</methodName>
         <aggType>SUM</aggType>
@@ -26,6 +26,13 @@
     </entry>
   </methodDataSources>
   <countSources class="linked-hash-map">
+    <entry>
+      <string>Buses</string>
+      <repast.simphony.data2.engine.CountSourceDefinition>
+        <typeName>citySim.agent.Bus</typeName>
+        <id>Buses</id>
+      </repast.simphony.data2.engine.CountSourceDefinition>
+    </entry>
     <entry>
       <string>Cars</string>
       <repast.simphony.data2.engine.CountSourceDefinition>

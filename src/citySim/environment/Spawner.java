@@ -156,7 +156,7 @@ public class Spawner {
 			spawnCount = (int) Math.ceil(workers*0.98d*(1d/60d));
 			spawnAgent(true, spawnCount);
 		}
-		else if(time % 30 == 0 && isInInterval(time, BUS)) {
+		else if(time % 60 == 0 && isInInterval(time, BUS)) {
 			for(Road r : spawnPoints) {
 				Spawn s = (Spawn) r;
 				Bus bus = new Bus(space, grid, 50);
