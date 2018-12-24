@@ -7,13 +7,13 @@
 									
 		/>
 				<parameter name="Car_frequency_at_Night" displayName="Car frequency at Night" type="double" 
-						defaultValue="0.3" 
+						defaultValue="0.1" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 									
 		/>
 				<parameter name="population_start_count" displayName="population start count" type="int" 
-						defaultValue="500" 
+						defaultValue="300" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
@@ -25,19 +25,19 @@
 									
 		/>
 				<parameter name="Car_frequency_in_the_Evening" displayName="Car frequency in the Evening" type="double" 
-						defaultValue="1.1" 
+						defaultValue="0.6" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 									
 		/>
 				<parameter name="Car_frequency_in_the_Morning" displayName="Car frequency in the Morning" type="double" 
-						defaultValue="0.8" 
+						defaultValue="0.3" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 									
 		/>
 				<parameter name="Car_frequency_in_the_Afternoon" displayName="Car frequency in the Afternoon" type="double" 
-						defaultValue="1.2" 
+						defaultValue="0.6" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 									

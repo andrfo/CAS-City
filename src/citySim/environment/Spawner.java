@@ -52,6 +52,11 @@ public class Spawner {
 	 * 	24h = 1440 minutes
 	 */
 	
+	/** TimeCycle
+	 * 	1 Tick = 10 sec
+	 * 	24h = 8640 sec
+	 */
+	
 	private static final int[] NIGHT = {0, 360}; 				//00:00 - 06:00
 	private static final int[] MORNING = {360, 720}; 			//06:00 - 12:00
 	private static final int[] AFTERNOON = {720, 1080}; 		//12:00 - 18:00
@@ -148,7 +153,7 @@ public class Spawner {
 	
 	private void spawn() {
 		//TODO: implement car pooling
-		int  spawnCount;
+		int spawnCount;
 		int time = Tools.getTime();
 		if(isInInterval(time, MORNING_RUSH)) {
 			//98% of the workers are going to work over an hour
