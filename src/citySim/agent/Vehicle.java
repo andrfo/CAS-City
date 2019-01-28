@@ -220,7 +220,7 @@ public class Vehicle extends Agent{
 				for(Person p : occupants) {
 					p.setReachedGoal(this, false);
 				}
-				park(480, (ParkingSpace) goals.get(0));//8h
+				park(2880, (ParkingSpace) goals.get(0));//8h
 				goals.remove(0);
 				
 				closed.clear();
@@ -546,7 +546,7 @@ public class Vehicle extends Agent{
 			parkedTimer = time;			
 		}
 		else {
-			parkedTimer = 90;
+			parkedTimer = 500;
 		}
 	}
 	

@@ -29,10 +29,10 @@ public class InformationLabel extends Entity{
 	private String timeToString() {
 		
 		
-		BigDecimal[] valRem = BigDecimal.valueOf(time).divideAndRemainder(new BigDecimal(60));
+		BigDecimal[] valRem = BigDecimal.valueOf(time).divideAndRemainder(new BigDecimal(360));
 		
 		int hours = valRem[0].intValue();
-		int minutes = valRem[1].intValue();
+		int minutes = (int) (valRem[1].doubleValue()/6);
 		
 		return hours + ":" + minutes;
 	}

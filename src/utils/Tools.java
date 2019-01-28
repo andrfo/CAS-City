@@ -14,7 +14,7 @@ import repast.simphony.space.grid.GridPoint;
 
 public class Tools {
 	
-	public static final int TICKS_PER_DAY = 1440;
+	public static final int TICKS_PER_DAY = 8640;
 	
 	public static final int NORTHWEST = 0;
 	public static final int NORTH = 1;

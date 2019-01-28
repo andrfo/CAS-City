@@ -54,18 +54,19 @@ public class Spawner {
 	
 	/** TimeCycle
 	 * 	1 Tick = 10 sec
-	 * 	24h = 8640 sec
+	 * 	24h = 8640 ticks
+	 * 	1 hour = 360 ticks
 	 */
 	
-	private static final int[] NIGHT = {0, 360}; 				//00:00 - 06:00
-	private static final int[] MORNING = {360, 720}; 			//06:00 - 12:00
-	private static final int[] AFTERNOON = {720, 1080}; 		//12:00 - 18:00
-	private static final int[] EVENING = {1080, 1440}; 			//18:00 - 00:00
+	private static final int[] NIGHT = {0, 2160}; 				//00:00 - 06:00
+	private static final int[] MORNING = {2160, 4320}; 			//06:00 - 12:00
+	private static final int[] AFTERNOON = {4320, 6480}; 		//12:00 - 18:00
+	private static final int[] EVENING = {6480, 8640}; 			//18:00 - 00:00
 	
-	private static final int[] MORNING_RUSH = {420, 510}; 		//07:00 - 08:30
-	private static final int[] AFTERNOON_RUSH = {930, 1020}; 	//15:30 - 17:00
+	private static final int[] MORNING_RUSH = {2520, 3060}; 	//07:00 - 08:30
+	private static final int[] AFTERNOON_RUSH = {5580, 6120}; 	//15:30 - 17:00
 	
-	private static final int[] BUS =  {360, 1200};
+	private static final int[] BUS =  {2160, 7920};
 	
 	private Double nightFrequency;
 	private Double morningFrequency;
@@ -155,13 +156,7 @@ public class Spawner {
 		//TODO: implement car pooling
 		int spawnCount;
 		int time = Tools.getTime();
-		if(isInInterval(time, MORNING_RUSH)) {
-			//98% of the workers are going to work over an hour
-			Double workers = (double) idleWorkers.size();
-			spawnCount = (int) Math.ceil(workers*0.98d*(1d/60d));
-			spawnAgent(true, spawnCount);
-		}
-		else if(time % 60 == 0 && isInInterval(time, BUS)) {
+		if(time % 120 == 0 && isInInterval(time, BUS)) { //Spawn bus
 			for(Road r : spawnPoints) {
 				Spawn s = (Spawn) r;
 				Bus bus = new Bus(space, grid, 50);
@@ -172,7 +167,13 @@ public class Spawner {
 				
 			}
 		}
-		else {
+		if(isInInterval(time, MORNING_RUSH)) { //Spawn worker
+			//98% of the workers are going to work over an hour
+			Double workers = (double) idleWorkers.size();
+			spawnCount = (int) Math.ceil(workers*0.98d*(1d/60d));
+			spawnAgent(true, spawnCount);
+		}
+		else { //Spawn shopper
 			BigDecimal[] valRem = BigDecimal.valueOf(frequency).divideAndRemainder(BigDecimal.ONE);
 			spawnCount = valRem[0].intValue();
 			if(Tools.isTrigger(valRem[1].doubleValue())) { //Uses the remainder as a probability for an extra spawn
