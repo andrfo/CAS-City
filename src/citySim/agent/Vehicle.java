@@ -80,7 +80,7 @@ public class Vehicle extends Agent{
 	
 	private List<Road> open;
 	private List<Road> closed;
-	private int deadlockTime = 8;
+	private int deadlockTime = 100;
 	
 	public Vehicle(ContinuousSpace<Object> space, Grid<Object> grid, int occupantLimit) {
 		super(space, grid);
@@ -159,8 +159,9 @@ public class Vehicle extends Agent{
 				parked = false;
 				parkingSpace.vacate();
 				parkingSpace = null;
-				setSpeed(maxSpeed);
+//				setSpeed(maxSpeed);
 				gatherOccupants();
+				setInQueue(true);
 			}
 		}
 		if(isInQueue) {
@@ -634,6 +635,9 @@ public class Vehicle extends Agent{
 			Vehicle car = cell.items().iterator().next();
 			if(car.getRoad() instanceof RoundaboutRoad && Tools.isPathIntersect(c, car, 3)) {
 //				c.debugString += " C ";
+				return false;
+			}
+			else if(currentRoad instanceof ParkingSpace && !(car.getRoad() instanceof ParkingSpace) && Tools.isPathIntersect(c, car, 3)) {
 				return false;
 			}
 		}
