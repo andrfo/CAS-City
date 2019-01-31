@@ -25,7 +25,7 @@
 									
 		/>
 				<parameter name="Car_frequency_in_the_Evening" displayName="Car frequency in the Evening" type="double" 
-						defaultValue="0.6" 
+						defaultValue="0.3" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 									

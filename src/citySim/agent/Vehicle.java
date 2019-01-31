@@ -107,7 +107,7 @@ public class Vehicle extends Agent{
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step(){
 		
-		getSurroundings(); 		if(!isMovable()) {return;}
+		getSurroundings(); 		if(!isMovable()) {moved = false;return;}
 		
 		isReachedGoal(); 		if(dead) { return;}
 		
@@ -152,16 +152,36 @@ public class Vehicle extends Agent{
 		if(parked) {
 			if(parkedTimer > 0) {
 				parkedTimer--;
-				moved = false;
 				return false;
 			}
 			else {
+				//Check surroundings
+				GridPoint pt = grid.getLocation(this);
+				NdPoint spacePt = space.getLocation(this);
+				Double dist = Double.MAX_VALUE;
+				GridCellNgh<Vehicle> agentNghCreator = new GridCellNgh<Vehicle>(grid, pt, Vehicle.class, 2, 2);
+				List<GridCell<Vehicle>> agentGridCells = agentNghCreator.getNeighborhood(false);
+				for (GridCell<Vehicle> cell : agentGridCells) {
+					if(cell.items().iterator().hasNext()) {
+						for(Vehicle v : cell.items()) {
+							if(v == this) {
+								continue;
+							}
+							dist = Tools.spaceDistance(space.getLocation(v), spacePt);
+							if(dist <= 1.6 && !v.isParked()) {
+								//blocked, wait
+								return false;
+							}
+						}
+					}
+				}
+				
+				
 				parked = false;
 				parkingSpace.vacate();
 				parkingSpace = null;
-//				setSpeed(maxSpeed);
+				setSpeed(maxSpeed);
 				gatherOccupants();
-				setInQueue(true);
 			}
 		}
 		if(isInQueue) {
@@ -169,7 +189,6 @@ public class Vehicle extends Agent{
 				setInQueue(false);
 			}
 			else {
-				moved = false;
 				return false;				
 			}
 		}
@@ -205,12 +224,15 @@ public class Vehicle extends Agent{
 			}
 			else if (goal instanceof ParkingSpace) {
 				if(((ParkingSpace) goal).isReserved()) {
-					System.out.println("taken");
 					ParkingSpace p = findParking(grid.getLocation(this));
 					if(p == null) {
-						//TODO: don't die when no parking is available
-						die("No parking");
+						System.out.println("cannot find parking, going home");
+						Despawn d = (Despawn) goals.get(goals.size() - 1);
+						goals.clear();
+						goals.add(0, d);
+						return false;
 					}
+					
 					goals.remove(goal);
 					goals.add(0, p);
 					return false;
@@ -543,6 +565,7 @@ public class Vehicle extends Agent{
 	private void park(int time, ParkingSpace p) {
 		parked = true;
 		this.parkingSpace = p;
+		p.reserve();
 		if(goingToWork) {
 			parkedTimer = time;			
 		}
@@ -651,7 +674,7 @@ public class Vehicle extends Agent{
 			ParkingSpace parking;
 			if(road instanceof ParkingSpace) {
 				parking = (ParkingSpace) road;
-				if(parking.isReserved()){
+				if(!parking.isReserved()){
 					Double distance = Tools.gridDistance(grid.getLocation(this), target);
 					if(distance < min) {
 						min = distance;
@@ -660,12 +683,15 @@ public class Vehicle extends Agent{
 				}
 			}
 		}
+		if(p != null) {
+			return p;			
+		}
 		int range = 8;
 		while(p == null) {
 			p = findRandomProximateParking(target, range);
 			range += 10;
-			if(range >= 10000) {
-				die("cannot find parking within 10000");
+			if(range >= 100) {
+				return null;
 			}
 		}
 		return p;
