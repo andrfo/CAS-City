@@ -2,4 +2,5 @@
   	<projection type="continuous space" id="space"/>
   	<projection type="grid" id="grid"/>
   	<projection type="network" id="road network"></projection>
+  	<projection type="network" id="debug network"></projection>
 </context>
