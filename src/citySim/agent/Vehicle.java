@@ -2,6 +2,7 @@ package citySim.agent;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -20,6 +21,7 @@ import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import repast.simphony.util.ContextUtils;
 import repast.simphony.util.SimUtilities;
+import structures.Goals;
 import utils.Tools;
 import utils.Vector2D;
 
@@ -34,7 +36,9 @@ public class Vehicle extends Agent{
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
 	
-	private List<Entity> goals;
+	
+	private Goals goals;
+	
 	private Road start;
 	private Road localGoal;
 	private Road currentRoad;
@@ -52,6 +56,8 @@ public class Vehicle extends Agent{
 	private boolean isInJunction;
 	private boolean dead = false;
 	private boolean parked;
+	private boolean lookingForParking = false;
+	private int placesChecked = 0;
 	private boolean goingToWork;
 	private boolean hasRightOfWay = false;
 	
@@ -61,6 +67,7 @@ public class Vehicle extends Agent{
 	
 	private int deadlockTimer;
 	private int parkedTimer;
+	
 	
 	//Speed control
 	private double speed;
@@ -77,21 +84,26 @@ public class Vehicle extends Agent{
 	
 	protected double distanceMoved = 0;
 	
+	protected int scanWait = 0;
+	protected int calcWait = 0;
+	protected int scWaitTime = 1;
 	
-	private List<Road> open;
-	private List<Road> closed;
+	private HashSet<Road> open;
+	protected HashSet<Road> closed;
 	private int deadlockTime = 100;
+
+	private List<Road> parkingNexi;
 	
-	public Vehicle(ContinuousSpace<Object> space, Grid<Object> grid, int occupantLimit) {
+	public Vehicle(ContinuousSpace<Object> space, Grid<Object> grid, int occupantLimit, List<Road> parkingNexi) {
 		super(space, grid);
 		this.occupantLimit = occupantLimit;
 		this.grid = grid;
 		this.space = space;
 		this.pathIndex = 0;
 		this.speed = maxSpeed = 0.5 + RandomHelper.nextDouble();
-		this.goals = new ArrayList<Entity>();
-		this.open = new ArrayList<Road>();
-		this.closed = new ArrayList<Road>();
+		this.goals = new Goals();
+		this.open = new HashSet<Road>();
+		this.closed = new HashSet<Road>();
 		this.parked = false;
 		this.parkedTimer = 0;
 		this.goingToWork = false;
@@ -99,6 +111,7 @@ public class Vehicle extends Agent{
 		this.deadlockTimer = deadlockTime;
 		this.moved = true;
 		this.occupants = new ArrayList<Person>(occupantLimit);
+		this.parkingNexi = parkingNexi;
 	}
 	
 	/**
@@ -120,8 +133,17 @@ public class Vehicle extends Agent{
 	
 	private void getSurroundings() {
 		
+		
 		if(!moved) {
 			return;
+		}
+		
+		if(scanWait > 0) {
+			scanWait--;
+			return;
+		}
+		else {
+			scanWait = scWaitTime;
 		}
 		
 		GridPoint pt = grid.getLocation(this);
@@ -134,8 +156,11 @@ public class Vehicle extends Agent{
 				Road r = gridCell.items().iterator().next();
 				addOpen(r);
 				dist = Tools.gridDistance(pt, grid.getLocation(r));
-				if(!(this instanceof Bus) && r instanceof BusStop) {
-					continue;
+				if(lookingForParking) {
+					if(r instanceof ParkingSpace && !((ParkingSpace) r ).isReserved()) {
+						goals.replaceCurrent(r);
+						lookingForParking = false;
+					}
 				}
 				if(dist < minDist && !(r instanceof SideWalk)) {
 					minDist = dist;
@@ -198,7 +223,7 @@ public class Vehicle extends Agent{
 	private boolean isReachedGoal() {
 		
 		GridPoint pt = grid.getLocation(this);
-		Entity goal = goals.get(0);
+		Entity goal = goals.getCurrent();
 		double triggerDistance;
 		
 		if(goal instanceof Building) {
@@ -214,11 +239,11 @@ public class Vehicle extends Agent{
 				ParkingSpace p = findParking(grid.getLocation(goal));
 				
 				if(p == null) {
-					System.out.println("Did not find parking for building.");
+					gotoNextNexus();
+					lookingForParking = true;
 					return false;
 				}
-				goals.remove(goal);
-				goals.add(0, p);
+				goals.replaceCurrent(p);
 				goingToWork = true;					
 				
 			}
@@ -226,15 +251,11 @@ public class Vehicle extends Agent{
 				if(((ParkingSpace) goal).isReserved()) {
 					ParkingSpace p = findParking(grid.getLocation(this));
 					if(p == null) {
-						System.out.println("cannot find parking, going home");
-						Despawn d = (Despawn) goals.get(goals.size() - 1);
-						goals.clear();
-						goals.add(0, d);
+						gotoNextNexus();
 						return false;
 					}
 					
-					goals.remove(goal);
-					goals.add(0, p);
+					goals.replaceCurrent(p);
 					return false;
 				}
 				stop();
@@ -243,8 +264,8 @@ public class Vehicle extends Agent{
 				for(Person p : occupants) {
 					p.setReachedGoal(this, false);
 				}
-				park(2880, (ParkingSpace) goals.get(0));//8h
-				goals.remove(0);
+				park(2880, (ParkingSpace) goals.getCurrent());//8h
+				goals.next();
 				
 				closed.clear();
 				open.clear();
@@ -264,10 +285,22 @@ public class Vehicle extends Agent{
 				for(Person p : occupants) {
 					p.setReachedGoal(this, false);
 				}
-				goals.remove(0);
+				goals.next();
 				closed.clear();
 				open.clear();
 				getSurroundings();
+			}
+			else if(goal instanceof NorthEastRoad || goal instanceof SouthWestRoad) {
+				parkingNexi.remove(goals.getCurrent());
+				placesChecked++;
+				if(placesChecked < 3) {
+					gotoNextNexus();
+				}
+				else {
+					System.out.println("cannot find parking, going home");
+					goals.goToEnd();
+					return false;
+				}
 			}
 			else{
 				die("Unknown Goal");
@@ -277,11 +310,33 @@ public class Vehicle extends Agent{
 		return false;
 	}
 	
+	private void gotoNextNexus() {
+		if(parkingNexi.size() > 0) {
+			goals.replaceCurrent(parkingNexi.get(RandomHelper.nextIntFromTo(0, parkingNexi.size() - 1)));
+		}
+		else {
+			goals.goToEnd();
+		}
+	}
+	
 	private void selectNewLocalGoal() {
 		
-		if(open.size() == 0) {
-			die("no new goal");
+		if(calcWait > 0) {
+			calcWait--;
 			return;
+		}
+		else {
+			calcWait = scWaitTime;
+		}
+		
+		if(open.size() == 0) {
+			scanWait = 0;
+			moved = true;
+			getSurroundings();
+			if(open.size() == 0) {
+				die("no new goal");
+				return;
+			}
 		}
 		
 		//Do not calculate new route if in a roundabout
@@ -291,8 +346,8 @@ public class Vehicle extends Agent{
 				Math.ceil(pathIndex) < path.size() ) {
 			return;
 		}
+		Entity goal = goals.getCurrent();
 		
-		Entity goal = goals.get(0);
 		
 		//Pick the road within view that is closest to goal
 		Double minDist = Double.MAX_VALUE;
@@ -353,7 +408,6 @@ public class Vehicle extends Agent{
 			context.remove(p);
 		}
 	}
-	
 	
 	public boolean moveTowards(GridPoint pt) {
 		// only move if we are not already in this grid location
@@ -589,6 +643,9 @@ public class Vehicle extends Agent{
 	 */
 	public void addOpen(Road r) {
 		if(!open.contains(r) && !closed.contains(r)) {
+			if(!(this instanceof Bus) && r instanceof BusStop) {
+				return;
+			}
 			open.add(r);
 		}
 	}
@@ -668,35 +725,24 @@ public class Vehicle extends Agent{
 	}
 	
 	private ParkingSpace findParking(GridPoint target) {
-		double min = Double.MAX_VALUE;
-		ParkingSpace p = null;
+		double minDist = Double.MAX_VALUE;
+		ParkingSpace parking = null;
 		for (Road road : open) {
-			ParkingSpace parking;
 			if(road instanceof ParkingSpace) {
-				parking = (ParkingSpace) road;
-				if(!parking.isReserved()){
+				ParkingSpace p = (ParkingSpace) road;
+				if(!p.isReserved()){
 					Double distance = Tools.gridDistance(grid.getLocation(this), target);
-					if(distance < min) {
-						min = distance;
-						p = parking;
+					if(distance < minDist) {
+						minDist = distance;
+						parking = p;
 					}
 				}
 			}
 		}
-		if(p != null) {
-			return p;			
-		}
-		int range = 8;
-		while(p == null) {
-			p = findRandomProximateParking(target, range);
-			range += 10;
-			if(range >= 100) {
-				return null;
-			}
-		}
-		return p;
+		return parking;
 	}
 	
+	@Deprecated
 	private ParkingSpace findRandomProximateParking(GridPoint target, int range) {
 		GridPoint pt = grid.getLocation(this);
 		GridCellNgh<Road> roadNghCreator = new GridCellNgh<Road>(grid, pt, Road.class, range, range);
@@ -721,9 +767,12 @@ public class Vehicle extends Agent{
 		return isInQueue;
 	}
 
+	public Goals getGoals() {
+		return goals;
+	}
 	
 	public void addGoal(Entity goal) {
-		this.goals.add(goal);
+		this.goals.addGoal(goal);
 	}
 	
 	public void debugPointTo(Object obj) {

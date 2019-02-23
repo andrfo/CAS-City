@@ -104,7 +104,7 @@ public class Spawn extends Road {
 				}
 			}
 		}
-		vehicle.addGoal(getNearestDespawn());
+		vehicle.getGoals().setEndGoal(getNearestDespawn());
 		
 	}
 	

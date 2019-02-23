@@ -111,6 +111,8 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		List<Road> despawnPoints = new ArrayList<Road>();
 		List<Road> parkingSpaces = new ArrayList<Road>();
 		List<Road> sideWalks = new ArrayList<Road>();
+		List<Road> parkingNexi = new ArrayList<Road>();
+		List<Road> parkingNexiRoads = new ArrayList<Road>();
 		List<BusStop> busStops = new ArrayList<BusStop>();
 		List<Building> buildings = new ArrayList<Building>();
 		
@@ -201,6 +203,13 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					grid.moveTo(building, x, y);
 					buildings.add(building);
 				}
+				else if(r == 0 && g == 162 && b == 232) {//Parking nexus
+					Road road = new Road(space, grid);
+					context.add(road);
+					space.moveTo(road, x, y);
+					grid.moveTo(road, x, y);
+					parkingNexi.add(road);
+				}
 				else {
 					System.out.println("r: " + r + " g: " + g + " b: " + b);
 				}
@@ -220,8 +229,12 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 				}
 			}
 		}
+		for(Road r : parkingNexi) {
+			parkingNexiRoads.add(buildParkingNexus(r));
+			context.remove(r);
+		}
 		buildGraph(grid, context);
-		spawner = new Spawner(space, grid, context, spawnPoints, despawnPoints, parkingSpaces, buildings, busStops);
+		spawner = new Spawner(space, grid, context, spawnPoints, despawnPoints, parkingSpaces, buildings, busStops, parkingNexiRoads);
 		context.add(spawner);
 	}
 	
@@ -344,6 +357,20 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		}
 	}
 	
+	private Road buildParkingNexus(Road road) {
+		GridPoint pt = grid.getLocation(road);
+		GridCellNgh<Road> roadNghCreator = new GridCellNgh<Road>(grid, pt, Road.class, 4, 4);
+		List<GridCell<Road>> roadGridCells = roadNghCreator.getNeighborhood(true);
+		for (GridCell<Road> gridCell : roadGridCells) {
+			if(gridCell.items().iterator().hasNext()) {
+				Road r = gridCell.items().iterator().next();
+				if(r instanceof SouthWestRoad || r instanceof NorthEastRoad) {
+					return r;
+				}
+			}
+		}
+		return null;
+	}
 	
 	private void recursiveBuildRoundabout(Roundabout roundabout, Road r) {
 		GridCellNgh<Road> nghCreator = new GridCellNgh<Road>(grid, grid.getLocation(r), Road.class, 1, 1);

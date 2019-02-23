@@ -40,6 +40,7 @@ public class Spawner {
 	private Context<Object> context;
 	private List<Road> spawnPoints;
 	private List<Road> despawnPoints;
+	private List<Road> parkingNexi;
 	private List<Road> parkingSpaces;
 	private List<Building> buildings;
 	private List<BusStop> busStops;
@@ -86,7 +87,7 @@ public class Spawner {
 	
 	
 	@SuppressWarnings("unchecked")
-	public Spawner(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context, List<Road> spawnPoints, List<Road> despawnPoints, List<Road> parkingSpaces, List<Building> buildings, List<BusStop> busStops) {
+	public Spawner(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context, List<Road> spawnPoints, List<Road> despawnPoints, List<Road> parkingSpaces, List<Building> buildings, List<BusStop> busStops, List<Road> parkingNexiRoads) {
 		super();
 		this.space = space;
 		this.grid = grid;
@@ -96,6 +97,7 @@ public class Spawner {
 		this.parkingSpaces = parkingSpaces;
 		this.buildings = buildings;
 		this.busStops = busStops;
+		this.parkingNexi = parkingNexiRoads;
 		if(spawnPoints.size() == 0 || despawnPoints.size() == 0) {
 			throw new IllegalArgumentException("no spawn or goal");
 		}
@@ -159,7 +161,7 @@ public class Spawner {
 		if(time % 120 == 0 && isInInterval(time, BUS)) { //Spawn bus
 			for(Road r : spawnPoints) {
 				Spawn s = (Spawn) r;
-				Bus bus = new Bus(space, grid, 50);
+				Bus bus = new Bus(space, grid, 50, parkingNexi);
 				for(Road b : busStops) {
 					bus.addGoal(b);
 				}
@@ -198,7 +200,7 @@ public class Spawner {
 				}
 				else {
 					
-					Car car = new Car(space, grid, 5);
+					Car car = new Car(space, grid, 5, parkingNexi);
 					car.addOccupant(p);
 					
 					//Setup
@@ -224,7 +226,7 @@ public class Spawner {
 				
 				
 				//Add the agent to the context
-				Car car = new Car(space, grid, 5);
+				Car car = new Car(space, grid, 5, parkingNexi);
 				
 				Person p = idleShoppers.remove(0);
 				car.addOccupant(p);
