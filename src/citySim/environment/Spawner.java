@@ -162,8 +162,24 @@ public class Spawner {
 			for(Road r : spawnPoints) {
 				Spawn s = (Spawn) r;
 				Bus bus = new Bus(space, grid, 50, parkingNexi);
-				for(Road b : busStops) {
-					bus.addGoal(b);
+				for(int i = 0; i < busStops.size(); i++) {
+					Road currentBussStop = r;
+					List<Road> used = new ArrayList<Road>();
+					double dist = 0;
+					double maxDist = Double.MAX_VALUE;
+					Road bestBusStop = null;
+					for(Road b : busStops) {
+						if(used.contains(b)) {
+							continue;
+						}
+						dist = Tools.gridDistance(currentBussStop.getLocation(), b.getLocation());
+						if(dist < maxDist) {
+							bestBusStop = b;
+						}
+					}
+					bus.addGoal(bestBusStop);
+					used.add(bestBusStop);
+					currentBussStop = bestBusStop;
 				}
 				s.addToVehicleQueue(bus);
 				
