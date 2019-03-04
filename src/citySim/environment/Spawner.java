@@ -127,6 +127,9 @@ public class Spawner {
 	
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step() {
+		
+		isRunEnd();
+		
 		setFrequency();
 		
 		spawn();
@@ -134,6 +137,12 @@ public class Spawner {
 		
 	}
 	
+	private void isRunEnd() {
+		double currentTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
+		if(currentTick >= Tools.TICKS_PER_DAY * 1) {
+			RunEnvironment.getInstance().endRun();
+		}
+	}
 	
 	private void generatePopulation() {
 		for(int i = 0; i < populationStartCount; i++) {
