@@ -1,0 +1,1237 @@
+FATAL [Thread-7] 2018-12-08 11:25:36,033 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (177.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Car$$FastClassByCGLIB$$9139d549.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at citySim.agent.Car.findParking(Car.java:643)
+	at citySim.agent.Car.isReachedGlobalGoal(Car.java:344)
+	at citySim.agent.Car.step(Car.java:122)
+	... 10 more
+FATAL [Thread-7] 2018-12-09 16:27:09,790 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (625.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Car$$FastClassByCGLIB$$9139d549.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at repast.simphony.query.space.grid.GridCellNgh.setupMinMax(GridCellNgh.java:80)
+	at repast.simphony.query.space.grid.GridCellNgh.<init>(GridCellNgh.java:48)
+	at citySim.agent.Car.findRandomProximateParking(Car.java:629)
+	at citySim.agent.Car.findParking(Car.java:618)
+	at citySim.agent.Car.isReachedGlobalGoal(Car.java:315)
+	at citySim.agent.Car.step(Car.java:117)
+	... 10 more
+ERROR [AWT-EventQueue-0] 2018-12-10 12:40:57,309 repast.simphony.ui.RSApplication - Error while initializing simulation
+repast.simphony.parameter.IllegalParameterException: Parameter 'population_start_count' not found in the schema.
+	at repast.simphony.parameter.DefaultParameters.getValue(DefaultParameters.java:213)
+	at repast.simphony.parameter.DefaultParameters.getInteger(DefaultParameters.java:242)
+	at citySim.environment.Spawner.<init>(Spawner.java:100)
+	at citySim.CitySimBuilder.readImage(CitySimBuilder.java:203)
+	at citySim.CitySimBuilder.build(CitySimBuilder.java:98)
+	at repast.simphony.dataLoader.engine.ClassNameContextBuilder.build(ClassNameContextBuilder.java:41)
+	at repast.simphony.dataLoader.engine.DataLoaderControllerAction.runInitialize(DataLoaderControllerAction.java:48)
+	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:214)
+	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:1)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:292)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+	at repast.simphony.util.collections.NaryTree.preOrderTraversal(NaryTree.java:288)
+	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:212)
+	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:383)
+	at repast.simphony.ui.RSApplication.initSim(RSApplication.java:157)
+	at repast.simphony.ui.RSApplication.start(RSApplication.java:189)
+	at repast.simphony.ui.action.StartRun.actionPerformed(StartRun.java:17)
+	at javax.swing.AbstractButton.fireActionPerformed(Unknown Source)
+	at javax.swing.AbstractButton$Handler.actionPerformed(Unknown Source)
+	at javax.swing.DefaultButtonModel.fireActionPerformed(Unknown Source)
+	at javax.swing.DefaultButtonModel.setPressed(Unknown Source)
+	at javax.swing.plaf.basic.BasicButtonListener.mouseReleased(Unknown Source)
+	at java.awt.AWTEventMulticaster.mouseReleased(Unknown Source)
+	at java.awt.Component.processMouseEvent(Unknown Source)
+	at javax.swing.JComponent.processMouseEvent(Unknown Source)
+	at java.awt.Component.processEvent(Unknown Source)
+	at java.awt.Container.processEvent(Unknown Source)
+	at java.awt.Component.dispatchEventImpl(Unknown Source)
+	at java.awt.Container.dispatchEventImpl(Unknown Source)
+	at java.awt.Component.dispatchEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.retargetMouseEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.processMouseEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.dispatchEvent(Unknown Source)
+	at java.awt.Container.dispatchEventImpl(Unknown Source)
+	at java.awt.Window.dispatchEventImpl(Unknown Source)
+	at java.awt.Component.dispatchEvent(Unknown Source)
+	at java.awt.EventQueue.dispatchEventImpl(Unknown Source)
+	at java.awt.EventQueue.access$500(Unknown Source)
+	at java.awt.EventQueue$3.run(Unknown Source)
+	at java.awt.EventQueue$3.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.awt.EventQueue$4.run(Unknown Source)
+	at java.awt.EventQueue$4.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.awt.EventQueue.dispatchEvent(Unknown Source)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.awt.EventDispatchThread.run(Unknown Source)
+ERROR [AWT-EventQueue-0] 2018-12-11 09:03:44,745 repast.simphony.ui.RSApplication - Error while initializing simulation
+java.lang.NullPointerException
+	at citySim.environment.Spawn.<init>(Spawn.java:39)
+	at citySim.CitySimBuilder.readImage(CitySimBuilder.java:151)
+	at citySim.CitySimBuilder.build(CitySimBuilder.java:99)
+	at repast.simphony.dataLoader.engine.ClassNameContextBuilder.build(ClassNameContextBuilder.java:41)
+	at repast.simphony.dataLoader.engine.DataLoaderControllerAction.runInitialize(DataLoaderControllerAction.java:48)
+	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:214)
+	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:1)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:292)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+	at repast.simphony.util.collections.NaryTree.preOrderTraversal(NaryTree.java:288)
+	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:212)
+	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:383)
+	at repast.simphony.ui.RSApplication.initSim(RSApplication.java:157)
+	at repast.simphony.ui.action.InitRun.actionPerformed(InitRun.java:17)
+	at javax.swing.AbstractButton.fireActionPerformed(Unknown Source)
+	at javax.swing.AbstractButton$Handler.actionPerformed(Unknown Source)
+	at javax.swing.DefaultButtonModel.fireActionPerformed(Unknown Source)
+	at javax.swing.DefaultButtonModel.setPressed(Unknown Source)
+	at javax.swing.plaf.basic.BasicButtonListener.mouseReleased(Unknown Source)
+	at java.awt.AWTEventMulticaster.mouseReleased(Unknown Source)
+	at java.awt.Component.processMouseEvent(Unknown Source)
+	at javax.swing.JComponent.processMouseEvent(Unknown Source)
+	at java.awt.Component.processEvent(Unknown Source)
+	at java.awt.Container.processEvent(Unknown Source)
+	at java.awt.Component.dispatchEventImpl(Unknown Source)
+	at java.awt.Container.dispatchEventImpl(Unknown Source)
+	at java.awt.Component.dispatchEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.retargetMouseEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.processMouseEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.dispatchEvent(Unknown Source)
+	at java.awt.Container.dispatchEventImpl(Unknown Source)
+	at java.awt.Window.dispatchEventImpl(Unknown Source)
+	at java.awt.Component.dispatchEvent(Unknown Source)
+	at java.awt.EventQueue.dispatchEventImpl(Unknown Source)
+	at java.awt.EventQueue.access$500(Unknown Source)
+	at java.awt.EventQueue$3.run(Unknown Source)
+	at java.awt.EventQueue$3.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.awt.EventQueue$4.run(Unknown Source)
+	at java.awt.EventQueue$4.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.awt.EventQueue.dispatchEvent(Unknown Source)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.awt.EventDispatchThread.run(Unknown Source)
+FATAL [Thread-7] 2018-12-11 09:06:18,951 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (1.0)
+java.lang.NullPointerException
+	at repast.simphony.visualizationOGL2D.DisplayOGL2D.getSpatialForObject(DisplayOGL2D.java:535)
+	at repast.simphony.visualizationOGL2D.NetworkLayerOGL2D.update(NetworkLayerOGL2D.java:103)
+	at repast.simphony.visualizationOGL2D.DisplayOGL2D.update(DisplayOGL2D.java:410)
+	at repast.simphony.visualization.engine.DisplayComponentControllerAction$DisplayUpdater.execute(DisplayComponentControllerAction.java:44)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:238)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+FATAL [Thread-8] 2018-12-11 09:06:46,663 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (1.0)
+java.lang.NullPointerException
+	at repast.simphony.visualizationOGL2D.DisplayOGL2D.getSpatialForObject(DisplayOGL2D.java:535)
+	at repast.simphony.visualizationOGL2D.NetworkLayerOGL2D.update(NetworkLayerOGL2D.java:104)
+	at repast.simphony.visualizationOGL2D.DisplayOGL2D.update(DisplayOGL2D.java:410)
+	at repast.simphony.visualization.engine.DisplayComponentControllerAction$DisplayUpdater.execute(DisplayComponentControllerAction.java:44)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:238)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+FATAL [Thread-16] 2018-12-11 09:11:51,633 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (1.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.environment.Spawn$$FastClassByCGLIB$$6fc9d5be.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at citySim.environment.Spawn.spawn(Spawn.java:60)
+	at citySim.environment.Spawn.step(Spawn.java:46)
+	... 10 more
+FATAL [Thread-7] 2018-12-11 09:14:08,951 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (5.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.environment.Spawn$$FastClassByCGLIB$$6fc9d5be.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at citySim.environment.Spawn.spawn(Spawn.java:61)
+	at citySim.environment.Spawn.step(Spawn.java:47)
+	... 10 more
+FATAL [Thread-17] 2018-12-11 09:15:09,625 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (5.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.environment.Spawn$$FastClassByCGLIB$$6fc9d5be.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at citySim.environment.Spawn.spawn(Spawn.java:61)
+	at citySim.environment.Spawn.step(Spawn.java:47)
+	... 10 more
+FATAL [Thread-7] 2018-12-11 09:16:55,297 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (2.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.environment.Spawn$$FastClassByCGLIB$$6fc9d5be.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at citySim.environment.Spawn.spawn(Spawn.java:59)
+	at citySim.environment.Spawn.step(Spawn.java:47)
+	... 10 more
+FATAL [Thread-7] 2018-12-11 09:19:13,014 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (1.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.environment.Spawn$$FastClassByCGLIB$$6fc9d5be.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at citySim.environment.Spawn.spawn(Spawn.java:72)
+	at citySim.environment.Spawn.step(Spawn.java:46)
+	... 10 more
+FATAL [Thread-7] 2018-12-11 09:25:18,329 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (65.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at repast.simphony.query.space.grid.GridCellNgh.setupMinMax(GridCellNgh.java:80)
+	at repast.simphony.query.space.grid.GridCellNgh.<init>(GridCellNgh.java:48)
+	at citySim.agent.Person.setReachedGoal(Person.java:64)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:218)
+	at citySim.agent.Vehicle.step(Vehicle.java:112)
+	... 10 more
+FATAL [Thread-7] 2018-12-11 09:27:52,688 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (77.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at repast.simphony.query.space.grid.GridCellNgh.setupMinMax(GridCellNgh.java:80)
+	at repast.simphony.query.space.grid.GridCellNgh.<init>(GridCellNgh.java:48)
+	at citySim.agent.Person.setReachedGoal(Person.java:66)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:218)
+	at citySim.agent.Vehicle.step(Vehicle.java:112)
+	... 10 more
+FATAL [Thread-7] 2018-12-11 09:30:59,491 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (57.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at citySim.agent.Person.setReachedGoal(Person.java:72)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:218)
+	at citySim.agent.Vehicle.step(Vehicle.java:112)
+	... 10 more
+FATAL [Thread-7] 2018-12-11 09:31:55,066 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (69.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.ClassCastException: citySim.agent.Person cannot be cast to citySim.agent.Vehicle
+	at citySim.agent.Vehicle.speedControl(Vehicle.java:374)
+	at citySim.agent.Vehicle.move(Vehicle.java:288)
+	at citySim.agent.Vehicle.step(Vehicle.java:116)
+	... 10 more
+FATAL [Thread-7] 2018-12-11 09:36:48,241 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (1245.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.environment.Spawner$$FastClassByCGLIB$$a4ab6aeb.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.remove(Unknown Source)
+	at citySim.environment.Spawner.spawn(Spawner.java:164)
+	at citySim.environment.Spawner.step(Spawner.java:118)
+	... 10 more
+FATAL [Thread-7] 2018-12-11 12:21:23,552 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (914.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at citySim.agent.Person.updateCostAndChoice(Person.java:98)
+	at citySim.agent.Person.setReachedGoal(Person.java:112)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:229)
+	at citySim.agent.Vehicle.step(Vehicle.java:112)
+	... 10 more
+FATAL [Thread-7] 2018-12-11 12:23:15,942 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (882.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at citySim.agent.Person.updateCostAndChoice(Person.java:99)
+	at citySim.agent.Person.setReachedGoal(Person.java:113)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:229)
+	at citySim.agent.Vehicle.step(Vehicle.java:112)
+	... 10 more
+FATAL [Thread-2] 2019-01-31 10:33:33,260 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (4170.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.OutOfMemoryError: Java heap space
+	at repast.simphony.query.space.grid.GridCellNgh.getNeighborhood(GridCellNgh.java:120)
+	at citySim.agent.Vehicle.findRandomProximateParking(Vehicle.java:699)
+	at citySim.agent.Vehicle.findParking(Vehicle.java:687)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:227)
+	at citySim.agent.Vehicle.step(Vehicle.java:112)
+	... 10 more
+FATAL [Thread-2] 2019-01-31 10:43:13,977 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (4203.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at repast.simphony.query.space.grid.GridCellNgh.setupMinMax(GridCellNgh.java:80)
+	at repast.simphony.query.space.grid.GridCellNgh.<init>(GridCellNgh.java:48)
+	at citySim.agent.Vehicle.findRandomProximateParking(Vehicle.java:698)
+	at citySim.agent.Vehicle.findParking(Vehicle.java:687)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:227)
+	at citySim.agent.Vehicle.step(Vehicle.java:112)
+	... 10 more
+FATAL [Thread-2] 2019-01-31 10:43:16,648 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (4029.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at repast.simphony.query.space.grid.GridCellNgh.setupMinMax(GridCellNgh.java:80)
+	at repast.simphony.query.space.grid.GridCellNgh.<init>(GridCellNgh.java:48)
+	at citySim.agent.Vehicle.findRandomProximateParking(Vehicle.java:698)
+	at citySim.agent.Vehicle.findParking(Vehicle.java:687)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:227)
+	at citySim.agent.Vehicle.step(Vehicle.java:112)
+	... 10 more
+FATAL [Thread-2] 2019-01-31 10:43:40,448 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (4286.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at repast.simphony.query.space.grid.GridCellNgh.setupMinMax(GridCellNgh.java:80)
+	at repast.simphony.query.space.grid.GridCellNgh.<init>(GridCellNgh.java:48)
+	at citySim.agent.Vehicle.findRandomProximateParking(Vehicle.java:698)
+	at citySim.agent.Vehicle.findParking(Vehicle.java:687)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:227)
+	at citySim.agent.Vehicle.step(Vehicle.java:112)
+	... 10 more
+FATAL [Thread-2] 2019-02-07 18:01:56,324 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (1218.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at citySim.agent.Vehicle.findParking(Vehicle.java:699)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:240)
+	at citySim.agent.Vehicle.step(Vehicle.java:118)
+	... 10 more
+FATAL [Thread-2] 2019-02-07 18:16:29,719 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (3580.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:64)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:70)
+	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:248)
+	at java.base/java.util.Objects.checkIndex(Objects.java:372)
+	at java.base/java.util.ArrayList.get(ArrayList.java:458)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:292)
+	at citySim.agent.Vehicle.step(Vehicle.java:118)
+	... 10 more
+FATAL [Thread-2] 2019-02-07 18:21:55,522 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (4052.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:64)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:70)
+	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:248)
+	at java.base/java.util.Objects.checkIndex(Objects.java:372)
+	at java.base/java.util.ArrayList.get(ArrayList.java:458)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:246)
+	at citySim.agent.Vehicle.step(Vehicle.java:118)
+	... 10 more
+FATAL [Thread-3] 2019-02-07 18:36:25,400 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (11457.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:64)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:70)
+	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:248)
+	at java.base/java.util.Objects.checkIndex(Objects.java:372)
+	at java.base/java.util.ArrayList.get(ArrayList.java:458)
+	at citySim.agent.Vehicle.selectNewLocalGoal(Vehicle.java:328)
+	at citySim.agent.Vehicle.step(Vehicle.java:120)
+	... 10 more
+FATAL [Thread-2] 2019-02-07 19:20:55,610 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (11309.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at utils.Tools.gridDistance(Tools.java:210)
+	at citySim.agent.Vehicle.selectNewLocalGoal(Vehicle.java:340)
+	at citySim.agent.Vehicle.step(Vehicle.java:120)
+	... 10 more
+FATAL [Thread-2] 2019-02-07 19:21:29,261 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (11293.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at utils.Tools.gridDistance(Tools.java:210)
+	at citySim.agent.Vehicle.selectNewLocalGoal(Vehicle.java:340)
+	at citySim.agent.Vehicle.step(Vehicle.java:120)
+	... 10 more
+FATAL [Thread-2] 2019-02-07 19:23:46,290 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (11381.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at utils.Tools.gridDistance(Tools.java:210)
+	at citySim.agent.Vehicle.selectNewLocalGoal(Vehicle.java:340)
+	at citySim.agent.Vehicle.step(Vehicle.java:120)
+	... 10 more
+FATAL [Thread-2] 2019-02-07 19:25:17,789 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (11478.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at utils.Tools.gridDistance(Tools.java:210)
+	at citySim.agent.Vehicle.selectNewLocalGoal(Vehicle.java:340)
+	at citySim.agent.Vehicle.step(Vehicle.java:120)
+	... 10 more
+FATAL [Thread-2] 2019-02-07 19:55:38,555 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (12831.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:64)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:70)
+	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:248)
+	at java.base/java.util.Objects.checkIndex(Objects.java:372)
+	at java.base/java.util.ArrayList.get(ArrayList.java:458)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:216)
+	at citySim.agent.Vehicle.step(Vehicle.java:118)
+	... 10 more
+FATAL [Thread-2] 2019-02-07 19:59:44,995 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (13487.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:64)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:70)
+	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:248)
+	at java.base/java.util.Objects.checkIndex(Objects.java:372)
+	at java.base/java.util.ArrayList.get(ArrayList.java:458)
+	at citySim.agent.Vehicle.isReachedGoal(Vehicle.java:216)
+	at citySim.agent.Vehicle.step(Vehicle.java:118)
+	... 10 more
+FATAL [Thread-2] 2019-02-11 12:12:49,771 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (154.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at citySim.agent.Vehicle.move(Vehicle.java:377)
+	at citySim.agent.Vehicle.step(Vehicle.java:126)
+	... 10 more
+FATAL [Thread-2] 2019-02-11 12:16:20,210 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (21.0)
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:72)
+	at repast.simphony.engine.controller.ScheduledMethodControllerAction$ScheduleMethodAllAction.execute(ScheduledMethodControllerAction.java:333)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:231)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.reflect.InvocationTargetException
+	at citySim.agent.Vehicle$$FastClassByCGLIB$$fdda2221.invoke(<generated>)
+	at net.sf.cglib.reflect.FastMethod.invoke(FastMethod.java:53)
+	at repast.simphony.engine.schedule.DynamicTargetAction.execute(DynamicTargetAction.java:69)
+	... 7 more
+Caused by: java.lang.NullPointerException
+	at citySim.agent.Vehicle.move(Vehicle.java:377)
+	at citySim.agent.Vehicle.step(Vehicle.java:126)
+	... 10 more
+FATAL [Thread-8] 2019-02-23 17:41:34,167 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (117966.0)
+java.lang.NullPointerException
+	at saf.v3d.scene.VComposite.addChild(VComposite.java:46)
+	at repast.simphony.visualizationOGL2D.SpatialWrapper.setChild(SpatialWrapper.java:80)
+	at repast.simphony.visualizationOGL2D.SpatialWrapper.<init>(SpatialWrapper.java:34)
+	at repast.simphony.visualizationOGL2D.StyledDisplayLayerOGL2D.createSpatial(StyledDisplayLayerOGL2D.java:146)
+	at repast.simphony.visualizationOGL2D.StyledDisplayLayerOGL2D.processAdded(StyledDisplayLayerOGL2D.java:228)
+	at repast.simphony.visualizationOGL2D.StyledDisplayLayerOGL2D.update(StyledDisplayLayerOGL2D.java:250)
+	at repast.simphony.visualizationOGL2D.DisplayOGL2D.update(DisplayOGL2D.java:406)
+	at repast.simphony.visualization.engine.DisplayComponentControllerAction$DisplayUpdater.execute(DisplayComponentControllerAction.java:44)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:238)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)
+INFO  [AWT-EventQueue-0] 2019-03-03 13:50:25,026 repast.simphony.batch.gui.BatchConfigMediator - Writing batch run config file to: C:\Users\andrfo\Documents\Git\CAS-City\output\config.props
+INFO  [AWT-EventQueue-0] 2019-03-03 13:50:25,126 repast.simphony.batch.gui.BatchConfigMediator - Unrolling batch parameter file:
+	C:\Users\andrfo\Documents\Git\CAS-City\batch\batch_params.xml to
+	C:\Users\andrfo\AppData\Local\Temp\unrolledParamFile.txt
+INFO  [SwingWorker-pool-2-thread-1] 2019-03-03 13:50:32,532 repast.simphony.batch.ssh.LocalSession - 
+	Copying locally C:\Users\andrfo\AppData\Local\Temp\andrfo_localhost2069216021044434635.zip to 
+C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551617430263 ...
+INFO  [SwingWorker-pool-2-thread-1] 2019-03-03 13:50:32,569 repast.simphony.batch.ssh.LocalSession - Copying Finished.
+INFO  [SwingWorker-pool-2-thread-1] 2019-03-03 13:50:32,570 repast.simphony.batch.ssh.SessionsDriver - Initialization Time: 0,0384
+INFO  [SwingWorker-pool-2-thread-1] 2019-03-03 13:50:32,570 repast.simphony.batch.ssh.LocalSession - Unzipping model C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551617430263\andrfo_localhost2069216021044434635.zip
+INFO  [SwingWorker-pool-2-thread-1] 2019-03-03 13:50:33,019 repast.simphony.batch.ssh.LocalSession - Running model on localhost ...
+INFO  [Thread-5] 2019-03-03 13:50:41,691 repast.simphony.batch.ssh.LocalSession - javax.imageio.IIOException: Can't read input file!: Image file not found!
+INFO  [Thread-5] 2019-03-03 13:50:41,696 repast.simphony.batch.ssh.LocalSession - ERROR [main] 13:50:41,694 repast.simphony.batch.InstanceRunner - Error while running model
+INFO  [Thread-5] 2019-03-03 13:50:41,696 repast.simphony.batch.ssh.LocalSession - java.lang.NullPointerException
+INFO  [Thread-5] 2019-03-03 13:50:41,696 repast.simphony.batch.ssh.LocalSession - 	at citySim.CitySimBuilder.build(CitySimBuilder.java:69)
+INFO  [Thread-5] 2019-03-03 13:50:41,697 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.dataLoader.engine.ClassNameContextBuilder.build(ClassNameContextBuilder.java:41)
+INFO  [Thread-5] 2019-03-03 13:50:41,697 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.dataLoader.engine.DataLoaderControllerAction.runInitialize(DataLoaderControllerAction.java:48)
+INFO  [Thread-5] 2019-03-03 13:50:41,697 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:214)
+INFO  [Thread-5] 2019-03-03 13:50:41,697 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:1)
+INFO  [Thread-5] 2019-03-03 13:50:41,697 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:292)
+INFO  [Thread-5] 2019-03-03 13:50:41,697 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+INFO  [Thread-5] 2019-03-03 13:50:41,697 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+INFO  [Thread-5] 2019-03-03 13:50:41,697 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraversal(NaryTree.java:288)
+INFO  [Thread-5] 2019-03-03 13:50:41,697 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:212)
+INFO  [Thread-5] 2019-03-03 13:50:41,697 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:383)
+INFO  [Thread-5] 2019-03-03 13:50:41,697 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.OneRunBatchRunner.run(OneRunBatchRunner.java:101)
+INFO  [Thread-5] 2019-03-03 13:50:41,697 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.InstanceRunner.run(InstanceRunner.java:195)
+INFO  [Thread-5] 2019-03-03 13:50:41,697 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.InstanceRunner.main(InstanceRunner.java:217)
+INFO  [Thread-5] 2019-03-03 13:50:41,701 repast.simphony.batch.ssh.LocalSession - javax.imageio.IIOException: Can't read input file!: Image file not found!
+INFO  [Thread-5] 2019-03-03 13:50:41,708 repast.simphony.batch.ssh.LocalSession - ERROR [main] 13:50:41,705 repast.simphony.batch.InstanceRunner - Error while running model
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - java.lang.NullPointerException
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at citySim.CitySimBuilder.build(CitySimBuilder.java:69)
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.dataLoader.engine.ClassNameContextBuilder.build(ClassNameContextBuilder.java:41)
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.dataLoader.engine.DataLoaderControllerAction.runInitialize(DataLoaderControllerAction.java:48)
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:214)
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:1)
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:292)
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraversal(NaryTree.java:288)
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:212)
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:383)
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.OneRunBatchRunner.run(OneRunBatchRunner.java:101)
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.InstanceRunner.run(InstanceRunner.java:195)
+INFO  [Thread-5] 2019-03-03 13:50:41,709 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.InstanceRunner.main(InstanceRunner.java:217)
+INFO  [pool-3-thread-1] 2019-03-03 13:51:33,024 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551617430263 for DONE:  yes
+INFO  [SwingWorker-pool-2-thread-1] 2019-03-03 13:51:33,025 repast.simphony.batch.ssh.SessionsDriver - Run Time: 1,0076
+INFO  [SwingWorker-pool-2-thread-1] 2019-03-03 13:51:33,048 repast.simphony.batch.ssh.LocalSession - Finding output on localhost in C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551617430263
+INFO  [SwingWorker-pool-2-thread-1] 2019-03-03 13:51:33,054 repast.simphony.batch.ssh.SessionsDriver - Aggregating output into C:/Users/andrfo/Documents/Git/CAS-City/output
+INFO  [SwingWorker-pool-2-thread-1] 2019-03-03 13:51:33,055 repast.simphony.batch.ssh.SessionsDriver - Get Output Time: 0,0005
+INFO  [SwingWorker-pool-2-thread-1] 2019-03-03 13:51:33,055 repast.simphony.batch.ssh.SessionsDriver - Finished. Elapsed Time: 1,0466
+INFO  [AWT-EventQueue-0] 2019-03-03 13:57:51,574 repast.simphony.batch.gui.BatchConfigMediator - Writing batch run config file to: C:\Users\andrfo\Documents\Git\CAS-City\output\config.props
+INFO  [AWT-EventQueue-0] 2019-03-03 13:57:51,577 repast.simphony.batch.gui.BatchConfigMediator - Unrolling batch parameter file:
+	C:\Users\andrfo\Documents\Git\CAS-City\batch\batch_params.xml to
+	C:\Users\andrfo\AppData\Local\Temp\unrolledParamFile.txt
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 13:57:57,736 repast.simphony.batch.ssh.LocalSession - 
+	Copying locally C:\Users\andrfo\AppData\Local\Temp\andrfo_localhost8522942290983446853.zip to 
+C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551617875388 ...
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 13:57:57,763 repast.simphony.batch.ssh.LocalSession - Copying Finished.
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 13:57:57,763 repast.simphony.batch.ssh.SessionsDriver - Initialization Time: 0,0396
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 13:57:57,764 repast.simphony.batch.ssh.LocalSession - Unzipping model C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551617875388\andrfo_localhost8522942290983446853.zip
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 13:57:58,227 repast.simphony.batch.ssh.LocalSession - Running model on localhost ...
+INFO  [Thread-6] 2019-03-03 13:58:07,077 repast.simphony.batch.ssh.LocalSession - javax.imageio.IIOException: Can't read input file!: Image file not found!
+INFO  [Thread-6] 2019-03-03 13:58:07,084 repast.simphony.batch.ssh.LocalSession - ERROR [main] 13:58:07,082 repast.simphony.batch.InstanceRunner - Error while running model
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - java.lang.NullPointerException
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at citySim.CitySimBuilder.build(CitySimBuilder.java:69)
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.dataLoader.engine.ClassNameContextBuilder.build(ClassNameContextBuilder.java:41)
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.dataLoader.engine.DataLoaderControllerAction.runInitialize(DataLoaderControllerAction.java:48)
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:214)
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:1)
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:292)
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraversal(NaryTree.java:288)
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:212)
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:383)
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.OneRunBatchRunner.run(OneRunBatchRunner.java:101)
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.InstanceRunner.run(InstanceRunner.java:195)
+INFO  [Thread-6] 2019-03-03 13:58:07,085 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.InstanceRunner.main(InstanceRunner.java:217)
+INFO  [Thread-6] 2019-03-03 13:58:07,117 repast.simphony.batch.ssh.LocalSession - javax.imageio.IIOException: Can't read input file!: Image file not found!
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - ERROR [main] 13:58:07,120 repast.simphony.batch.InstanceRunner - Error while running model
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - java.lang.NullPointerException
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at citySim.CitySimBuilder.build(CitySimBuilder.java:69)
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.dataLoader.engine.ClassNameContextBuilder.build(ClassNameContextBuilder.java:41)
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.dataLoader.engine.DataLoaderControllerAction.runInitialize(DataLoaderControllerAction.java:48)
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:214)
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:1)
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:292)
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraversal(NaryTree.java:288)
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:212)
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:383)
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.OneRunBatchRunner.run(OneRunBatchRunner.java:101)
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.InstanceRunner.run(InstanceRunner.java:195)
+INFO  [Thread-6] 2019-03-03 13:58:07,123 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.InstanceRunner.main(InstanceRunner.java:217)
+INFO  [pool-4-thread-1] 2019-03-03 13:58:58,232 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551617875388 for DONE:  yes
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 13:58:58,233 repast.simphony.batch.ssh.SessionsDriver - Run Time: 1,0078
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 13:58:58,238 repast.simphony.batch.ssh.LocalSession - Finding output on localhost in C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551617875388
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 13:58:58,240 repast.simphony.batch.ssh.SessionsDriver - Aggregating output into C:/Users/andrfo/Documents/Git/CAS-City/output
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 13:58:58,240 repast.simphony.batch.ssh.SessionsDriver - Get Output Time: 0,0001
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 13:58:58,241 repast.simphony.batch.ssh.SessionsDriver - Finished. Elapsed Time: 1,0476
+INFO  [AWT-EventQueue-0] 2019-03-03 13:59:43,765 repast.simphony.batch.gui.BatchConfigMediator - Writing batch run config file to: C:\Users\andrfo\Documents\Git\CAS-City\output\config.props
+INFO  [AWT-EventQueue-0] 2019-03-03 13:59:43,767 repast.simphony.batch.gui.BatchConfigMediator - Unrolling batch parameter file:
+	C:\Users\andrfo\Documents\Git\CAS-City\batch\batch_params.xml to
+	C:\Users\andrfo\AppData\Local\Temp\unrolledParamFile.txt
+INFO  [AWT-EventQueue-0] 2019-03-03 13:59:55,692 repast.simphony.batch.gui.BatchConfigMediator - Writing batch run config file to: C:\Users\andrfo\Documents\Git\CAS-City\output\config.props
+INFO  [AWT-EventQueue-0] 2019-03-03 13:59:55,695 repast.simphony.batch.gui.BatchConfigMediator - Unrolling batch parameter file:
+	C:\Users\andrfo\Documents\Git\CAS-City\batch\batch_params.xml to
+	C:\Users\andrfo\AppData\Local\Temp\unrolledParamFile.txt
+INFO  [SwingWorker-pool-2-thread-4] 2019-03-03 14:00:01,667 repast.simphony.batch.ssh.LocalSession - 
+	Copying locally C:\Users\andrfo\AppData\Local\Temp\andrfo_localhost7836199726665409871.zip to 
+C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551617999375 ...
+INFO  [SwingWorker-pool-2-thread-4] 2019-03-03 14:00:01,693 repast.simphony.batch.ssh.LocalSession - Copying Finished.
+INFO  [SwingWorker-pool-2-thread-4] 2019-03-03 14:00:01,693 repast.simphony.batch.ssh.SessionsDriver - Initialization Time: 0,0386
+INFO  [SwingWorker-pool-2-thread-4] 2019-03-03 14:00:01,693 repast.simphony.batch.ssh.LocalSession - Unzipping model C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551617999375\andrfo_localhost7836199726665409871.zip
+INFO  [SwingWorker-pool-2-thread-4] 2019-03-03 14:00:02,193 repast.simphony.batch.ssh.LocalSession - Running model on localhost ...
+INFO  [Thread-9] 2019-03-03 14:00:02,519 repast.simphony.batch.ssh.LocalSession - Error occurred during initialization of VM
+INFO  [Thread-9] 2019-03-03 14:00:02,519 repast.simphony.batch.ssh.LocalSession - Too small initial heap
+INFO  [Thread-9] 2019-03-03 14:00:02,545 repast.simphony.batch.ssh.LocalSession - Error occurred during initialization of VM
+INFO  [Thread-9] 2019-03-03 14:00:02,545 repast.simphony.batch.ssh.LocalSession - Too small initial heap
+INFO  [AWT-EventQueue-0] 2019-03-03 14:00:31,296 repast.simphony.batch.gui.BatchConfigMediator - Writing batch run config file to: C:\Users\andrfo\Documents\Git\CAS-City\output\config.props
+INFO  [AWT-EventQueue-0] 2019-03-03 14:00:31,298 repast.simphony.batch.gui.BatchConfigMediator - Unrolling batch parameter file:
+	C:\Users\andrfo\Documents\Git\CAS-City\batch\batch_params.xml to
+	C:\Users\andrfo\AppData\Local\Temp\unrolledParamFile.txt
+INFO  [AWT-EventQueue-0] 2019-03-03 14:00:39,719 repast.simphony.batch.gui.BatchConfigMediator - Writing batch run config file to: C:\Users\andrfo\Documents\Git\CAS-City\output\config.props
+INFO  [AWT-EventQueue-0] 2019-03-03 14:00:39,721 repast.simphony.batch.gui.BatchConfigMediator - Unrolling batch parameter file:
+	C:\Users\andrfo\Documents\Git\CAS-City\batch\batch_params.xml to
+	C:\Users\andrfo\AppData\Local\Temp\unrolledParamFile.txt
+INFO  [SwingWorker-pool-2-thread-6] 2019-03-03 14:00:45,685 repast.simphony.batch.ssh.LocalSession - 
+	Copying locally C:\Users\andrfo\AppData\Local\Temp\andrfo_localhost6097775960641599342.zip to 
+C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618043345 ...
+INFO  [SwingWorker-pool-2-thread-6] 2019-03-03 14:00:45,712 repast.simphony.batch.ssh.LocalSession - Copying Finished.
+INFO  [SwingWorker-pool-2-thread-6] 2019-03-03 14:00:45,713 repast.simphony.batch.ssh.SessionsDriver - Initialization Time: 0,0395
+INFO  [SwingWorker-pool-2-thread-6] 2019-03-03 14:00:45,713 repast.simphony.batch.ssh.LocalSession - Unzipping model C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618043345\andrfo_localhost6097775960641599342.zip
+INFO  [SwingWorker-pool-2-thread-6] 2019-03-03 14:00:46,173 repast.simphony.batch.ssh.LocalSession - Running model on localhost ...
+INFO  [Thread-10] 2019-03-03 14:00:54,542 repast.simphony.batch.ssh.LocalSession - javax.imageio.IIOException: Can't read input file!: Image file not found!
+INFO  [Thread-10] 2019-03-03 14:00:54,550 repast.simphony.batch.ssh.LocalSession - ERROR [main] 14:00:54,548 repast.simphony.batch.InstanceRunner - Error while running model
+INFO  [Thread-10] 2019-03-03 14:00:54,550 repast.simphony.batch.ssh.LocalSession - java.lang.NullPointerException
+INFO  [Thread-10] 2019-03-03 14:00:54,550 repast.simphony.batch.ssh.LocalSession - 	at citySim.CitySimBuilder.build(CitySimBuilder.java:69)
+INFO  [Thread-10] 2019-03-03 14:00:54,550 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.dataLoader.engine.ClassNameContextBuilder.build(ClassNameContextBuilder.java:41)
+INFO  [Thread-10] 2019-03-03 14:00:54,550 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.dataLoader.engine.DataLoaderControllerAction.runInitialize(DataLoaderControllerAction.java:48)
+INFO  [Thread-10] 2019-03-03 14:00:54,550 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:214)
+INFO  [Thread-10] 2019-03-03 14:00:54,550 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:1)
+INFO  [Thread-10] 2019-03-03 14:00:54,550 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:292)
+INFO  [Thread-10] 2019-03-03 14:00:54,550 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+INFO  [Thread-10] 2019-03-03 14:00:54,550 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+INFO  [Thread-10] 2019-03-03 14:00:54,550 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraversal(NaryTree.java:288)
+INFO  [Thread-10] 2019-03-03 14:00:54,550 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:212)
+INFO  [Thread-10] 2019-03-03 14:00:54,551 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:383)
+INFO  [Thread-10] 2019-03-03 14:00:54,551 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.OneRunBatchRunner.run(OneRunBatchRunner.java:101)
+INFO  [Thread-10] 2019-03-03 14:00:54,551 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.InstanceRunner.run(InstanceRunner.java:195)
+INFO  [Thread-10] 2019-03-03 14:00:54,551 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.InstanceRunner.main(InstanceRunner.java:217)
+INFO  [Thread-10] 2019-03-03 14:00:54,809 repast.simphony.batch.ssh.LocalSession - javax.imageio.IIOException: Can't read input file!: Image file not found!
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - ERROR [main] 14:00:54,814 repast.simphony.batch.InstanceRunner - Error while running model
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - java.lang.NullPointerException
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at citySim.CitySimBuilder.build(CitySimBuilder.java:69)
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.dataLoader.engine.ClassNameContextBuilder.build(ClassNameContextBuilder.java:41)
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.dataLoader.engine.DataLoaderControllerAction.runInitialize(DataLoaderControllerAction.java:48)
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:214)
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:1)
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:292)
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.util.collections.NaryTree.preOrderTraversal(NaryTree.java:288)
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:212)
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:383)
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.OneRunBatchRunner.run(OneRunBatchRunner.java:101)
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.InstanceRunner.run(InstanceRunner.java:195)
+INFO  [Thread-10] 2019-03-03 14:00:54,816 repast.simphony.batch.ssh.LocalSession - 	at repast.simphony.batch.InstanceRunner.main(InstanceRunner.java:217)
+INFO  [pool-5-thread-1] 2019-03-03 14:01:02,198 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551617999375 for DONE:  yes
+INFO  [SwingWorker-pool-2-thread-4] 2019-03-03 14:01:02,199 repast.simphony.batch.ssh.SessionsDriver - Run Time: 1,0084
+INFO  [SwingWorker-pool-2-thread-4] 2019-03-03 14:01:02,202 repast.simphony.batch.ssh.LocalSession - Finding output on localhost in C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551617999375
+INFO  [SwingWorker-pool-2-thread-4] 2019-03-03 14:01:02,206 repast.simphony.batch.ssh.SessionsDriver - Aggregating output into C:/Users/andrfo/Documents/Git/CAS-City/output
+INFO  [SwingWorker-pool-2-thread-4] 2019-03-03 14:01:02,206 repast.simphony.batch.ssh.SessionsDriver - Get Output Time: 0,0001
+INFO  [SwingWorker-pool-2-thread-4] 2019-03-03 14:01:02,206 repast.simphony.batch.ssh.SessionsDriver - Finished. Elapsed Time: 1,0472
+INFO  [pool-6-thread-1] 2019-03-03 14:01:46,174 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618043345 for DONE:  yes
+INFO  [SwingWorker-pool-2-thread-6] 2019-03-03 14:01:46,175 repast.simphony.batch.ssh.SessionsDriver - Run Time: 1,0077
+INFO  [SwingWorker-pool-2-thread-6] 2019-03-03 14:01:46,184 repast.simphony.batch.ssh.LocalSession - Finding output on localhost in C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618043345
+INFO  [SwingWorker-pool-2-thread-6] 2019-03-03 14:01:46,187 repast.simphony.batch.ssh.SessionsDriver - Aggregating output into C:/Users/andrfo/Documents/Git/CAS-City/output
+INFO  [SwingWorker-pool-2-thread-6] 2019-03-03 14:01:46,188 repast.simphony.batch.ssh.SessionsDriver - Get Output Time: 0,0002
+INFO  [SwingWorker-pool-2-thread-6] 2019-03-03 14:01:46,188 repast.simphony.batch.ssh.SessionsDriver - Finished. Elapsed Time: 1,0474
+ERROR [AWT-EventQueue-0] 2019-03-03 14:05:29,807 repast.simphony.ui.RSApplication - Error while initializing simulation
+java.lang.NullPointerException
+	at citySim.CitySimBuilder.build(CitySimBuilder.java:69)
+	at repast.simphony.dataLoader.engine.ClassNameContextBuilder.build(ClassNameContextBuilder.java:41)
+	at repast.simphony.dataLoader.engine.DataLoaderControllerAction.runInitialize(DataLoaderControllerAction.java:48)
+	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:214)
+	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:1)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:292)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+	at repast.simphony.util.collections.NaryTree.preOrderTraversal(NaryTree.java:288)
+	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:212)
+	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:383)
+	at repast.simphony.ui.RSApplication.initSim(RSApplication.java:157)
+	at repast.simphony.ui.action.InitRun.actionPerformed(InitRun.java:17)
+	at javax.swing.AbstractButton.fireActionPerformed(Unknown Source)
+	at javax.swing.AbstractButton$Handler.actionPerformed(Unknown Source)
+	at javax.swing.DefaultButtonModel.fireActionPerformed(Unknown Source)
+	at javax.swing.DefaultButtonModel.setPressed(Unknown Source)
+	at javax.swing.plaf.basic.BasicButtonListener.mouseReleased(Unknown Source)
+	at java.awt.AWTEventMulticaster.mouseReleased(Unknown Source)
+	at java.awt.Component.processMouseEvent(Unknown Source)
+	at javax.swing.JComponent.processMouseEvent(Unknown Source)
+	at java.awt.Component.processEvent(Unknown Source)
+	at java.awt.Container.processEvent(Unknown Source)
+	at java.awt.Component.dispatchEventImpl(Unknown Source)
+	at java.awt.Container.dispatchEventImpl(Unknown Source)
+	at java.awt.Component.dispatchEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.retargetMouseEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.processMouseEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.dispatchEvent(Unknown Source)
+	at java.awt.Container.dispatchEventImpl(Unknown Source)
+	at java.awt.Window.dispatchEventImpl(Unknown Source)
+	at java.awt.Component.dispatchEvent(Unknown Source)
+	at java.awt.EventQueue.dispatchEventImpl(Unknown Source)
+	at java.awt.EventQueue.access$500(Unknown Source)
+	at java.awt.EventQueue$3.run(Unknown Source)
+	at java.awt.EventQueue$3.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.awt.EventQueue$4.run(Unknown Source)
+	at java.awt.EventQueue$4.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.awt.EventQueue.dispatchEvent(Unknown Source)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.awt.EventDispatchThread.run(Unknown Source)
+INFO  [AWT-EventQueue-0] 2019-03-03 14:07:29,436 repast.simphony.batch.gui.BatchConfigMediator - Writing batch run config file to: C:\Users\andrfo\Documents\Git\CAS-City\output\config.props
+INFO  [AWT-EventQueue-0] 2019-03-03 14:07:29,499 repast.simphony.batch.gui.BatchConfigMediator - Unrolling batch parameter file:
+	C:\Users\andrfo\Documents\Git\CAS-City\batch\batch_params.xml to
+	C:\Users\andrfo\AppData\Local\Temp\unrolledParamFile.txt
+INFO  [AWT-EventQueue-0] 2019-03-03 14:07:37,498 repast.simphony.batch.gui.BatchConfigMediator - Writing batch run config file to: C:\Users\andrfo\Documents\Git\CAS-City\output\config.props
+INFO  [AWT-EventQueue-0] 2019-03-03 14:07:37,499 repast.simphony.batch.gui.BatchConfigMediator - Unrolling batch parameter file:
+	C:\Users\andrfo\Documents\Git\CAS-City\batch\batch_params.xml to
+	C:\Users\andrfo\AppData\Local\Temp\unrolledParamFile.txt
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:07:43,672 repast.simphony.batch.ssh.LocalSession - 
+	Copying locally C:\Users\andrfo\AppData\Local\Temp\andrfo_localhost3987679195290029173.zip to 
+C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618461378 ...
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:07:43,702 repast.simphony.batch.ssh.LocalSession - Copying Finished.
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:07:43,703 repast.simphony.batch.ssh.SessionsDriver - Initialization Time: 0,0387
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:07:43,703 repast.simphony.batch.ssh.LocalSession - Unzipping model C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618461378\andrfo_localhost3987679195290029173.zip
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:07:44,178 repast.simphony.batch.ssh.LocalSession - Running model on localhost ...
+INFO  [pool-3-thread-1] 2019-03-03 14:08:44,182 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618461378 for DONE:  no
+INFO  [AWT-EventQueue-0] 2019-03-03 14:10:49,412 repast.simphony.batch.gui.BatchConfigMediator - Writing batch run config file to: C:\Users\andrfo\Documents\Git\CAS-City\output\config.props
+INFO  [AWT-EventQueue-0] 2019-03-03 14:10:49,476 repast.simphony.batch.gui.BatchConfigMediator - Unrolling batch parameter file:
+	C:\Users\andrfo\Documents\Git\CAS-City\batch\batch_params.xml to
+	C:\Users\andrfo\AppData\Local\Temp\unrolledParamFile.txt
+INFO  [AWT-EventQueue-0] 2019-03-03 14:10:58,691 repast.simphony.batch.gui.BatchConfigMediator - Writing batch run config file to: C:\Users\andrfo\Documents\Git\CAS-City\output\config.props
+INFO  [AWT-EventQueue-0] 2019-03-03 14:10:58,693 repast.simphony.batch.gui.BatchConfigMediator - Unrolling batch parameter file:
+	C:\Users\andrfo\Documents\Git\CAS-City\batch\batch_params.xml to
+	C:\Users\andrfo\AppData\Local\Temp\unrolledParamFile.txt
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:11:04,692 repast.simphony.batch.ssh.LocalSession - 
+	Copying locally C:\Users\andrfo\AppData\Local\Temp\andrfo_localhost4648570196114540888.zip to 
+C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 ...
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:11:04,721 repast.simphony.batch.ssh.LocalSession - Copying Finished.
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:11:04,722 repast.simphony.batch.ssh.SessionsDriver - Initialization Time: 0,0392
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:11:04,722 repast.simphony.batch.ssh.LocalSession - Unzipping model C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371\andrfo_localhost4648570196114540888.zip
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:11:05,199 repast.simphony.batch.ssh.LocalSession - Running model on localhost ...
+INFO  [pool-3-thread-1] 2019-03-03 14:12:05,203 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:13:05,204 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:14:05,207 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:15:05,209 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:16:05,212 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:17:05,215 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:18:05,217 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:19:05,218 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:20:05,219 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:21:05,220 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:22:05,221 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:23:05,222 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:24:05,223 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:25:05,224 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:26:05,224 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:27:05,225 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:28:05,225 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:29:05,226 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:30:05,227 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:31:05,228 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:32:05,230 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:33:05,231 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:34:05,232 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:35:05,233 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:36:05,235 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  no
+INFO  [pool-3-thread-1] 2019-03-03 14:37:05,236 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371 for DONE:  yes
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:37:05,236 repast.simphony.batch.ssh.SessionsDriver - Run Time: 26,0086
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:37:05,248 repast.simphony.batch.ssh.LocalSession - Finding output on localhost in C:\Users\andrfo\AppData\Local\Temp\simphony_model_1551618662371
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:37:05,255 repast.simphony.batch.ssh.SessionsDriver - Aggregating output into C:/Users/andrfo/Documents/Git/CAS-City/output
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:37:05,255 repast.simphony.batch.ssh.SessionsDriver - Get Output Time: 0,0003
+INFO  [SwingWorker-pool-2-thread-2] 2019-03-03 14:37:05,255 repast.simphony.batch.ssh.SessionsDriver - Finished. Elapsed Time: 26,0482
+ERROR [AWT-EventQueue-0] 2019-03-04 10:12:29,995 repast.simphony.ui.RSApplication - Error while initializing simulation
+java.lang.NullPointerException
+	at citySim.CitySimBuilder.build(CitySimBuilder.java:69)
+	at repast.simphony.dataLoader.engine.ClassNameContextBuilder.build(ClassNameContextBuilder.java:41)
+	at repast.simphony.dataLoader.engine.DataLoaderControllerAction.runInitialize(DataLoaderControllerAction.java:48)
+	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:214)
+	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:1)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:292)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+	at repast.simphony.util.collections.NaryTree.preOrderTraversal(NaryTree.java:288)
+	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:212)
+	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:383)
+	at repast.simphony.ui.RSApplication.initSim(RSApplication.java:157)
+	at repast.simphony.ui.RSApplication.start(RSApplication.java:189)
+	at repast.simphony.ui.action.StartRun.actionPerformed(StartRun.java:17)
+	at javax.swing.AbstractButton.fireActionPerformed(Unknown Source)
+	at javax.swing.AbstractButton$Handler.actionPerformed(Unknown Source)
+	at javax.swing.DefaultButtonModel.fireActionPerformed(Unknown Source)
+	at javax.swing.DefaultButtonModel.setPressed(Unknown Source)
+	at javax.swing.plaf.basic.BasicButtonListener.mouseReleased(Unknown Source)
+	at java.awt.AWTEventMulticaster.mouseReleased(Unknown Source)
+	at java.awt.Component.processMouseEvent(Unknown Source)
+	at javax.swing.JComponent.processMouseEvent(Unknown Source)
+	at java.awt.Component.processEvent(Unknown Source)
+	at java.awt.Container.processEvent(Unknown Source)
+	at java.awt.Component.dispatchEventImpl(Unknown Source)
+	at java.awt.Container.dispatchEventImpl(Unknown Source)
+	at java.awt.Component.dispatchEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.retargetMouseEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.processMouseEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.dispatchEvent(Unknown Source)
+	at java.awt.Container.dispatchEventImpl(Unknown Source)
+	at java.awt.Window.dispatchEventImpl(Unknown Source)
+	at java.awt.Component.dispatchEvent(Unknown Source)
+	at java.awt.EventQueue.dispatchEventImpl(Unknown Source)
+	at java.awt.EventQueue.access$500(Unknown Source)
+	at java.awt.EventQueue$3.run(Unknown Source)
+	at java.awt.EventQueue$3.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.awt.EventQueue$4.run(Unknown Source)
+	at java.awt.EventQueue$4.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.awt.EventQueue.dispatchEvent(Unknown Source)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.awt.EventDispatchThread.run(Unknown Source)
+ERROR [AWT-EventQueue-0] 2019-03-04 10:13:31,854 repast.simphony.ui.RSApplication - Error while initializing simulation
+java.lang.NullPointerException
+	at citySim.CitySimBuilder.build(CitySimBuilder.java:69)
+	at repast.simphony.dataLoader.engine.ClassNameContextBuilder.build(ClassNameContextBuilder.java:41)
+	at repast.simphony.dataLoader.engine.DataLoaderControllerAction.runInitialize(DataLoaderControllerAction.java:48)
+	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:214)
+	at repast.simphony.engine.controller.DefaultController$2.visit(DefaultController.java:1)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:292)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+	at repast.simphony.util.collections.NaryTree.preOrderTraverals(NaryTree.java:295)
+	at repast.simphony.util.collections.NaryTree.preOrderTraversal(NaryTree.java:288)
+	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:212)
+	at repast.simphony.engine.controller.DefaultController.runInitialize(DefaultController.java:383)
+	at repast.simphony.ui.RSApplication.initSim(RSApplication.java:157)
+	at repast.simphony.ui.RSApplication.start(RSApplication.java:189)
+	at repast.simphony.ui.action.StartRun.actionPerformed(StartRun.java:17)
+	at javax.swing.AbstractButton.fireActionPerformed(Unknown Source)
+	at javax.swing.AbstractButton$Handler.actionPerformed(Unknown Source)
+	at javax.swing.DefaultButtonModel.fireActionPerformed(Unknown Source)
+	at javax.swing.DefaultButtonModel.setPressed(Unknown Source)
+	at javax.swing.plaf.basic.BasicButtonListener.mouseReleased(Unknown Source)
+	at java.awt.AWTEventMulticaster.mouseReleased(Unknown Source)
+	at java.awt.Component.processMouseEvent(Unknown Source)
+	at javax.swing.JComponent.processMouseEvent(Unknown Source)
+	at java.awt.Component.processEvent(Unknown Source)
+	at java.awt.Container.processEvent(Unknown Source)
+	at java.awt.Component.dispatchEventImpl(Unknown Source)
+	at java.awt.Container.dispatchEventImpl(Unknown Source)
+	at java.awt.Component.dispatchEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.retargetMouseEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.processMouseEvent(Unknown Source)
+	at java.awt.LightweightDispatcher.dispatchEvent(Unknown Source)
+	at java.awt.Container.dispatchEventImpl(Unknown Source)
+	at java.awt.Window.dispatchEventImpl(Unknown Source)
+	at java.awt.Component.dispatchEvent(Unknown Source)
+	at java.awt.EventQueue.dispatchEventImpl(Unknown Source)
+	at java.awt.EventQueue.access$500(Unknown Source)
+	at java.awt.EventQueue$3.run(Unknown Source)
+	at java.awt.EventQueue$3.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.awt.EventQueue$4.run(Unknown Source)
+	at java.awt.EventQueue$4.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.awt.EventQueue.dispatchEvent(Unknown Source)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.awt.EventDispatchThread.run(Unknown Source)
+FATAL [Thread-7] 2019-03-04 10:19:02,469 repast.simphony.ui.GUIScheduleRunner - RunTimeException when running the schedule
+Current tick (1043.0)
+java.lang.NullPointerException
+	at saf.v3d.scene.VComposite.addChild(VComposite.java:46)
+	at repast.simphony.visualizationOGL2D.SpatialWrapper.setChild(SpatialWrapper.java:80)
+	at repast.simphony.visualizationOGL2D.SpatialWrapper.<init>(SpatialWrapper.java:34)
+	at repast.simphony.visualizationOGL2D.StyledDisplayLayerOGL2D.createSpatial(StyledDisplayLayerOGL2D.java:146)
+	at repast.simphony.visualizationOGL2D.StyledDisplayLayerOGL2D.processAdded(StyledDisplayLayerOGL2D.java:228)
+	at repast.simphony.visualizationOGL2D.StyledDisplayLayerOGL2D.update(StyledDisplayLayerOGL2D.java:250)
+	at repast.simphony.visualizationOGL2D.DisplayOGL2D.update(DisplayOGL2D.java:406)
+	at repast.simphony.visualization.engine.DisplayComponentControllerAction$DisplayUpdater.execute(DisplayComponentControllerAction.java:48)
+	at repast.simphony.engine.schedule.DefaultAction.execute(DefaultAction.java:38)
+	at repast.simphony.engine.schedule.ScheduleGroup.executeList(ScheduleGroup.java:205)
+	at repast.simphony.engine.schedule.ScheduleGroup.execute(ScheduleGroup.java:238)
+	at repast.simphony.engine.schedule.Schedule.execute(Schedule.java:352)
+	at repast.simphony.ui.GUIScheduleRunner$ScheduleLoopRunnable.run(GUIScheduleRunner.java:52)
+	at java.lang.Thread.run(Unknown Source)

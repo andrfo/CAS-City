@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>Runner</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>engine</name>
+			<type>2</type>
+			<location>C:/Users/andrfo/RepastSimphony-2.6/docs/RepastSimphonyAPI/repast/simphony/engine</location>
+		</link>
+	</linkedResources>
+</projectDescription>
