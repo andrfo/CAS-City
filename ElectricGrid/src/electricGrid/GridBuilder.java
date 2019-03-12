@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 
 import environment.Building;
 import environment.Charger;
-import environment.Entity;
+import environment.ElectricEntity;
 import environment.Substation;
 import repast.simphony.context.Context;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactory;
@@ -165,10 +165,10 @@ public class GridBuilder implements ContextBuilder<Object>{
 			Substation s = (Substation) Tools.getObjectAt(grid, Substation.class, ps.getX(), ps.getY());
 			ss.add(s);
 			for(GridPoint p: cluster) {
-				Entity e = null;
+				ElectricEntity e = null;
 				for(Object o: grid.getObjectsAt(p.getX(), p.getY())) {
-					if(!(o instanceof Substation) && o instanceof Entity) {
-						e= (Entity) o;
+					if(!(o instanceof Substation) && o instanceof ElectricEntity) {
+						e= (ElectricEntity) o;
 					}
 				}
 				net.addEdge(s, e);

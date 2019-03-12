@@ -5,7 +5,7 @@ import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 
-public class Substation extends Entity{
+public class Substation extends ElectricEntity{
 
 GridPoint location; //Location of the top-right GridPoint
 	

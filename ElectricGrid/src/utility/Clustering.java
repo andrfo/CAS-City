@@ -92,7 +92,7 @@ public class Clustering {
 	    for(Centroid c: centroids) {
 	    	points.add(c.location);
 	    }
-	    System.out.println(runs);
+//	    System.out.println(runs);
 	    return points;
 	}
 	

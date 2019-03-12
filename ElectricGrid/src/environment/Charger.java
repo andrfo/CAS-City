@@ -3,7 +3,7 @@ package environment;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;
 
-public class Charger extends Entity{
+public class Charger extends ElectricEntity{
 
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;

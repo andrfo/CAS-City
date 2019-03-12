@@ -2,7 +2,7 @@ package environment;
 
 import java.util.List;
 
-
+import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
@@ -13,7 +13,7 @@ import repast.simphony.space.grid.GridPoint;
  *
  */
 
-public abstract class Entity {
+public abstract class ElectricEntity {
 	
 	
 	//List<Entity> entities;
@@ -22,7 +22,7 @@ public abstract class Entity {
 	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
-	public Entity(ContinuousSpace<Object> space, Grid<Object> grid) {
+	public ElectricEntity(ContinuousSpace<Object> space, Grid<Object> grid) {
 		this.space = space;
 		this.grid = grid;
 	}
@@ -31,9 +31,13 @@ public abstract class Entity {
 		return grid.getLocation(this);
 	}
 	
-	//TODO: add location: gridpoint
-	
-	
-	//add @watch function?
+	/**
+	 * Runs every step
+	 */
+	@ScheduledMethod(start = 1, interval = 1)
+	public void step(){
+		
+		
+	}
 
 }
