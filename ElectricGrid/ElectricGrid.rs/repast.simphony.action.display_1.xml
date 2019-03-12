@@ -3,14 +3,30 @@
   <type>2D</type>
   <styles>
     <entry>
-      <string>environment.Substation</string>
+      <string>environment.Building</string>
       <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+    </entry>
+    <entry>
+      <string>environment.Substation</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
+      <string>environment.Charger</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
   </styles>
   <editedStyles>
     <entry>
-      <string>environment.Substation</string>
+      <string>environment.Building</string>
       <null/>
+    </entry>
+    <entry>
+      <string>environment.Substation</string>
+      <string>environment.Substation.style_1.xml</string>
+    </entry>
+    <entry>
+      <string>environment.Charger</string>
+      <string>environment.Charger.style_0.xml</string>
     </entry>
   </editedStyles>
   <netStyles>
@@ -33,15 +49,23 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-204895096</hashCode>
+    <hashCode>1932339371</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
-      <string>environment.Substation</string>
+      <string>environment.Building</string>
       <int>0</int>
+    </entry>
+    <entry>
+      <string>environment.Substation</string>
+      <int>2</int>
+    </entry>
+    <entry>
+      <string>environment.Charger</string>
+      <int>1</int>
     </entry>
   </layerOrder>
   <projections>
