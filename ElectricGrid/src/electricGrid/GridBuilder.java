@@ -168,10 +168,11 @@ public class GridBuilder implements ContextBuilder<Object>{
 				ElectricEntity e = null;
 				for(Object o: grid.getObjectsAt(p.getX(), p.getY())) {
 					if(!(o instanceof Substation) && o instanceof ElectricEntity) {
-						e= (ElectricEntity) o;
+						e = (ElectricEntity) o;
 					}
 				}
 				net.addEdge(s, e);
+				e.setParent(s);
 			}
 		}
 		int n = ss.size();
@@ -180,7 +181,7 @@ public class GridBuilder implements ContextBuilder<Object>{
 		MST mst = new MST(V, E);
 		for(int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
-				if(i == j) {continue;	}
+				if(i == j) {continue;}
 				mst.edge[i + j].src = i; 
 				mst.edge[i + j].dest = j; 
 				mst.edge[i + j].weight = 
@@ -193,6 +194,7 @@ public class GridBuilder implements ContextBuilder<Object>{
 		Edge[] tree = mst.KruskalMST();
 		for(Edge r: tree) {
 			net.addEdge(ss.get(r.src), ss.get(r.dest));
+			//TODO: Create root of tree to get a flow structure
 		}
 		
 		return net;

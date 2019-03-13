@@ -18,26 +18,34 @@ public abstract class ElectricEntity {
 	
 	//List<Entity> entities;
 	
-	GridPoint location; //Location of the top-right GridPoint
+	protected ElectricEntity parent;
+	protected GridPoint location; //Location of the top-right GridPoint
+	protected Double baseCost;
+	protected Double unitCost;
+	protected Double totalCost;
 	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
 	public ElectricEntity(ContinuousSpace<Object> space, Grid<Object> grid) {
 		this.space = space;
 		this.grid = grid;
+		this.totalCost = baseCost;
 	}
 	
 	public GridPoint getLocation() {
 		return grid.getLocation(this);
 	}
 	
-	/**
-	 * Runs every step
-	 */
-	@ScheduledMethod(start = 1, interval = 1)
-	public void step(){
-		
-		
+	public void setParent(ElectricEntity parent) {
+		this.parent = parent;
+	}
+	
+	public void setChange(Double oldValue, Double newValue) {
+		totalCost += newValue - oldValue;
+	}
+	
+	public void onChange(Double oldValue, Double newValue) {
+		parent.setChange(oldValue, newValue);
 	}
 
 }

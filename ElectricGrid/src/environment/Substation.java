@@ -17,6 +17,8 @@ GridPoint location; //Location of the top-right GridPoint
 		this.grid = grid;
 	}
 	
+	//Has small base cost
+	//Has the cost of all children
 	
 	
 	/**
@@ -25,6 +27,6 @@ GridPoint location; //Location of the top-right GridPoint
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step(){
 		
-		System.out.println("running");
+		System.out.println(totalCost);
 	}
 }
