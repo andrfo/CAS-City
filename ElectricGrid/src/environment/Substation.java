@@ -15,18 +15,13 @@ GridPoint location; //Location of the top-right GridPoint
 		super(space, grid);
 		this.space = space;
 		this.grid = grid;
+		this.baseLoad = 0.01;//lights and the like
+		this.totalLoad = baseLoad;
 	}
 	
 	//Has small base cost
 	//Has the cost of all children
 	
 	
-	/**
-	 * Runs every step
-	 */
-	@ScheduledMethod(start = 1, interval = 1)
-	public void step(){
-		
-		System.out.println(totalCost);
-	}
+	
 }

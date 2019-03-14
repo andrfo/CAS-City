@@ -20,16 +20,15 @@ public abstract class ElectricEntity {
 	
 	protected ElectricEntity parent;
 	protected GridPoint location; //Location of the top-right GridPoint
-	protected Double baseCost;
-	protected Double unitCost;
-	protected Double totalCost;
+	protected Double baseLoad;
+	protected Double unitLoad;
+	protected Double totalLoad;
 	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
 	public ElectricEntity(ContinuousSpace<Object> space, Grid<Object> grid) {
 		this.space = space;
 		this.grid = grid;
-		this.totalCost = baseCost;
 	}
 	
 	public GridPoint getLocation() {
@@ -41,11 +40,20 @@ public abstract class ElectricEntity {
 	}
 	
 	public void setChange(Double oldValue, Double newValue) {
-		totalCost += newValue - oldValue;
+		totalLoad += newValue - oldValue;
 	}
 	
 	public void onChange(Double oldValue, Double newValue) {
-		parent.setChange(oldValue, newValue);
+		if(parent != null) {
+			parent.setChange(oldValue, newValue);
+		}
 	}
 
+	public void init() {
+		onChange(0d, totalLoad);
+	}
+	
+	public String getLoad() {
+		return Double.toString(totalLoad);
+	}
 }

@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import environment.Building;
 import environment.Charger;
 import environment.ElectricEntity;
+import environment.RegionalGridNode;
 import environment.Substation;
 import repast.simphony.context.Context;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactory;
@@ -39,6 +40,7 @@ public class GridBuilder implements ContextBuilder<Object>{
 	BufferedImage img = null;
 	int width;
 	int height;
+	RegionalGridNode globalNode;
 	
 	ContinuousSpace<Object> space;
 	Grid<Object> grid;
@@ -80,6 +82,11 @@ public class GridBuilder implements ContextBuilder<Object>{
 						height + 10));
 		
 		readImage(space, grid, context);
+		for(Object o: context.getObjects(ElectricEntity.class)) {
+			ElectricEntity e = (ElectricEntity) o;
+			e.init();
+		}
+		globalNode = new RegionalGridNode(space, grid);
 		return context;
 	}
 	
@@ -158,12 +165,13 @@ public class GridBuilder implements ContextBuilder<Object>{
 		//Get network
 		Network<Object> net = (Network<Object>)context.getProjection("electric network");
 		
-		List<Substation> ss = new ArrayList<Substation>();
+		ArrayList<ElectricEntity> subs = new ArrayList<ElectricEntity>();
 		
 		for(ArrayList<GridPoint> cluster: clusters) {
+			ArrayList<ElectricEntity> clusterEntities = new ArrayList<ElectricEntity>();
 			GridPoint ps = cluster.remove(0);
 			Substation s = (Substation) Tools.getObjectAt(grid, Substation.class, ps.getX(), ps.getY());
-			ss.add(s);
+			subs.add(s);
 			for(GridPoint p: cluster) {
 				ElectricEntity e = null;
 				for(Object o: grid.getObjectsAt(p.getX(), p.getY())) {
@@ -171,13 +179,23 @@ public class GridBuilder implements ContextBuilder<Object>{
 						e = (ElectricEntity) o;
 					}
 				}
-				net.addEdge(s, e);
-				e.setParent(s);
+				clusterEntities.add(e);
+//				net.addEdge(s, e);
+//				e.setParent(s);
 			}
+			spanningTree(clusterEntities, net);
 		}
-		int n = ss.size();
+		spanningTree(subs, net);
+			
+			//TODO: Create root of tree to get a flow structure
+		
+		return net;
+	}
+	
+	private void spanningTree(ArrayList<ElectricEntity> nodes, Network<Object> net) {
+		int n = nodes.size();
 		int V = n;
-		int E = (n*(n-1))/2;
+		int E = n*n;
 		MST mst = new MST(V, E);
 		for(int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
@@ -185,19 +203,22 @@ public class GridBuilder implements ContextBuilder<Object>{
 				mst.edge[i + j].src = i; 
 				mst.edge[i + j].dest = j; 
 				mst.edge[i + j].weight = 
-						(int) Math.round(
+						(int) Math.ceil(
 								Tools.gridDistance(
-										ss.get(i).getLocation(), 
-										ss.get(j).getLocation()));
+										nodes.get(i).getLocation(), 
+										nodes.get(j).getLocation()));
 			}
 		}
 		Edge[] tree = mst.KruskalMST();
+//		nodes.get(tree[0].src).setParent(globalNode);
 		for(Edge r: tree) {
-			net.addEdge(ss.get(r.src), ss.get(r.dest));
+			ElectricEntity a = nodes.get(r.src);
+			ElectricEntity b = nodes.get(r.dest);
+			net.addEdge(a, b);
+			b.setParent(a);
+			
 			//TODO: Create root of tree to get a flow structure
 		}
-		
-		return net;
 	}
 
 }
