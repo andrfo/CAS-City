@@ -20,8 +20,6 @@ import repast.simphony.context.space.graph.NetworkBuilder;
 import repast.simphony.context.space.grid.GridFactory;
 import repast.simphony.context.space.grid.GridFactoryFinder;
 import repast.simphony.dataLoader.ContextBuilder;
-import repast.simphony.query.space.grid.GridCell;
-import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.continuous.SimpleCartesianAdder;
 import repast.simphony.space.graph.Network;
@@ -31,9 +29,9 @@ import repast.simphony.space.grid.GridPoint;
 import repast.simphony.space.grid.SimpleGridAdder;
 import repast.simphony.space.grid.WrapAroundBorders;
 import utility.Clustering;
-import utility.MST;
-import utility.MST.Edge;
+import utility.Kruskal;
 import utility.Tools;
+import utility.Kruskal.EDGE;
 
 public class GridBuilder implements ContextBuilder<Object>{
 
@@ -193,32 +191,27 @@ public class GridBuilder implements ContextBuilder<Object>{
 	}
 	
 	private void spanningTree(ArrayList<ElectricEntity> nodes, Network<Object> net) {
-		int n = nodes.size();
-		int V = n;
-		int E = n*n;
-		MST mst = new MST(V, E);
-		for(int i = 0; i < n; i++) {
-			for(int j = 0; j < n; j++) {
-				if(i == j) {continue;}
-				mst.edge[i + j].src = i; 
-				mst.edge[i + j].dest = j; 
-				mst.edge[i + j].weight = 
-						(int) Math.ceil(
+		char[] vertices = new char[nodes.size()];
+		ArrayList<EDGE> edges = new ArrayList<EDGE>();
+		for(int i = 0; i < nodes.size(); i++) {
+			vertices[i] = (char) i;
+		}
+		for(int i = 0; i < nodes.size(); i++) {
+			for(int j = 0; j < nodes.size(); j++) {
+				edges.add(new EDGE((char)i, (char)j, (int) Math.ceil(
 								Tools.gridDistance(
 										nodes.get(i).getLocation(), 
-										nodes.get(j).getLocation()));
+										nodes.get(j).getLocation()))));
 			}
 		}
-		Edge[] tree = mst.KruskalMST();
-//		nodes.get(tree[0].src).setParent(globalNode);
-		for(Edge r: tree) {
-			ElectricEntity a = nodes.get(r.src);
-			ElectricEntity b = nodes.get(r.dest);
-			net.addEdge(a, b);
-			b.setParent(a);
-			
-			//TODO: Create root of tree to get a flow structure
+		//Call Kruskal Algorithm
+		ArrayList<EDGE> mst = Kruskal.kruskal(vertices, edges.toArray(new EDGE[nodes.size()]));
+		for(EDGE e: mst) {
+			net.addEdge(nodes.get(e.from), nodes.get(e.to));
 		}
 	}
+	
+	//TODO: return root of tree to connect to substation.
+
 
 }
