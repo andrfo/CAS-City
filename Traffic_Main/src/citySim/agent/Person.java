@@ -42,6 +42,7 @@ public class Person extends Agent{
 	
 	private Spawner spawner;
 	private BusStop nearestBusStop;
+	private int lastTimeUse = 0;
 	
 	//0 = car, 1 = bus.
 	//pob: car = 1 - x, bus = x
@@ -93,6 +94,10 @@ public class Person extends Agent{
 			}
 		}
 		return Math.pow((1 - MEMORY_FACTOR), count);
+	}
+	
+	public int getLastTimeUse() {
+		return lastTimeUse;
 	}
 	
 	//TODO: Distance estimation for within and outside the city
@@ -183,6 +188,7 @@ public class Person extends Agent{
 			accumulatedTripCost += ((Car) v).getDistanceMoved() * DISTANCE_CONSTANT_CAR;	
 			//Time
 			accumulatedTripCost += ((Car) v).getTickCount() * TIME_CONSTANT_CAR;	
+			lastTimeUse = ((Car) v).getTickCount();
 			//Toll
 			accumulatedTripCost += ((Car) v).getTollCost() * TOLL_CONSTANT;
 		}
@@ -198,7 +204,8 @@ public class Person extends Agent{
 			//Bus fare
 			accumulatedTripCost += FARE_CONSTANT;
 			//Time
-			accumulatedTripCost += ((Bus) v).getTickCount() * TIME_CONSTANT_CAR;	
+			accumulatedTripCost += ((Bus) v).getTickCount() * TIME_CONSTANT_CAR;
+			lastTimeUse = ((Bus) v).getTickCount();
 			//How full the bus is
 			//TODO: get bus pop count
 			//TODO: Get time waited for bus
