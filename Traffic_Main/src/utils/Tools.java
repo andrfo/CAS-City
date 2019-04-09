@@ -218,5 +218,10 @@ public class Tools {
 		return Math.sqrt((dx*dx) + (dy*dy));
 	}
 	
+	public static Double manhattanDistance(GridPoint a, GridPoint b) {
+		Double dx = (double) Math.abs((b.getX() - a.getX()));
+		Double dy = (double) Math.abs((b.getY() - a.getY()));
+		return dx + dy;
+	}
 	
 }

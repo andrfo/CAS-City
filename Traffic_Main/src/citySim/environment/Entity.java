@@ -21,7 +21,7 @@ public abstract class Entity {
 	GridPoint location; //Location of the top-right GridPoint
 	
 	private ContinuousSpace<Object> space;
-	private Grid<Object> grid;
+	protected Grid<Object> grid;
 	public Entity(ContinuousSpace<Object> space, Grid<Object> grid) {
 		this.space = space;
 		this.grid = grid;

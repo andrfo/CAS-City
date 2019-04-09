@@ -66,7 +66,6 @@ public class Vehicle extends Agent{
 	private Vehicle blockingCar;
 	
 	private int deadlockTimer;
-	private int parkedTimer;
 	
 	
 	//Speed control
@@ -83,6 +82,7 @@ public class Vehicle extends Agent{
 	public String debugString = "";
 	
 	protected double distanceMoved = 0;
+	protected int tickCount = 0;
 	
 	protected int scanWait = 0;
 	protected int calcWait = 0;
@@ -105,7 +105,6 @@ public class Vehicle extends Agent{
 		this.open = new HashSet<Road>();
 		this.closed = new HashSet<Road>();
 		this.parked = false;
-		this.parkedTimer = 0;
 		this.goingToWork = false;
 		this.blockingCar = null;
 		this.deadlockTimer = deadlockTime;
@@ -133,6 +132,7 @@ public class Vehicle extends Agent{
 	
 	private void getSurroundings() {
 		
+		tickCount++;
 		
 		if(!moved) {
 			return;
@@ -175,8 +175,7 @@ public class Vehicle extends Agent{
 	
 	private boolean isMovable() {
 		if(parked) {
-			if(parkedTimer > 0) {
-				parkedTimer--;
+			if(!occupants.get(0).isWantToLeave()) {
 				return false;
 			}
 			else {
@@ -283,8 +282,11 @@ public class Vehicle extends Agent{
 				space.moveTo(this, space.getLocation(goal).getX(), space.getLocation(goal).getY());
 				grid.moveTo(this, pt.getX(), pt.getY());
 				for(Person p : occupants) {
-					p.setReachedGoal(this, false);
+					if(p.getNearestBusStop() == goal) {
+						p.setReachedGoal(this, false);						
+					}
 				}
+				gatherOccupants();
 				goals.next();
 				closed.clear();
 				open.clear();
@@ -405,7 +407,9 @@ public class Vehicle extends Agent{
 		@SuppressWarnings("unchecked")
 		Context<Object> context = ContextUtils.getContext(this);
 		for(Person p : occupants) {
-			context.remove(p);
+			if(p.isWantToLeave()) {
+				context.remove(p);				
+			}
 		}
 	}
 	
@@ -508,6 +512,10 @@ public class Vehicle extends Agent{
 
 	private void stop() {
 		speed = 0;
+	}
+	
+	public int getTickCount() {
+		return tickCount;
 	}
 	
 	private void descelerate(Double minDist) {
@@ -621,10 +629,10 @@ public class Vehicle extends Agent{
 		this.parkingSpace = p;
 		p.reserve();
 		if(goingToWork) {
-			parkedTimer = time;			
+			occupants.get(0).setParked(time);			
 		}
 		else {
-			parkedTimer = 500;
+			occupants.get(0).setParked(500);		
 		}
 	}
 	
@@ -833,6 +841,10 @@ public class Vehicle extends Agent{
 			return true;
 		}
 		return false;
+	}
+	
+	public int getOccupantCount() {
+		return occupants.size();
 	}
 	
 	public boolean isFull() {

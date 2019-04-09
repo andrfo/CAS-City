@@ -139,7 +139,7 @@ public class Spawner {
 	
 	private void isRunEnd() {
 		double currentTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
-		if(currentTick >= Tools.TICKS_PER_DAY * 1) {
+		if(currentTick >= Tools.TICKS_PER_DAY * 7) {
 			RunEnvironment.getInstance().endRun();
 		}
 	}

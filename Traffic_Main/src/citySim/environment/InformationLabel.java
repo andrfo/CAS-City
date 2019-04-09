@@ -3,6 +3,7 @@ package citySim.environment;
 import java.math.BigDecimal;
 
 import repast.simphony.context.Context;
+import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;
@@ -25,7 +26,7 @@ public class InformationLabel extends Entity{
 		label = timeToString();
 		
 	}
-	
+
 	private String timeToString() {
 		
 		

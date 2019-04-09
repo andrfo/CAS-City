@@ -12,10 +12,5 @@ public class Bus extends Vehicle{
 		super(space, grid, occupantLimit, parkingNexi);
 		// TODO Auto-generated constructor stub
 	}
-	
-	
-	public Double getCost() {
-		return 100d;
-	}
 
 }

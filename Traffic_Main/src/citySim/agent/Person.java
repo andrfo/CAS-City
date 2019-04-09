@@ -1,9 +1,11 @@
 package citySim.agent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import citySim.environment.Building;
+import citySim.environment.BusStop;
 import citySim.environment.SideWalk;
 import citySim.environment.Spawner;
 import repast.simphony.context.Context;
@@ -15,22 +17,36 @@ import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import repast.simphony.util.ContextUtils;
 import repast.simphony.util.SimUtilities;
+import structures.Trip;
 import utils.Tools;
 
 public class Person extends Agent{
 
 	private Building workPlace;
 	private Double dailyBudget;
-	private Double previousCost;
-	private String previousDecision;
-	private Double accumulatedCostToday;
+	private Double accumulatedTripCost;
 	private boolean isInstantiated;
 	
+	private static final Double DISTANCE_CONSTANT_CAR = 1.2d;
+	private static final Double DISTANCE_CONSTANT_BUS = 1d;
+	private static final Double TIME_CONSTANT_CAR = 1d;
+	private static final Double TIME_CONSTANT_BUS = 1d;
+	private static final Double CROWD_CONSTATNT_BUS = 1d;
+	private static final Double TOLL_CONSTANT = 1d;
+	private static final Double FARE_CONSTANT = 40d;
+	private static final Double MEMORY_FACTOR = 0.05d;
+	private static final int TIME_ESTIMATION = 100;
+	private static final Double TOLL_COST_ESTIMATION = 20d;
+	
+	private List<Trip> previousTrips;
+	
 	private Spawner spawner;
+	private BusStop nearestBusStop;
 	
 	//0 = car, 1 = bus.
 	//pob: car = 1 - x, bus = x
-	private Double travelPreference; 
+	private Double travelPreference;
+	private int parkedTimer = 0;
 	
 	
 	
@@ -39,11 +55,10 @@ public class Person extends Agent{
 		this.space = space;
 		this.grid = grid;
 		workPlace = null;
-		previousCost = null;
-		accumulatedCostToday = 0d;
+		accumulatedTripCost = 0d;
 		this.spawner = spawner;
-		travelPreference = new Random().nextDouble();
-		getTravelChoice();
+		previousTrips = new ArrayList<Trip>();
+		
 		// TODO Auto-generated constructor stub
 	}
 
@@ -53,55 +68,145 @@ public class Person extends Agent{
 		return workPlace;
 	}
 	
-	public String getTravelChoice() {
-		if(Tools.isTrigger(travelPreference)) {
-			previousDecision = "bus";
-			return "bus";
+	public boolean isWantToLeave() {
+		if(parkedTimer > 0) {
+			parkedTimer--;
+			return false;
 		}
-		previousDecision = "car";
-		return "car";
+		return true;
 	}
+	
+	public void setParked(int time) {
+		parkedTimer = time;
+	}
+	
+	private Double memoryFactor(String choice, int days) {
+		int count = 0;
+		int i = 0;
+		for (Trip t: previousTrips) {
+			if(t.getChoice().equals(choice)) {
+				count++;
+			}
+			i++;
+			if(i >= days) {
+				break;
+			}
+		}
+		return Math.pow((1 - MEMORY_FACTOR), count);
+	}
+	
+	//TODO: Distance estimation for within and outside the city
+	
+	private Double carCostEstimate() {
+		Double cost = 0d;
+		if(workPlace != null) {
+			cost += workPlace.getDistanceToNearestSpawn() * DISTANCE_CONSTANT_CAR;
+			cost += workPlace.getDistanceToNearestSpawn() * TIME_CONSTANT_CAR;
+		}
+		else {
+			cost += 50 * DISTANCE_CONSTANT_CAR;
+			cost += 50 * TIME_CONSTANT_CAR;
+		}
+		cost += TOLL_COST_ESTIMATION * TOLL_CONSTANT;
+		return cost;
+	}
+	
+	private Double busCostEstimate() {
+		Double cost = 0d;
+		if(workPlace != null) {
+			//Distance from bus stop to work
+			cost += workPlace.getDistanceToNearestBusStop() * DISTANCE_CONSTANT_BUS;
+			//Time
+			cost += workPlace.getDistanceToNearestBusStop() * TIME_CONSTANT_BUS;	
+		}
+		else {
+			accumulatedTripCost += 50 * DISTANCE_CONSTANT_BUS;
+		}
+		//Bus fare
+		cost += FARE_CONSTANT;
+		return cost;
+	}
+	
+	private Double getLastCost(String choice) {
+		Double mf = memoryFactor(choice, 3);
+		Double cost = 0d;
+		if(previousTrips.size() > 0) {
+			for(int i = previousTrips.size() - 1; i >= 0; i--) {
+				if(previousTrips.get(i).getChoice().equals(choice)) {
+					cost = previousTrips.get(i).getCost() * mf;
+					break;
+				}
+			}
+		}
+		if(cost == 0) {
+			if(choice.equals("bus")) {
+				cost = busCostEstimate() * mf;
+			}
+			else {
+				cost = carCostEstimate() * mf;
+			}
+		}
+		return cost;
+	}
+	
+	public String getTravelChoice() {
+		
+		Double carCost = getLastCost("car");
+		Double busCost = getLastCost("bus");
+		Double pobabilityOfCar = carCost / (carCost + busCost);
+		
+		if(Tools.isTrigger(pobabilityOfCar)) {
+			return "car";
+		}
+		return "bus";
+		
+		
+	}
+		
+	public BusStop getNearestBusStop() {
+		return nearestBusStop;
+	}
+		
 
 	public void setWorkPlace(Building workPlace) {
 		this.workPlace = workPlace;
+		this.nearestBusStop = workPlace.getNearestBusStop();
 	}
 	
 	private void updateCostAndChoice(Vehicle v) {
-		Double deltaPreference = 0.1d;
-		
-		accumulatedCostToday = 0d;
+		//Set the cost
+		accumulatedTripCost = 0d;
+		String choice = "";
 		if(v instanceof Car) {
-			accumulatedCostToday += ((Car) v).getDistanceMoved();	
-			accumulatedCostToday += ((Car) v).getTollCost();	
-			accumulatedCostToday -= 20d; //Experience; people like driving
+			choice = "car";
+			//Distance
+			accumulatedTripCost += ((Car) v).getDistanceMoved() * DISTANCE_CONSTANT_CAR;	
+			//Time
+			accumulatedTripCost += ((Car) v).getTickCount() * TIME_CONSTANT_CAR;	
+			//Toll
+			accumulatedTripCost += ((Car) v).getTollCost() * TOLL_CONSTANT;
 		}
 		else if(v instanceof Bus){
-			accumulatedCostToday += ((Bus) v).getCost();
-			accumulatedCostToday += 20d; //Experience; people don't like bussing
-		}
-		
-		if(previousCost == null) {
-			travelPreference = new Random().nextDouble();
-		}
-		else {//update preference
-			if(previousCost < accumulatedCostToday) {
-				if(previousDecision.equals("bus") && travelPreference < 1 - deltaPreference) {
-					travelPreference += deltaPreference;
-				}
-				else if(previousDecision.equals("car") && travelPreference > deltaPreference) {
-					travelPreference -= deltaPreference;
-				}
+			choice = "bus";
+			//Distance from bus stop to work
+			if(workPlace != null) {
+				accumulatedTripCost += workPlace.getDistanceToNearestBusStop() * DISTANCE_CONSTANT_BUS;
 			}
 			else {
-				if(previousDecision.equals("bus") && travelPreference > deltaPreference) {
-					travelPreference -= deltaPreference;
-				}
-				else if(previousDecision.equals("car") && travelPreference < 1 - deltaPreference) {
-					travelPreference += deltaPreference;
-				}
+				accumulatedTripCost += 50 * DISTANCE_CONSTANT_BUS;
 			}
+			//Bus fare
+			accumulatedTripCost += FARE_CONSTANT;
+			//Time
+			accumulatedTripCost += ((Bus) v).getTickCount() * TIME_CONSTANT_CAR;	
+			//How full the bus is
+			//TODO: get bus pop count
+			//TODO: Get time waited for bus
 		}
-		previousCost = accumulatedCostToday;
+		
+		previousTrips.add(new Trip(accumulatedTripCost, choice));
+		
+		
 	}
 	
 	
