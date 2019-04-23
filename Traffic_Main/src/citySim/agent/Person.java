@@ -9,6 +9,8 @@ import citySim.environment.BusStop;
 import citySim.environment.SideWalk;
 import citySim.environment.Spawner;
 import repast.simphony.context.Context;
+import repast.simphony.engine.environment.RunEnvironment;
+import repast.simphony.parameter.Parameters;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.random.RandomHelper;
@@ -36,7 +38,7 @@ public class Person extends Agent{
 	private static final Double FARE_CONSTANT = 40d;
 	private static final Double MEMORY_FACTOR = 0.05d;
 	private static final int TIME_ESTIMATION = 100;
-	private static final Double TOLL_COST_ESTIMATION = 20d;
+	private int TOLL_COST_ESTIMATION;
 	
 	private List<Trip> previousTrips;
 	
@@ -53,6 +55,8 @@ public class Person extends Agent{
 	
 	public Person(ContinuousSpace<Object> space, Grid<Object> grid, Spawner spawner) {
 		super(space, grid);
+		Parameters params = RunEnvironment.getInstance().getParameters();
+		this.TOLL_COST_ESTIMATION = params.getInteger("toll_cost");
 		this.space = space;
 		this.grid = grid;
 		workPlace = null;
