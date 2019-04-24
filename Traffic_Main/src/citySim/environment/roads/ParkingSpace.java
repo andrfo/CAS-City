@@ -1,4 +1,4 @@
-package citySim.environment;
+package citySim.environment.roads;
 
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;

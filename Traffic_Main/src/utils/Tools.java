@@ -5,11 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import citySim.agent.Vehicle;
-import citySim.environment.Road;
+import citySim.environment.electric.Substation;
+import citySim.environment.roads.Road;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
+import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 
 public class Tools {
@@ -51,6 +53,16 @@ public class Tools {
 			
 		}
 		return false;
+	}
+	
+	public static Object getObjectAt(Grid<Object> grid, Class<?> c, int x, int y) {
+		for(Object o: grid.getObjectsAt(x, y)) {
+			if(o.getClass().equals(c)) {
+				return (Substation) o;
+			}
+		}
+		return null;
+		
 	}
 	
 	public static List<RepastEdge<Object>> aStar(Road start, Road goal, Network<Object> net){

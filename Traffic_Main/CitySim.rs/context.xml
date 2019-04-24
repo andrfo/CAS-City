@@ -3,4 +3,5 @@
   	<projection type="grid" id="grid"/>
   	<projection type="network" id="road network"></projection>
   	<projection type="network" id="debug network"></projection>
+  	<projection type="network" id="electric network"></projection>
 </context>

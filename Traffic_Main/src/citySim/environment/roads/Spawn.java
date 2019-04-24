@@ -1,4 +1,4 @@
-package citySim.environment;
+package citySim.environment.roads;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

@@ -15,7 +15,4 @@ public class Trip {
 	public String getChoice() {
 		return choice;
 	}
-	
-	
-
 }

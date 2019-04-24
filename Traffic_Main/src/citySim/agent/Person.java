@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import citySim.environment.Building;
-import citySim.environment.BusStop;
-import citySim.environment.SideWalk;
 import citySim.environment.Spawner;
+import citySim.environment.electric.Building;
+import citySim.environment.roads.BusStop;
+import citySim.environment.roads.SideWalk;
 import repast.simphony.context.Context;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.parameter.Parameters;
@@ -29,10 +29,10 @@ public class Person extends Agent{
 	private Double accumulatedTripCost;
 	private boolean isInstantiated;
 	
-	private static final Double DISTANCE_CONSTANT_CAR = 1.2d;
+	private static final Double DISTANCE_CONSTANT_CAR = 0.012d;
 	private static final Double DISTANCE_CONSTANT_BUS = 1d;
-	private static final Double TIME_CONSTANT_CAR = 1d;
-	private static final Double TIME_CONSTANT_BUS = 1d;
+	private static final Double TIME_CONSTANT_CAR = 0.1d;
+	private static final Double TIME_CONSTANT_BUS = 0.1d;
 	private static final Double CROWD_CONSTATNT_BUS = 1d;
 	private static final Double TOLL_CONSTANT = 1d;
 	private static final Double FARE_CONSTANT = 40d;
@@ -162,7 +162,7 @@ public class Person extends Agent{
 		
 		Double carCost = getLastCost("car");
 		Double busCost = getLastCost("bus");
-		Double pobabilityOfCar = carCost / (carCost + busCost);
+		Double pobabilityOfCar = 1 - (carCost / (carCost + busCost));
 		
 		if(Tools.isTrigger(pobabilityOfCar)) {
 			return "car";
@@ -216,8 +216,21 @@ public class Person extends Agent{
 		}
 		
 		previousTrips.add(new Trip(accumulatedTripCost, choice));
+		printPriceHistory();
 		
 		
+	}
+	
+	private void printPriceHistory() {
+		String newLine = System.getProperty("line.separator");
+		String s = 
+				  "PriceHistory:" + newLine;
+		for(int i = 1; i <= previousTrips.size(); i++) {
+			s += "    -Trip " + i + ": " + newLine;
+			s += "        -Vehicle: " + previousTrips.get(i - 1).getChoice() + newLine;
+			s += "        -Price:   " + previousTrips.get(i - 1).getCost() + newLine;
+		}
+		System.out.println(s);
 	}
 	
 	
@@ -232,6 +245,8 @@ public class Person extends Agent{
 			}
 			return;
 		}
+		
+		//Dump the passenger on the sidewalk(symbolizing that it's busy)
 		@SuppressWarnings("unchecked")
 		Context<Object> context = ContextUtils.getContext(v);
 		GridPoint pt = grid.getLocation(v);

@@ -3,7 +3,7 @@ package citySim.agent;
 
 import java.util.List;
 
-import citySim.environment.Road;
+import citySim.environment.roads.Road;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;
 

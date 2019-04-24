@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import citySim.agent.Vehicle;
+import citySim.environment.roads.Road;
 import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.query.space.grid.GridCell;

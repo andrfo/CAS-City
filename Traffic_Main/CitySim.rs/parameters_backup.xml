@@ -31,7 +31,7 @@
 									
 		/>
 				<parameter name="toll_cost" displayName="toll_cost" type="int" 
-						defaultValue="140" 
+						defaultValue="40" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									

@@ -1,8 +1,11 @@
-package citySim.environment;
+package citySim.environment.roads;
 
 import java.util.List;
 
 import citySim.agent.Vehicle;
+import citySim.environment.Entity;
+import citySim.environment.Junction;
+import citySim.environment.Roundabout;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.Schedule;
 import repast.simphony.engine.schedule.ScheduleParameters;

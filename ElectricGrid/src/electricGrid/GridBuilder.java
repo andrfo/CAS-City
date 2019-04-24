@@ -48,7 +48,7 @@ public class GridBuilder implements ContextBuilder<Object>{
 		try {
 		    img = ImageIO.read(new File("C:/Users/andrfo/Documents/Git/CAS-City/ElectricGrid/maps/overlays/trondheim_el_nodes.png"));
 		} catch (IOException e) {
-			System.out.println(e + ": Image file not found!");
+			System.out.println("There was an error while loading the city electric grid map: " + e);
 		}
 		width = img.getWidth();
 		height = img.getHeight();

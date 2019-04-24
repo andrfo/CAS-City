@@ -7,6 +7,16 @@ import java.util.List;
 
 
 import citySim.environment.*;
+import citySim.environment.electric.Building;
+import citySim.environment.roads.BusStop;
+import citySim.environment.roads.Despawn;
+import citySim.environment.roads.NorthEastRoad;
+import citySim.environment.roads.ParkingSpace;
+import citySim.environment.roads.Road;
+import citySim.environment.roads.RoundaboutRoad;
+import citySim.environment.roads.SideWalk;
+import citySim.environment.roads.SouthWestRoad;
+import citySim.environment.roads.Spawn;
 import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.query.space.grid.GridCell;
@@ -355,11 +365,11 @@ public class Vehicle extends Agent{
 		Double minDist = Double.MAX_VALUE;
 		Double dist = 0d;
 		for (Road road : open) {
+			if(!isValidGoal(road, goal)) {
+				continue;
+			}
 			dist = Tools.gridDistance(grid.getLocation(goal), grid.getLocation(road));
-			if(dist < minDist && !(road instanceof Spawn) && !(road instanceof SideWalk)) {
-				if(road instanceof ParkingSpace && road != goal) {
-					continue;
-				}
+			if(dist < minDist) {
 				localGoal = road;
 				minDist = dist;
 			}
@@ -619,6 +629,22 @@ public class Vehicle extends Agent{
 		return null;
 	}
 	
+	public boolean isValidGoal(Road road, Entity goal) {
+		if((road instanceof ParkingSpace && road != goal)) {
+			return false;
+		}
+		if(road instanceof RoundaboutRoad) {
+			return false;
+		}
+		if(road instanceof SideWalk) {
+			return false;
+		}
+		if(road instanceof Spawn) {
+			return false;
+		}
+		
+		return true;
+	}
 	
 	public String debugLabel() {
 		return debugString;
