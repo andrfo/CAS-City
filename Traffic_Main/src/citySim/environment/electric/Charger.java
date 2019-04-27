@@ -26,12 +26,12 @@ public class Charger extends ElectricEntity{
 		if(isCharging) {
 			
 			Double newValue = baseLoad + unitLoad;
-			onChange(totalLoad, newValue);//Pass by reference error?
+			onChange(Double.valueOf(totalLoad), newValue);
 			totalLoad = newValue;
 		}
 		else {
-			Double newValue = baseLoad;
-			onChange(totalLoad, newValue);//Pass by reference error?
+			Double newValue = Double.valueOf(baseLoad);
+			onChange(Double.valueOf(totalLoad), newValue);
 			totalLoad = newValue;
 		}
 		this.isCharging = isCharging;

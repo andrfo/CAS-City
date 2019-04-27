@@ -1,9 +1,7 @@
 package citySim.environment.electric;
 
-import java.util.List;
 
 import citySim.environment.Entity;
-import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
@@ -43,7 +41,9 @@ public abstract class ElectricEntity extends Entity{
 	}
 	
 	public void setChange(Double oldValue, Double newValue) {
+		Double old = Double.valueOf(totalLoad);
 		totalLoad += newValue - oldValue;
+		onChange(old, Double.valueOf(totalLoad));
 	}
 	
 	public void onChange(Double oldValue, Double newValue) {

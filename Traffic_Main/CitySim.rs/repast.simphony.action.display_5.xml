@@ -44,7 +44,7 @@
     </entry>
     <entry>
       <string>citySim.environment.electric.RegionalGridNode</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
       <string>citySim.environment.roads.NorthEastRoad</string>
@@ -110,7 +110,7 @@
     </entry>
     <entry>
       <string>citySim.environment.electric.RegionalGridNode</string>
-      <null/>
+      <string>citySim.environment.electric.RegionalGridNode.style_3.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.roads.NorthEastRoad</string>
@@ -161,7 +161,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-1242305448</hashCode>
+    <hashCode>1768330757</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>

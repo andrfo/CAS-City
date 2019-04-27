@@ -1,15 +1,14 @@
 <repast.simphony.visualization.editedStyle.DefaultEditedStyleData2D>
   <shapeWkt>circle</shapeWkt>
-  <size>40.0</size>
+  <size>350.0</size>
   <sizeMax>15.0</sizeMax>
   <sizeMin>1.0</sizeMin>
   <sizeScale>1.0</sizeScale>
   <label></label>
-  <labelMethod>getLoad</labelMethod>
   <labelPosition>bottom</labelPosition>
   <labelPrecision>3</labelPrecision>
   <labelOffset>5.0</labelOffset>
-  <labelFontSize>14</labelFontSize>
+  <labelFontSize>100</labelFontSize>
   <labelFontType>0</labelFontType>
   <labelFontFamily>Arial</labelFontFamily>
   <labelColor>
@@ -18,8 +17,8 @@
     <float>0.0</float>
   </labelColor>
   <color>
-    <float>0.2</float>
-    <float>1.0</float>
+    <float>0.0</float>
+    <float>0.0</float>
     <float>1.0</float>
   </color>
   <colorMax>
@@ -37,4 +36,5 @@
     <float>1.0</float>
     <float>1.0</float>
   </colorScale>
+  <iconFile2D>./icons/power.png</iconFile2D>
 </repast.simphony.visualization.editedStyle.DefaultEditedStyleData2D>
