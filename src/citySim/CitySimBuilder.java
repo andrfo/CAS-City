@@ -80,12 +80,12 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	public Context build(Context<Object> context) {
 		
 		try {
-		    cityImg = ImageIO.read(new File("C:/Users/andrfo/Documents/Git/CAS-City/Traffic_Main/maps/trondheimv2.png"));
+		    cityImg = ImageIO.read(new File("C:/Users/andrfo/Documents/Git/CAS-City/maps/trondheimv2.png"));
 		} catch (IOException e) {
 			System.out.println("There was an error while loading the city traffic map: " + e);
 		}
 		try {
-		    gridImg = ImageIO.read(new File("C:/Users/andrfo/Documents/Git/CAS-City/ElectricGrid/maps/overlays/trondheim_el_nodes.png"));
+		    gridImg = ImageIO.read(new File("C:/Users/andrfo/Documents/Git/CAS-City/maps/overlays/trondheim_el_nodes.png"));
 		} catch (IOException e) {
 			System.out.println("There was an error while loading the city electric grid map: " + e);
 		}
