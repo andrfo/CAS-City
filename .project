@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
+<<<<<<< HEAD
 	<name>CitySim</name>
+=======
+	<name>CAS-City</name>
+>>>>>>> 77b8a3a0ffd42bf0f226fb98727303b620f0f408
 	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
+<<<<<<< HEAD
 		<buildCommand>
 			<name>repast.simphony.statecharts.diagram.builder</name>
 			<arguments>
@@ -21,5 +26,9 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>repast.simphony.eclipse.repast_simphony_nature</nature>
 		<nature>repast.simphony.statecharts.diagram.repast_simphony_statechart_nature</nature>
+=======
+	</buildSpec>
+	<natures>
+>>>>>>> 77b8a3a0ffd42bf0f226fb98727303b620f0f408
 	</natures>
 </projectDescription>

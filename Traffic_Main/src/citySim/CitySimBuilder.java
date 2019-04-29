@@ -70,6 +70,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	
 	RegionalGridNode globalNode;
 	
+	
 	ContinuousSpace<Object> space;
 	Grid<Object> grid;
 	
@@ -124,13 +125,19 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		space.moveTo(info, width - 15, height - 15);
 		grid.moveTo(info, width - 15, height - 15);
 		
+		globalNode = new RegionalGridNode(space, grid);
+		context.add(globalNode);
+		space.moveTo(globalNode, width - 75, height - 15);
+		grid.moveTo(globalNode, width - 75, height - 15);
+		
 		readCityImage(space, grid, context);
 		readGridImage(space, grid, context);
 		for(Object o: context.getObjects(ElectricEntity.class)) {
 			ElectricEntity e = (ElectricEntity) o;
 			e.init();
 		}
-		globalNode = new RegionalGridNode(space, grid);
+		
+		
 		
 		return context;
 	}
@@ -489,32 +496,15 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 			spanningTree(clusterEntities, net, closest);
 		}
 		spanningTree(subs, net, subs.get(0));
-			//TODO: Create root of tree to get a flow structure
+		
+		subs.get(0).setParent(globalNode);
+//		net.addEdge(globalNode, subs.get(0));
 		
 		return net;
 	}
 	
 	private void spanningTree(ArrayList<ElectricEntity> entities, Network<Object> net, ElectricEntity root) {
 		
-		class Node{
-			private ArrayList<Node> neighbors;
-			private ElectricEntity entity;
-			public Node(ElectricEntity entity) {
-				super();
-				this.entity = entity;
-				this.neighbors = new ArrayList<Node>();
-			}
-			public void addNeighbor(Node n) {
-				this.neighbors.add(n);
-			}
-			public ArrayList<Node> getNeighbors(){
-				return neighbors;
-			}
-			public ElectricEntity getEntity() {
-				return entity;
-			}
-			
-		}
 		
 		int [][] adjacencyMatrix = new int[entities.size()][entities.size()];
 		for(int i = 0; i < entities.size(); i++) {
@@ -561,10 +551,6 @@ public class CitySimBuilder implements ContextBuilder<Object> {
             }
         }
 	}
-	
-	static void breadthFirstSearch(int[][] matrix, int source){
-        
-    }
 	
 	
 	private void buildRoundabout(Road r, Context<Object> context) {

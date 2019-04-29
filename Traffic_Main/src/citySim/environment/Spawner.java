@@ -263,6 +263,7 @@ public class Spawner {
 				//Setup
 				
 				car.addGoal(parkingSpaces.get(RandomHelper.nextIntFromTo(0, parkingSpaces.size() - 1)));
+				p.setShoppingPlace(buildings.get(RandomHelper.nextIntFromTo(0, buildings.size() - 1)));
 				car.setStart(start);
 				car.setNet(net);
 				

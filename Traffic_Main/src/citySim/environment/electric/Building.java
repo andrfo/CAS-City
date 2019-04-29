@@ -11,7 +11,7 @@ import utils.Tools;
 public class Building extends ElectricEntity{
 
 	private int occupants = 0;
-	private int occupiedTime;
+//	private int occupiedTime;
 	
 	public Building(ContinuousSpace<Object> space, Grid<Object> grid) {
 		super(space, grid);
@@ -22,22 +22,22 @@ public class Building extends ElectricEntity{
 		// TODO Auto-generated constructor stub
 	}
 	
-	/**
-	 * Runs every step
-	 */
-	@ScheduledMethod(start = 1, interval = 1)
-	public void step(){
-		
-		if(occupiedTime > 0) {
-			occupiedTime--;
-		}
-		else {
-			removeOccupants(1);
-		}
-		if(RandomHelper.nextDouble() < 0.01) {
-			addOccupants(1);
-		}
-	}
+//	/**
+//	 * Runs every step
+//	 */
+//	@ScheduledMethod(start = 1, interval = 1)
+//	public void step(){
+//		
+//		if(occupiedTime > 0) {
+//			occupiedTime--;
+//		}
+//		else {
+//			removeOccupants(1);
+//		}
+//		if(RandomHelper.nextDouble() < 0.01) {
+//			addOccupants(1);
+//		}
+//	}
 
 	//Has base cost
 	//Has cost per occupant
@@ -45,7 +45,7 @@ public class Building extends ElectricEntity{
 	public void addOccupants(int n) {
 		occupants += n;
 		Double newValue = baseLoad + occupants*unitLoad;
-		onChange(totalLoad, newValue);//Pass by reference error?
+		onChange(Double.valueOf(totalLoad), newValue);//Pass by reference error?
 		totalLoad = newValue;
 	}
 	
@@ -57,8 +57,7 @@ public class Building extends ElectricEntity{
 			occupants = 0;
 		}
 		Double newValue = baseLoad + occupants*unitLoad;
-		onChange(totalLoad, newValue);//Pass by reference error?
-		occupiedTime = RandomHelper.nextIntFromTo(0, 50);
+		onChange(Double.valueOf(totalLoad), newValue);//Pass by reference error?
 		totalLoad = newValue;
 	}
 

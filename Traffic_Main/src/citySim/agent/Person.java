@@ -25,6 +25,7 @@ import utils.Tools;
 public class Person extends Agent{
 
 	private Building workPlace;
+	private Building shop;
 	private Double dailyBudget;
 	private Double accumulatedTripCost;
 	private boolean isInstantiated;
@@ -77,6 +78,12 @@ public class Person extends Agent{
 		if(parkedTimer > 0) {
 			parkedTimer--;
 			return false;
+		}
+		if(workPlace != null) {
+			workPlace.removeOccupants(1);
+		}
+		else {
+			shop.removeOccupants(1);
 		}
 		return true;
 	}
@@ -182,6 +189,10 @@ public class Person extends Agent{
 		this.nearestBusStop = workPlace.getNearestBusStop();
 	}
 	
+	public void setShoppingPlace(Building shop) {
+		this.shop = shop;
+	}
+	
 	private void updateCostAndChoice(Vehicle v) {
 		//Set the cost
 		accumulatedTripCost = 0d;
@@ -244,6 +255,12 @@ public class Person extends Agent{
 				spawner.returnWorker(this);
 			}
 			return;
+		}
+		if(workPlace != null) {
+			workPlace.addOccupants(1);;
+		}
+		else {
+			shop.addOccupants(1);
 		}
 		
 		//Dump the passenger on the sidewalk(symbolizing that it's busy)

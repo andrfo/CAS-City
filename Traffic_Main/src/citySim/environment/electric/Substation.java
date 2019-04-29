@@ -21,7 +21,13 @@ GridPoint location; //Location of the top-right GridPoint
 	
 	//Has small base cost
 	//Has the cost of all children
-	
+//	@Override
+//	public void setChange(Double oldValue, Double newValue) {
+//		
+//		Double old = Double.valueOf(totalLoad);
+//		totalLoad += newValue - oldValue;
+//		onChange(old, Double.valueOf(totalLoad));
+//	}
 	
 	
 }
