@@ -474,7 +474,7 @@ public class Vehicle extends Agent{
 				continue;
 			}
 			for(Agent a : cell.items()) {
-				if(a instanceof Person) {//Run over people for now
+				if(a instanceof Person) {//Run over people, for now
 					continue;
 				}
 				Vehicle c = (Vehicle)a;
@@ -706,19 +706,6 @@ public class Vehicle extends Agent{
 	
 	public int getPathIndex() {
 		return (int) Math.ceil(pathIndex);
-	}
-	
-	private boolean isBehind(Vehicle c) {
-		if(this.direction == null) {
-			return true;
-		}
-		Vector2D diff = Tools.create2DVector(grid.getLocation(c), grid.getLocation(this));
-		double angle = direction.angle(diff);
-		
-		if(angle < Math.PI/2) {
-			return true;
-		}
-		return false;
 	}
 	
 	public Vehicle getBlockingCar() {

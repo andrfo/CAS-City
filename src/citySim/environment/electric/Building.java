@@ -1,64 +1,53 @@
 package citySim.environment.electric;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import citySim.agent.Person;
+import citySim.environment.Entity;
 import citySim.environment.roads.BusStop;
 import citySim.environment.roads.Spawn;
-import repast.simphony.engine.schedule.ScheduledMethod;
-import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.ContinuousSpace;
+import repast.simphony.space.graph.Network;
+import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.space.grid.Grid;
+import repast.simphony.space.grid.GridPoint;
 import utils.Tools;
 
 public class Building extends ElectricEntity{
 
-	private int occupants = 0;
-//	private int occupiedTime;
+	private Double unitLoad;
+	private Double totalLoad;
+	private List<Person> occupants;
 	
 	public Building(ContinuousSpace<Object> space, Grid<Object> grid) {
 		super(space, grid);
 		this.unitLoad = 3d;//TODO: research
-		this.baseLoad = unitLoad;//lights and the like
-		this.totalLoad = baseLoad;
+		this.totalLoad = 3d;
 		this.parent = null;
+		this.occupants = new ArrayList<Person>();
+		this.grid = grid;
+		this.space = space;
 		// TODO Auto-generated constructor stub
 	}
 	
-//	/**
-//	 * Runs every step
-//	 */
-//	@ScheduledMethod(start = 1, interval = 1)
-//	public void step(){
-//		
-//		if(occupiedTime > 0) {
-//			occupiedTime--;
-//		}
-//		else {
-//			removeOccupants(1);
-//		}
-//		if(RandomHelper.nextDouble() < 0.01) {
-//			addOccupants(1);
-//		}
-//	}
-
-	//Has base cost
-	//Has cost per occupant
 	
-	public void addOccupants(int n) {
-		occupants += n;
-		Double newValue = baseLoad + occupants*unitLoad;
-		onChange(Double.valueOf(totalLoad), newValue);//Pass by reference error?
+	
+	public void addOccupants(Person p) {
+		occupants.add(p);
+		Double newValue = Double.valueOf(totalLoad) + unitLoad;
+//		System.out.println("Arrived, propagating update:");
+		update(newValue - Double.valueOf(totalLoad));
 		totalLoad = newValue;
 	}
 	
-	public void removeOccupants(int n) {
-		if(occupants > n) {
-			occupants -= n;
+	public void removeOccupants(Person p) {
+		if(occupants.contains(p)) {
+			occupants.remove(p);
+			Double newValue = Double.valueOf(totalLoad) - unitLoad;
+			update(newValue - Double.valueOf(totalLoad));
+			totalLoad = newValue;
 		}
-		else {
-			occupants = 0;
-		}
-		Double newValue = baseLoad + occupants*unitLoad;
-		onChange(Double.valueOf(totalLoad), newValue);//Pass by reference error?
-		totalLoad = newValue;
 	}
 
 	public Double getDistanceToNearestBusStop() {

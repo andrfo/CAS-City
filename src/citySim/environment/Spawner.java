@@ -171,7 +171,7 @@ public class Spawner {
 		//TODO: implement car pooling
 		int spawnCount;
 		int time = Tools.getTime();
-		if(time % 120 == 0 && isInInterval(time, BUS)) { //Spawn bus
+		if(time % 120 == 0 /*&& isInInterval(time, BUS)*/) { //Spawn bus
 			for(Road r : spawnPoints) {
 				Spawn s = (Spawn) r;
 				Bus bus = new Bus(space, grid, 50, parkingNexi);
@@ -251,24 +251,27 @@ public class Spawner {
 				//Start and goal
 				int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
 				Spawn start = (Spawn) spawnPoints.get(spawnPointIndex);
-				
-				
-				
-				//Add the agent to the context
-				Car car = new Car(space, grid, 5, parkingNexi);
-				
 				Person p = idleShoppers.remove(0);
-				car.addOccupant(p);
-				
-				//Setup
-				
-				car.addGoal(parkingSpaces.get(RandomHelper.nextIntFromTo(0, parkingSpaces.size() - 1)));
 				p.setShoppingPlace(buildings.get(RandomHelper.nextIntFromTo(0, buildings.size() - 1)));
-				car.setStart(start);
-				car.setNet(net);
 				
-				start.addToVehicleQueue(car);
+				if(p.getTravelChoice().equals("bus")) {
+					start.addToBusQueue(p);
+				}
+				else {
 				
+					//Add the agent to the context
+					Car car = new Car(space, grid, 5, parkingNexi);
+					
+					car.addOccupant(p);
+					
+					//Setup
+					
+					car.addGoal(parkingSpaces.get(RandomHelper.nextIntFromTo(0, parkingSpaces.size() - 1)));
+					car.setStart(start);
+					car.setNet(net);
+					
+					start.addToVehicleQueue(car);
+				}
 			}
 		}
 		

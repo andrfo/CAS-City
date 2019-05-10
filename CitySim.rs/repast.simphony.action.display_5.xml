@@ -70,67 +70,67 @@
   <editedStyles>
     <entry>
       <string>citySim.environment.electric.Charger</string>
-      <string>citySim.environment.electric.Charger.style_1.xml</string>
+      <string>citySim.environment.electric.Charger.style_2.xml</string>
     </entry>
     <entry>
       <string>citySim.agent.Person</string>
-      <string>citySim.agent.Person.style_4.xml</string>
+      <string>citySim.agent.Person.style_5.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.roads.RoundaboutRoad</string>
-      <string>citySim.environment.roads.RoundaboutRoad.style_1.xml</string>
+      <string>citySim.environment.roads.RoundaboutRoad.style_2.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.roads.SideWalk</string>
-      <string>citySim.environment.roads.SideWalk.style_1.xml</string>
+      <string>citySim.environment.roads.SideWalk.style_2.xml</string>
     </entry>
     <entry>
       <string>citySim.agent.Bus</string>
-      <string>citySim.agent.Bus.style_4.xml</string>
+      <string>citySim.agent.Bus.style_5.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.roads.SouthWestRoad</string>
-      <string>citySim.environment.roads.SouthWestRoad.style_1.xml</string>
+      <string>citySim.environment.roads.SouthWestRoad.style_2.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.electric.Substation</string>
-      <string>citySim.environment.electric.Substation.style_1.xml</string>
+      <string>citySim.environment.electric.Substation.style_2.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.roads.Spawn</string>
-      <string>citySim.environment.roads.Spawn.style_1.xml</string>
+      <string>citySim.environment.roads.Spawn.style_2.xml</string>
     </entry>
     <entry>
       <string>citySim.agent.Car</string>
-      <string>citySim.agent.Car.style_10.xml</string>
+      <string>citySim.agent.Car.style_11.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.roads.ParkingSpace</string>
-      <string>citySim.environment.roads.ParkingSpace.style_2.xml</string>
+      <string>citySim.environment.roads.ParkingSpace.style_3.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.electric.RegionalGridNode</string>
-      <string>citySim.environment.electric.RegionalGridNode.style_3.xml</string>
+      <string>citySim.environment.electric.RegionalGridNode.style_4.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.roads.NorthEastRoad</string>
-      <string>citySim.environment.roads.NorthEastRoad.style_1.xml</string>
+      <string>citySim.environment.roads.NorthEastRoad.style_2.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.roads.BusStop</string>
-      <string>citySim.environment.roads.BusStop.style_1.xml</string>
+      <string>citySim.environment.roads.BusStop.style_2.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.roads.Despawn</string>
-      <string>citySim.environment.roads.Despawn.style_1.xml</string>
+      <string>citySim.environment.roads.Despawn.style_2.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.InformationLabel</string>
-      <string>citySim.environment.InformationLabel.style_5.xml</string>
+      <string>citySim.environment.InformationLabel.style_6.xml</string>
     </entry>
     <entry>
       <string>citySim.environment.electric.Building</string>
-      <string>citySim.environment.electric.Building.style_1.xml</string>
+      <string>citySim.environment.electric.Building.style_2.xml</string>
     </entry>
   </editedStyles>
   <netStyles>
@@ -139,8 +139,12 @@
       <string>repast.simphony.visualizationOGL2D.DefaultEdgeStyleOGL2D</string>
     </entry>
     <entry>
-      <string>electric network</string>
+      <string>road network</string>
       <string>repast.simphony.visualization.editedStyle.EditedEdgeStyle2D</string>
+    </entry>
+    <entry>
+      <string>electric network</string>
+      <string>repast.simphony.visualizationOGL2D.DefaultEdgeStyleOGL2D</string>
     </entry>
   </netStyles>
   <editedNetStyles>
@@ -149,8 +153,12 @@
       <null/>
     </entry>
     <entry>
+      <string>road network</string>
+      <string>roadnetwork.style_7.xml</string>
+    </entry>
+    <entry>
       <string>electric network</string>
-      <string>electricnetwork.style_1.xml</string>
+      <null/>
     </entry>
   </editedNetStyles>
   <frequency>ON_MOVE</frequency>
@@ -161,7 +169,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1768330757</hashCode>
+    <hashCode>-978497031</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
@@ -169,63 +177,63 @@
   <layerOrder>
     <entry>
       <string>citySim.environment.electric.Charger</string>
-      <int>10</int>
-    </entry>
-    <entry>
-      <string>citySim.agent.Person</string>
-      <int>15</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.roads.RoundaboutRoad</string>
-      <int>2</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.roads.SideWalk</string>
-      <int>7</int>
-    </entry>
-    <entry>
-      <string>citySim.agent.Bus</string>
       <int>13</int>
     </entry>
     <entry>
-      <string>citySim.environment.roads.SouthWestRoad</string>
-      <int>3</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.electric.Substation</string>
-      <int>12</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.roads.Spawn</string>
-      <int>5</int>
-    </entry>
-    <entry>
-      <string>citySim.agent.Car</string>
-      <int>14</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.roads.ParkingSpace</string>
-      <int>1</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.electric.RegionalGridNode</string>
-      <int>0</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.roads.NorthEastRoad</string>
-      <int>4</int>
-    </entry>
-    <entry>
-      <string>citySim.environment.roads.BusStop</string>
+      <string>citySim.agent.Person</string>
       <int>6</int>
     </entry>
     <entry>
+      <string>citySim.environment.roads.RoundaboutRoad</string>
+      <int>4</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.roads.SideWalk</string>
+      <int>3</int>
+    </entry>
+    <entry>
+      <string>citySim.agent.Bus</string>
+      <int>14</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.roads.SouthWestRoad</string>
+      <int>0</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.electric.Substation</string>
+      <int>1</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.roads.Spawn</string>
+      <int>2</int>
+    </entry>
+    <entry>
+      <string>citySim.agent.Car</string>
+      <int>15</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.roads.ParkingSpace</string>
+      <int>7</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.electric.RegionalGridNode</string>
+      <int>5</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.roads.NorthEastRoad</string>
+      <int>8</int>
+    </entry>
+    <entry>
+      <string>citySim.environment.roads.BusStop</string>
+      <int>12</int>
+    </entry>
+    <entry>
       <string>citySim.environment.roads.Despawn</string>
-      <int>9</int>
+      <int>10</int>
     </entry>
     <entry>
       <string>citySim.environment.InformationLabel</string>
-      <int>8</int>
+      <int>9</int>
     </entry>
     <entry>
       <string>citySim.environment.electric.Building</string>
@@ -237,6 +245,11 @@
       <id>space</id>
       <attributes/>
       <type>continuous space</type>
+    </repast.simphony.scenario.data.ProjectionData>
+    <repast.simphony.scenario.data.ProjectionData>
+      <id>road network</id>
+      <attributes/>
+      <type>network</type>
     </repast.simphony.scenario.data.ProjectionData>
     <repast.simphony.scenario.data.ProjectionData>
       <id>debug network</id>
@@ -256,6 +269,13 @@
     <entry>
       <string>debug network</string>
       <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[3]"/>
+        <props/>
+      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+    </entry>
+    <entry>
+      <string>road network</string>
+      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
         <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[2]"/>
         <props/>
       </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
@@ -263,7 +283,7 @@
     <entry>
       <string>electric network</string>
       <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
-        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[3]"/>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[4]"/>
         <props/>
       </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
     </entry>

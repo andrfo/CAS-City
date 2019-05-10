@@ -27,6 +27,7 @@ public class Road extends Entity{
 	private Roundabout roundabout;
 	private boolean isEdge;
 	private GridPoint pt;
+	private Double weight;
 	
 	private boolean isExit;
 	
@@ -64,10 +65,20 @@ public class Road extends Entity{
 //		}
 //	}
 	
+	
+	
 	public boolean isExit() {
 		return isExit;
 	}
 	
+	public Double getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Double weight) {
+		this.weight = weight;
+	}
+
 	public Roundabout getRoundabout() {
 		return roundabout;
 	}

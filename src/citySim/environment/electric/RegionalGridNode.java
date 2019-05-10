@@ -1,19 +1,21 @@
 package citySim.environment.electric;
 
 import repast.simphony.space.continuous.ContinuousSpace;
+import repast.simphony.space.graph.Network;
 import repast.simphony.space.grid.Grid;
+import repast.simphony.space.grid.GridPoint;
 
-public class RegionalGridNode extends ElectricEntity {
+public class RegionalGridNode extends ElectricEntity{
 
+	private ElectricEntity parent;
+	private ContinuousSpace<Object> space;
+	private Grid<Object> grid;
+	
 	public RegionalGridNode(ContinuousSpace<Object> space, Grid<Object> grid) {
 		super(space, grid);
-		// TODO Auto-generated constructor stub
-		this.totalLoad = 0.0;
+		totalLoad = 0d;
+		this.grid = grid;
+		this.space = space;
 	}
-
-	
-	//function for el price based on load
-	//base cost per kWh
-	//base cost increase with power line failures
 	
 }

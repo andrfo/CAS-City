@@ -123,7 +123,7 @@ public class Clustering {
 	
 	private void generateRandomSeededCentroids() {
 		for(int i = 0; i < k; i++) {
-			GridPoint p = data.get(RandomHelper.nextIntFromTo(0,  data.size()));
+			GridPoint p = data.get(RandomHelper.nextIntFromTo(0,  data.size() - 1));
 			centroids.add(new Centroid(p));
 		}
 	}

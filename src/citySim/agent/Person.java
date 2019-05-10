@@ -35,7 +35,7 @@ public class Person extends Agent{
 	private static final Double TIME_CONSTANT_CAR = 0.1d;
 	private static final Double TIME_CONSTANT_BUS = 0.1d;
 	private static final Double CROWD_CONSTATNT_BUS = 1d;
-	private static final Double TOLL_CONSTANT = 1d;
+	private static final Double TOLL_CONSTANT = 40d;
 	private static final Double FARE_CONSTANT = 40d;
 	private static final Double MEMORY_FACTOR = 0.05d;
 	private static final int TIME_ESTIMATION = 100;
@@ -80,10 +80,10 @@ public class Person extends Agent{
 			return false;
 		}
 		if(workPlace != null) {
-			workPlace.removeOccupants(1);
+			workPlace.removeOccupants(this);
 		}
 		else {
-			shop.removeOccupants(1);
+			shop.removeOccupants(this);
 		}
 		return true;
 	}
@@ -257,10 +257,10 @@ public class Person extends Agent{
 			return;
 		}
 		if(workPlace != null) {
-			workPlace.addOccupants(1);;
+			workPlace.addOccupants(this);;
 		}
 		else {
-			shop.addOccupants(1);
+			shop.addOccupants(this);
 		}
 		
 		//Dump the passenger on the sidewalk(symbolizing that it's busy)

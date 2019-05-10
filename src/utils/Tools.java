@@ -16,8 +16,11 @@ import repast.simphony.space.grid.GridPoint;
 
 public class Tools {
 	
+	//The amount of ticks defined to be one day(24h)
 	public static final int TICKS_PER_DAY = 8640;
 	
+	
+	//The integers mapped to the different moore directions
 	public static final int NORTHWEST = 0;
 	public static final int NORTH = 1;
 	public static final int NORTHEAST = 2;
@@ -30,12 +33,46 @@ public class Tools {
 	public static final int SOUTHEAST = 7;
 	
 	
+	//The weights associated with the colorings in the road map overlay
+	public static final double MAIN_ROAD_WEIGHT = 0.5d; //GREEN
+	public static final double STD_ROAD_WEIGHT = 2.0d; //YELLOW
+	public static final double SMALL_ROAD_WEIGHT = 4.0d; //ORANGE
+	public static final double ALLEY_ROAD_WEIGHT = 8.0d; //ORANGE
+	
+	
+	/**
+	 * Gets the time of day in ticks
+	 * @return time of day in ticks
+	 */
 	public static int getTime() {
 		double currentTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
 		int time = (int) (currentTick % TICKS_PER_DAY);
 		return time;
 	}
 	
+	/**
+	 * Extended max function that can handle one of the inputs being null, with null being smallest
+	 * @param a
+	 * @param b
+	 * @return the largest of a and b
+	 */
+	public static Double max(Double a, Double b) {
+		if(a == null && b == null) {
+			throw new IllegalArgumentException("borth arguments are null");
+		}
+		if(a == null) {return b;}
+		if(b == null) {return a;}
+		return Math.max(a, b);
+	}
+	
+	
+	/**
+	 * Checks the paths of vehicles a and b <distance> steps forward to see if their paths intersect one another
+	 * @param a
+	 * @param b
+	 * @param distance
+	 * @return True of the paths intersect, False otherwise
+	 */
 	public static boolean isPathIntersect(Vehicle a, Vehicle b, int distance) {
 		
 		for(	int i = a.getPathIndex(); 
@@ -55,16 +92,32 @@ public class Tools {
 		return false;
 	}
 	
+	/**
+	 * Helper function to reduce clutter. Gets the first object that matches the provided class at the provided coordinates
+	 * @param grid
+	 * @param c
+	 * @param x
+	 * @param y
+	 * @return Object of class c
+	 */
 	public static Object getObjectAt(Grid<Object> grid, Class<?> c, int x, int y) {
 		for(Object o: grid.getObjectsAt(x, y)) {
 			if(o.getClass().equals(c)) {
-				return (Substation) o;
+				return o;
 			}
 		}
 		return null;
 		
 	}
 	
+	
+	/**
+	 * Finds the shortest path from start to goal using the A* algorithm on the road network
+	 * @param start
+	 * @param goal
+	 * @param net
+	 * @return A list of edges that represent the shortest path.
+	 */
 	public static List<RepastEdge<Object>> aStar(Road start, Road goal, Network<Object> net){
 		
 		// Will contain the shortest path
@@ -164,6 +217,13 @@ public class Tools {
 		return x - Math.random() > 0;
 	}
 	
+	
+	/**
+	 * Gets the moore direction from point a to point b in a grid
+	 * @param a
+	 * @param b
+	 * @return an integer indicating the moore direction. See Constants in the Tools class
+	 */
 	public static int getMooreDirection(GridPoint a, GridPoint b) {
 		
 		/*	Grid Directions:
@@ -212,24 +272,49 @@ public class Tools {
 		}
 		return 9; //Should not get here.
 	}
-	//TODO: fix:(?) change direction?
+
+
+	/**
+	 * Creates a 2D vector from one gridPoint to another
+	 * @param from
+	 * @param to
+	 * @return 2dVector
+	 */
 	public static Vector2D create2DVector(GridPoint from, GridPoint to) {
 		Vector2D v =  new Vector2D(to.getX() - from.getX(), to.getY() - from.getY());
 		return v;
 	}
 	
+	/**
+	 * Calculates the euclidean distance between two points in a grid
+	 * @param a, point in a grid
+	 * @param b, point in a grid
+	 * @return Euclidean distance
+	 */
 	public static Double gridDistance(GridPoint a, GridPoint b) {
 		Double dx = (double) (b.getX() - a.getX());
 		Double dy = (double) (b.getY() - a.getY());
 		return Math.sqrt((dx*dx) + (dy*dy));
 	}
 	
+	/**
+	 * Calculates the euclidean distance between two points in space
+	 * @param a, point in space
+	 * @param b, point in space
+	 * @return Euclidean distance
+	 */
 	public static Double spaceDistance(NdPoint a, NdPoint b) {
 		Double dx = (double) (b.getX() - a.getX());
 		Double dy = (double) (b.getY() - a.getY());
 		return Math.sqrt((dx*dx) + (dy*dy));
 	}
 	
+	/**
+	 * 
+	 * @param a, GridPoint
+	 * @param b, GridPoint
+	 * @return The Manhattan distance between two points
+	 */
 	public static Double manhattanDistance(GridPoint a, GridPoint b) {
 		Double dx = (double) Math.abs((b.getX() - a.getX()));
 		Double dy = (double) Math.abs((b.getY() - a.getY()));
