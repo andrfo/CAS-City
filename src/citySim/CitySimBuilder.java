@@ -308,8 +308,18 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		buildCityGraph(grid, context);
 		
 		//Sets up the spawner agent(handles all the spawning).
-		spawner = new Spawner(space, grid, context, spawnPoints, despawnPoints, parkingSpaces, buildings, busStops, parkingNexiRoads);
+		spawner = new Spawner(
+				space, 
+				grid, 
+				context, 
+				spawnPoints, 
+				despawnPoints, 
+				parkingSpaces, 
+				buildings, 
+				busStops, 
+				parkingNexiRoads);
 		context.add(spawner);
+		context.add(spawner.getReporter());
 	}
 	
 	/**

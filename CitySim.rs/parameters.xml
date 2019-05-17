@@ -13,7 +13,7 @@
 									
 		/>
 				<parameter name="population_start_count" displayName="population start count" type="int" 
-						defaultValue="500" 
+						defaultValue="400" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
@@ -31,7 +31,7 @@
 									
 		/>
 				<parameter name="toll_cost" displayName="toll_cost" type="int" 
-						defaultValue="10000" 
+						defaultValue="40" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									

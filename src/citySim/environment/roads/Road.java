@@ -74,6 +74,10 @@ public class Road extends Entity{
 	public Double getWeight() {
 		return weight;
 	}
+	
+	public int getIntWeight() {
+		return (int) Math.round(weight);
+	}
 
 	public void setWeight(Double weight) {
 		this.weight = weight;

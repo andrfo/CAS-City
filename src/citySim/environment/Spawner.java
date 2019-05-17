@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import citySim.Reporter;
 import citySim.agent.Bus;
 import citySim.agent.Car;
 import citySim.agent.Person;
@@ -28,6 +29,11 @@ import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import utils.Tools;
 
+/**
+ * Handles the spawning of agents in the simulation and delegates to Spawns
+ * @author andrfo
+ *
+ */
 public class Spawner {
 
 	
@@ -53,16 +59,12 @@ public class Spawner {
 	
 
 	/** TimeCycle
-	 * 	1 Tick = 1 Minute
-	 * 	24h = 1440 minutes
-	 */
-	
-	/** TimeCycle
 	 * 	1 Tick = 10 sec
 	 * 	24h = 8640 ticks
 	 * 	1 hour = 360 ticks
 	 */
 	
+	//Time of day translation from ticks and schedule
 	private static final int[] NIGHT = {0, 2160}; 				//00:00 - 06:00
 	private static final int[] MORNING = {2160, 4320}; 			//06:00 - 12:00
 	private static final int[] AFTERNOON = {4320, 6480}; 		//12:00 - 18:00
@@ -84,14 +86,25 @@ public class Spawner {
 	
 	private List<Person> population;
 	
+	private static final int DAYS_TO_RUN = 7;
 	
 	private double frequency; //Spawns per tick
 	private ArrayList<Person> idleWorkers;
 	private ArrayList<Person> idleShoppers;
+	private Reporter reporter;
 	
 	
 	@SuppressWarnings("unchecked")
-	public Spawner(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context, List<Road> spawnPoints, List<Road> despawnPoints, List<Road> parkingSpaces, List<Building> buildings, List<BusStop> busStops, List<Road> parkingNexiRoads) {
+	public Spawner(
+			ContinuousSpace<Object> space, 
+			Grid<Object> grid, 
+			Context<Object> context, 
+			List<Road> spawnPoints, 
+			List<Road> despawnPoints, 
+			List<Road> parkingSpaces, 
+			List<Building> buildings, 
+			List<BusStop> busStops, 
+			List<Road> parkingNexiRoads) {
 		super();
 		this.space = space;
 		this.grid = grid;
@@ -102,6 +115,7 @@ public class Spawner {
 		this.buildings = buildings;
 		this.busStops = busStops;
 		this.parkingNexi = parkingNexiRoads;
+		this.reporter = new Reporter();
 		if(spawnPoints.size() == 0 || despawnPoints.size() == 0) {
 			throw new IllegalArgumentException("no spawn or goal");
 		}
@@ -111,6 +125,7 @@ public class Spawner {
 		
 		Parameters params = RunEnvironment.getInstance().getParameters();
 		
+		//Sets up the parameters to be determined in the GUI
 		this.nightFrequency = params.getDouble("Car_frequency_at_Night");
 		this.morningFrequency = params.getDouble("Car_frequency_in_the_Morning");
 		this.afternoonFrequency = params.getDouble("Car_frequency_in_the_Afternoon");
@@ -128,30 +143,40 @@ public class Spawner {
 	
 	
 	
-	
+	/**
+	 * Is called each step of the simulation
+	 */
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step() {
 		
+		//Are we there yet?
 		isRunEnd();
 		
+		//Spawn frequencies
 		setFrequency();
 		
+		//Spawns agents into the model
 		spawn();
-		
-		
 	}
 	
+	/**
+	 * Checks whether the simulation has run the determined amount of days. if so it ends the run.
+	 */
 	private void isRunEnd() {
 		double currentTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
-		if(currentTick >= Tools.TICKS_PER_DAY * 7) {
+		if(currentTick >= Tools.TICKS_PER_DAY * DAYS_TO_RUN) {
 			RunEnvironment.getInstance().endRun();
 		}
 	}
 	
+	
+	/**
+	 * Generates the population and splits it into workers and shoppers
+	 */
 	private void generatePopulation() {
 		for(int i = 0; i < populationStartCount; i++) {
 			Person p = new Person(space, grid, this);
-			if(Tools.isTrigger(0.75d)) {
+			if(Tools.isTrigger(0.75d)) { //75% chance
 				//Worker
 				p.setWorkPlace(buildings.get(RandomHelper.nextIntFromTo(0, buildings.size() - 1)));
 				population.add(p);
@@ -167,6 +192,9 @@ public class Spawner {
 		}
 	}
 	
+	/**
+	 * Sets up and spawns the agents of the simulation, and ads them to the queue of a(random) spawn point
+	 */
 	private void spawn() {
 		//TODO: implement car pooling
 		int spawnCount;
@@ -199,7 +227,7 @@ public class Spawner {
 			}
 		}
 		if(isInInterval(time, MORNING_RUSH)) { //Spawn worker
-			//98% of the workers are going to work over an hour
+			//98% of the workers are going to work over an hour(2% are sick)
 			Double workers = (double) idleWorkers.size();
 			spawnCount = (int) Math.ceil(workers*0.98d*(1d/60d));
 			spawnAgent(true, spawnCount);
@@ -214,6 +242,11 @@ public class Spawner {
 		}
 	}
 	
+	/**
+	 * Sets up and spawns a person into the simulation in either a car, or as waiting for a bus as a spawn point.
+	 * @param isWorker is it a worker? if not, its a shopper
+	 * @param spawnCount The number of agents to spawn
+	 */
 	private void spawnAgent(boolean isWorker, int spawnCount) {
 		if(isWorker) {
 			for (int i = 0; i < spawnCount; i++) {
@@ -221,13 +254,14 @@ public class Spawner {
 					return;
 				}
 				Person p = idleWorkers.remove(0);
+				
 				//Start and goal
 				int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
 				Spawn start = (Spawn) spawnPoints.get(spawnPointIndex);
-				if(p.getTravelChoice().equals("bus")) {
+				if(p.getTravelChoice().equals("bus")) {//Bus
 					start.addToBusQueue(p);
 				}
-				else {
+				else {//Car
 					
 					Car car = new Car(space, grid, 5, parkingNexi);
 					car.addOccupant(p);
@@ -242,7 +276,7 @@ public class Spawner {
 				}
 			}
 		}
-		else {
+		else {//Shopper
 			for (int i = 0; i < spawnCount; i++) {
 				if(idleShoppers.size() == 0) {
 					continue;
@@ -252,12 +286,14 @@ public class Spawner {
 				int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
 				Spawn start = (Spawn) spawnPoints.get(spawnPointIndex);
 				Person p = idleShoppers.remove(0);
+				
+				//Random shopping place each trip
 				p.setShoppingPlace(buildings.get(RandomHelper.nextIntFromTo(0, buildings.size() - 1)));
 				
-				if(p.getTravelChoice().equals("bus")) {
+				if(p.getTravelChoice().equals("bus")) {//Bus
 					start.addToBusQueue(p);
 				}
-				else {
+				else {//car
 				
 					//Add the agent to the context
 					Car car = new Car(space, grid, 5, parkingNexi);
@@ -266,7 +302,8 @@ public class Spawner {
 					
 					//Setup
 					
-					car.addGoal(parkingSpaces.get(RandomHelper.nextIntFromTo(0, parkingSpaces.size() - 1)));
+//					car.addGoal(parkingSpaces.get(RandomHelper.nextIntFromTo(0, parkingSpaces.size() - 1)));//Random parking space as a goal
+					car.addGoal(p.getShoppingPlace());
 					car.setStart(start);
 					car.setNet(net);
 					
@@ -279,10 +316,20 @@ public class Spawner {
 		
 	}
 	
+	/**
+	 * spawn rate times 100 to make it show up on the graph in the GUI
+	 * @return double, spawn rate*100
+	 */
 	public double getSpawnRate() {
 		return frequency*100d;
 	}
 	
+	public Reporter getReporter() {
+		return reporter;
+	}
+	/**
+	 * Sets the spawn rate based on the time of day
+	 */
 	private void setFrequency() {
 		int time = Tools.getTime();
 		frequency = 0;
@@ -310,16 +357,28 @@ public class Spawner {
 		
 	}
 	
-	
+	/**
+	 * Helper function to determine of a tick tick count mod(day) is within an interval
+	 * @param n
+	 * @param interval
+	 * @return True if within interval, false otherwise
+	 */
 	private boolean isInInterval(int n, int[] interval) {
 		return n >= interval[0] && n < interval[1];
 	}
 	
-	
+	/**
+	 * Returns a shopper to the pool of shopper
+	 * @param p, Person
+	 */
 	public void returnShopper(Person p) {
 		idleShoppers.add(p);
 	}
 	
+	/**
+	 * Returns are worker to the pool of workers
+	 * @param p, Person
+	 */
 	public void returnWorker(Person p) {
 		idleWorkers.add(p);
 	}

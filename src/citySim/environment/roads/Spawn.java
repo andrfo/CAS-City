@@ -22,6 +22,11 @@ import repast.simphony.space.grid.GridPoint;
 import repast.simphony.util.ContextUtils;
 import utils.Tools;
 
+/**
+ * A spawn point in the simulation that spews forth the masses of agents as directed by the Spawner
+ * @author andrfo
+ *
+ */
 public class Spawn extends Road {
 	
 	private List<Vehicle> vehicleQueue;
@@ -53,20 +58,32 @@ public class Spawn extends Road {
 		spawn();
 	}
 	
+	/**
+	 * Ads a person to the list of persons waiting for a bus
+	 * @param p, Person
+	 */
 	public void addToBusQueue(Person p) {
 		this.busQueue.add(p);
 	}
 	
+	/**
+	 * Ads a vehicle to a queue of vehicles waiting to be spawned
+	 * @param v
+	 */
 	public void addToVehicleQueue(Vehicle v) {//Have a dedicated queue item class instead of storing stuff in this?
 		vehicleQueue.add(v);
 	}
 	
+	/**
+	 * Spawns vehicles from the queues if there is room.
+	 * Also ads persons to buses when they spawn
+	 */
 	private void spawn() {
 		
 		if(vehicleQueue.size() == 0) {
 			return;
 		}
-		//Check surroundings
+		//Check surroundings to see if it's clear to spawn a vehicle
 		GridPoint pt = grid.getLocation(this);
 		NdPoint spacePt = space.getLocation(this);
 		Double dist = Double.MAX_VALUE;
@@ -97,17 +114,21 @@ public class Spawn extends Road {
 		if(vehicle instanceof Car) {
 			//something
 		}
-		else if(vehicle instanceof Bus) {
+		else if(vehicle instanceof Bus) {//Get people from those that are waiting for the bus
 			for(int i = 0; i < busQueue.size(); i++) {
 				if(busQueue.size() > 0 && !vehicle.isFull()) {
 					vehicle.addOccupant(busQueue.remove(i));
 				}
 			}
 		}
-		vehicle.getGoals().setEndGoal(getNearestDespawn());
+		vehicle.getGoals().setEndGoal(getNearestDespawn()); //The vehicle will return to the despawn near here when done
 		
 	}
 	
+	/**
+	 * Finds the nearest despawn point
+	 * @return Nearest despawn
+	 */
 	private Despawn getNearestDespawn() {
 		GridPoint pt = grid.getLocation(this);
 		int range = 6;
@@ -125,8 +146,14 @@ public class Spawn extends Road {
 		return despawn;
 	}
 	
-	public int getQueueSize() {
-		return vehicleQueue.size();
+	/**
+	 * Returns the size of the spawn queue for use in the GUI
+	 * @return spawn queue size
+	 */
+	public String getQueueLabel() {
+		String newLine = System.getProperty("line.separator");
+		return 	"Vehicles: 			" + vehicleQueue.size() + newLine +
+				"Waiting for bus:   " + busQueue.size();
 	}
 
 }

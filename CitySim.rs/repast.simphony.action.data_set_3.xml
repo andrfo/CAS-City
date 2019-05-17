@@ -1,0 +1,94 @@
+<repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.6.0">
+  <name>Trip Data</name>
+  <type>AGGREGATE</type>
+  <inclTick>true</inclTick>
+  <inclBatchRun>false</inclBatchRun>
+  <inclRandomSeed>false</inclRandomSeed>
+  <scheduleParams>
+    <start>1.0</start>
+    <interval>1.0</interval>
+    <priority>-Infinity</priority>
+    <pType>LAST</pType>
+    <duration>-1.0</duration>
+    <frequency>REPEAT</frequency>
+    <hashCode>-1745443928</hashCode>
+  </scheduleParams>
+  <atEnd>false</atEnd>
+  <methodDataSources class="linked-hash-map">
+    <entry>
+      <string>Average General Cost</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Average General Cost</id>
+        <className>citySim.Reporter</className>
+        <methodName>getAverageTravelCost</methodName>
+        <aggType>SUM</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Average General Travel time</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Average General Travel time</id>
+        <className>citySim.Reporter</className>
+        <methodName>getAverageTravelTime</methodName>
+        <aggType>SUM</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Average Car cost</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Average Car cost</id>
+        <className>citySim.Reporter</className>
+        <methodName>getAverageCarCost</methodName>
+        <aggType>SUM</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Average Car travel distance</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Average Car travel distance</id>
+        <className>citySim.Reporter</className>
+        <methodName>getAverageCarTravelDistance</methodName>
+        <aggType>SUM</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Average Car Travel time</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Average Car Travel time</id>
+        <className>citySim.Reporter</className>
+        <methodName>getAverageCarTravelTime</methodName>
+        <aggType>SUM</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Average bus Cost</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Average bus Cost</id>
+        <className>citySim.Reporter</className>
+        <methodName>getAverageBusCost</methodName>
+        <aggType>SUM</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Average Bus Walking distance</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Average Bus Walking distance</id>
+        <className>citySim.Reporter</className>
+        <methodName>getAverageBusTravelDistance</methodName>
+        <aggType>SUM</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Average Bus Travel time</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Average Bus Travel time</id>
+        <className>citySim.Reporter</className>
+        <methodName>getAverageBusTravelTime</methodName>
+        <aggType>SUM</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+  </methodDataSources>
+  <countSources class="linked-hash-map"/>
+  <customNADataSources class="linked-hash-map"/>
+  <customAggDataSources class="linked-hash-map"/>
+</repast.simphony.data2.engine.DataSetDescriptor>

@@ -22,8 +22,12 @@ public class Car extends Vehicle{
 		return distanceMoved;
 	}
 	
+	/**
+	 * Not used as the toll is constant for each trip at the moment
+	 * @return
+	 */
 	public Double getTollCost() {
 		//TODO: Add Tolls
-		return 12d;
+		return 1d; // set to 1 for now as it is a product and is being ignored
 	}
 }

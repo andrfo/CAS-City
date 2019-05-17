@@ -185,6 +185,9 @@ public class Vehicle extends Agent{
 	
 	private boolean isMovable() {
 		if(parked) {
+			if(tickCount > 0) {
+				tickCount--;
+			}
 			if(!occupants.get(0).isWantToLeave()) {
 				return false;
 			}
@@ -478,10 +481,10 @@ public class Vehicle extends Agent{
 					continue;
 				}
 				Vehicle c = (Vehicle)a;
-				if(c.isParked() || c.getRoad() instanceof ParkingSpace) {continue;}
+				if(c.isParked() || c.getRoad() instanceof ParkingSpace) {continue;} //Ignore parked cars
 				if(
 						!isInPath(c, pathDistance) || 
-						!Tools.isPathIntersect(this, c, pathDistance)) {
+						!Tools.isPathIntersect(this, c, pathDistance)) { //Ignore non-intersecting cars
 					continue;
 				}
 				double dist = Tools.gridDistance(cell.getPoint(), grid.getLocation(this));
