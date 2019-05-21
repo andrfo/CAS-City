@@ -65,15 +65,15 @@ public class Spawner {
 	 */
 	
 	//Time of day translation from ticks and schedule
-	private static final int[] NIGHT = {0, 2160}; 				//00:00 - 06:00
-	private static final int[] MORNING = {2160, 4320}; 			//06:00 - 12:00
-	private static final int[] AFTERNOON = {4320, 6480}; 		//12:00 - 18:00
-	private static final int[] EVENING = {6480, 8640}; 			//18:00 - 00:00
+	private static final int[] NIGHT = {0, 21600}; 				//00:00 - 06:00
+	private static final int[] MORNING = {21600, 43200}; 			//06:00 - 12:00
+	private static final int[] AFTERNOON = {43200, 64800}; 		//12:00 - 18:00
+	private static final int[] EVENING = {64800, 86400}; 			//18:00 - 00:00
 	
-	private static final int[] MORNING_RUSH = {2520, 3060}; 	//07:00 - 08:30
-	private static final int[] AFTERNOON_RUSH = {5580, 6120}; 	//15:30 - 17:00
+	private static final int[] MORNING_RUSH = {25200, 30600}; 	//07:00 - 08:30
+	private static final int[] AFTERNOON_RUSH = {55800, 61200}; 	//15:30 - 17:00
 	
-	private static final int[] BUS =  {2160, 7920};
+	private static final int[] BUS =  {21600, 79200};
 	
 	private Double nightFrequency;
 	private Double morningFrequency;
@@ -199,7 +199,7 @@ public class Spawner {
 		//TODO: implement car pooling
 		int spawnCount;
 		int time = Tools.getTime();
-		if(time % 120 == 0 /*&& isInInterval(time, BUS)*/) { //Spawn bus
+		if(time % 1200 == 0 /*&& isInInterval(time, BUS)*/) { //Spawn bus
 			for(Road r : spawnPoints) {
 				Spawn s = (Spawn) r;
 				Bus bus = new Bus(space, grid, 50, parkingNexi);
@@ -227,9 +227,13 @@ public class Spawner {
 			}
 		}
 		if(isInInterval(time, MORNING_RUSH)) { //Spawn worker
-			//98% of the workers are going to work over an hour(2% are sick)
-			Double workers = (double) idleWorkers.size();
-			spawnCount = (int) Math.ceil(workers*0.98d*(1d/60d));
+			//98% of the workers are going to work over an hour and a half(2% are sick)
+			Double workers = ((double) idleWorkers.size())*0.98d*(1d/5400d);
+			BigDecimal[] valRem = BigDecimal.valueOf(workers).divideAndRemainder(BigDecimal.ONE);
+			spawnCount = valRem[0].intValue();
+			if(Tools.isTrigger(valRem[1].doubleValue())) { //Uses the remainder as a probability for an extra spawn
+				spawnCount++;
+			}
 			spawnAgent(true, spawnCount);
 		}
 		else { //Spawn shopper

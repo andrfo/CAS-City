@@ -17,7 +17,7 @@ import repast.simphony.space.grid.GridPoint;
 public class Tools {
 	
 	//The amount of ticks defined to be one day(24h)
-	public static final int TICKS_PER_DAY = 8640;
+	public static final int TICKS_PER_DAY = 86400;
 	
 	
 	//The integers mapped to the different moore directions
@@ -31,7 +31,6 @@ public class Tools {
 	public static final int SOUTHWEST = 5;
 	public static final int SOUTH = 6;
 	public static final int SOUTHEAST = 7;
-	
 	
 	//The weights associated with the colorings in the road map overlay
 	public static final double MAIN_ROAD_WEIGHT = 0.5d; //GREEN

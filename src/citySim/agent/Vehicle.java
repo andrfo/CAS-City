@@ -77,6 +77,8 @@ public class Vehicle extends Agent{
 	
 	private int deadlockTimer;
 	
+	private Double parkingTime;
+	
 	
 	//Speed control
 	private double speed;
@@ -121,6 +123,7 @@ public class Vehicle extends Agent{
 		this.moved = true;
 		this.occupants = new ArrayList<Person>(occupantLimit);
 		this.parkingNexi = parkingNexi;
+		this.parkingTime = 0d;
 	}
 	
 	/**
@@ -276,7 +279,7 @@ public class Vehicle extends Agent{
 				for(Person p : occupants) {
 					p.setReachedGoal(this, false);
 				}
-				park(2880, (ParkingSpace) goals.getCurrent());//8h
+				park(28800, (ParkingSpace) goals.getCurrent());//8h
 				goals.next();
 				
 				closed.clear();
@@ -305,7 +308,7 @@ public class Vehicle extends Agent{
 				open.clear();
 				getSurroundings();
 			}
-			else if(goal instanceof NorthEastRoad || goal instanceof SouthWestRoad) {
+			else if(goal instanceof NorthEastRoad || goal instanceof SouthWestRoad) { //Was looking for parking, and found none
 				parkingNexi.remove(goals.getCurrent());
 				placesChecked++;
 				if(placesChecked < 3) {
@@ -313,6 +316,7 @@ public class Vehicle extends Agent{
 				}
 				else {
 					System.out.println("cannot find parking, going home");
+					parkingTime += 10000000;//High cost for not finding parking
 					goals.goToEnd();
 					return false;
 				}
@@ -323,6 +327,10 @@ public class Vehicle extends Agent{
 			}
 		}
 		return false;
+	}
+	
+	public Double getParkingTime() {
+		return parkingTime;
 	}
 	
 	private void gotoNextNexus() {
@@ -658,10 +666,12 @@ public class Vehicle extends Agent{
 		this.parkingSpace = p;
 		p.reserve();
 		if(goingToWork) {
-			occupants.get(0).setParked(time);			
+			occupants.get(0).setParked(time);	
+			parkingTime += time;
 		}
 		else {
-			occupants.get(0).setParked(500);		
+			occupants.get(0).setParked(5000);	
+			parkingTime += 5000;
 		}
 	}
 	

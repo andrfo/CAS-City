@@ -57,8 +57,12 @@ public class Person extends Agent{
 	//To add some to the toll cost at will. For instance if people hate tolls. (Set to neutral at the moment)
 	private static final Double TOLL_CONSTANT = 1d;
 	
+	//The cost of parking 1 second.
+	private static final Double PARKING_FACTOR = 0.0167d;
+	
 	//The degree to which people click to their habits
 	private static final Double MEMORY_FACTOR = 0.05d;
+	
 	
 	
 	//Estimates
@@ -295,7 +299,6 @@ public class Person extends Agent{
 	private void updateCostAndChoice(Vehicle v) {
 		//TODO: Add parking costs
 		
-		System.out.println("Agent returned.");
 		//Set the cost
 		accumulatedTripCost = 0d;
 		String choice = "";
@@ -315,6 +318,9 @@ public class Person extends Agent{
 			
 			//Toll
 			accumulatedTripCost += ((Car) v).getTollCost() * TOLL_COST * TOLL_CONSTANT;
+			
+			//Parking
+			accumulatedTripCost += ((Car) v).getParkingTime() * PARKING_FACTOR;
 			
 			spawner.getReporter().addToAverageCarCost(Double.valueOf(accumulatedTripCost));
 		}
@@ -352,7 +358,7 @@ public class Person extends Agent{
 		}
 		
 		previousTrips.add(new Trip(accumulatedTripCost, choice));
-		printPriceHistory();
+		//printPriceHistory();
 		
 		
 	}
