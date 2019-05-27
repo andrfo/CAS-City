@@ -41,7 +41,7 @@ public class Vehicle extends Agent{
 	
 	private int occupantLimit = 5;
 	
-	private List<Person> occupants;
+	protected List<Person> occupants;
 	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
@@ -136,6 +136,8 @@ public class Vehicle extends Agent{
 		selectNewLocalGoal(); 	if(dead) { return;}
 		
 		move();	
+		
+		
 	}
 	
 	//Main functions
@@ -143,6 +145,12 @@ public class Vehicle extends Agent{
 	private void getSurroundings() {
 		
 		tickCount++;
+		
+		if(this instanceof Bus) {
+			for(Person p: occupants) {
+				p.addTimeUse(1);
+			}
+		}
 		
 		if(!moved) {
 			return;

@@ -80,6 +80,10 @@ public class Spawn extends Road {
 	 */
 	private void spawn() {
 		
+		for(Person p: busQueue) {//Add time spent waiting for the bus
+			p.addTimeUse(1);
+		}
+		
 		if(vehicleQueue.size() == 0) {
 			return;
 		}

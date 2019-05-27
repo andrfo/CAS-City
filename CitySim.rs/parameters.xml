@@ -13,7 +13,7 @@
 									
 		/>
 				<parameter name="population_start_count" displayName="population start count" type="int" 
-						defaultValue="400" 
+						defaultValue="550" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
@@ -30,10 +30,34 @@
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 									
 		/>
+				<parameter name="load_on_entry_4" displayName="Load on entry 4" type="double" 
+						defaultValue="0.25" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
+									
+		/>
+				<parameter name="load_on_entry_1" displayName="Load on entry 1" type="double" 
+						defaultValue="0.25" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
+									
+		/>
+				<parameter name="load_on_entry_3" displayName="Load on entry 3" type="double" 
+						defaultValue="0.25" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
+									
+		/>
 				<parameter name="toll_cost" displayName="toll_cost" type="int" 
 						defaultValue="40" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+									
+		/>
+				<parameter name="load_on_entry_2" displayName="Load on entry 2" type="double" 
+						defaultValue="0.25" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 									
 		/>
 				<parameter name="Car_frequency_in_the_Morning" displayName="Car frequency in the Morning" type="double" 

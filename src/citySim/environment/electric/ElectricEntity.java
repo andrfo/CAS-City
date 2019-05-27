@@ -53,6 +53,6 @@ public abstract class ElectricEntity extends Entity{
 	}
 	
 	public String getLoad() {
-		return Double.toString(totalLoad);
+		return Double.toString(Math.round(totalLoad));
 	}
 }

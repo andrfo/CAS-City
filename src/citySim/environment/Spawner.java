@@ -4,7 +4,9 @@ package citySim.environment;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import citySim.Reporter;
 import citySim.agent.Bus;
@@ -48,7 +50,7 @@ public class Spawner {
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
 	private Context<Object> context;
-	private List<Road> spawnPoints;
+	private Road[] spawnPoints;
 	private List<Road> despawnPoints;
 	private List<Road> parkingNexi;
 	private List<Road> parkingSpaces;
@@ -75,6 +77,15 @@ public class Spawner {
 	
 	private static final int[] BUS =  {2160, 7920};
 	
+	/**
+	 * The distribution between the spawn points
+	 * where the lists index + 1 corresponds to the spawn point number noted in the simulation by sidewalks in the shape of numbers
+	 * 
+	 * Does not need to sum to 1, you can have relative probabilities
+	 */
+	private Double[] loadDistribution;
+	private Double[] csum; //Cumulative load distribution
+	
 	private Double nightFrequency;
 	private Double morningFrequency;
 	private Double afternoonFrequency;
@@ -99,7 +110,7 @@ public class Spawner {
 			ContinuousSpace<Object> space, 
 			Grid<Object> grid, 
 			Context<Object> context, 
-			List<Road> spawnPoints, 
+			Road[] spawnPoints, 
 			List<Road> despawnPoints, 
 			List<Road> parkingSpaces, 
 			List<Building> buildings, 
@@ -116,7 +127,7 @@ public class Spawner {
 		this.busStops = busStops;
 		this.parkingNexi = parkingNexiRoads;
 		this.reporter = new Reporter();
-		if(spawnPoints.size() == 0 || despawnPoints.size() == 0) {
+		if(spawnPoints.length == 0 || despawnPoints.size() == 0) {
 			throw new IllegalArgumentException("no spawn or goal");
 		}
 		
@@ -133,10 +144,24 @@ public class Spawner {
 		this.rushFrequency = params.getDouble("Car_frequency_in_Rushhour");
 		this.populationStartCount = params.getInteger("population_start_count");
 		
+		this.loadDistribution = new Double[4];
+		loadDistribution[0] = params.getDouble("load_on_entry_1");
+		loadDistribution[1] = params.getDouble("load_on_entry_2");
+		loadDistribution[2] = params.getDouble("load_on_entry_3");
+		loadDistribution[3] = params.getDouble("load_on_entry_4");
+		
 		this.population = new ArrayList<Person>(populationStartCount);
 		this.idleWorkers = new ArrayList<Person>();
 		this.idleShoppers = new ArrayList<Person>();
 		generatePopulation();
+		
+		//Create a cumulative probabilities list
+		csum = new Double[spawnPoints.length];
+		Double sum = 0d;
+		for(int i = 0; i < loadDistribution.length; i++) {
+			csum[i] = sum + loadDistribution[i];
+			sum = Double.valueOf(csum[i]);
+		}
 		
 	}
 	
@@ -199,8 +224,8 @@ public class Spawner {
 		//TODO: implement car pooling
 		int spawnCount;
 		int time = Tools.getTime();
-		if(time % 120 == 0 /*&& isInInterval(time, BUS)*/) { //Spawn bus
-			for(Road r : spawnPoints) {
+		if(time % 30 == 0 /*&& isInInterval(time, BUS)*/) { //Spawn bus every 5 minutes from a random spawn
+			Road r = getSpawnPoint();
 				Spawn s = (Spawn) r;
 				Bus bus = new Bus(space, grid, 50, parkingNexi);
 				for(int i = 0; i < busStops.size(); i++) {
@@ -223,13 +248,15 @@ public class Spawner {
 					currentBussStop = bestBusStop;
 				}
 				s.addToVehicleQueue(bus);
-				
-			}
 		}
 		if(isInInterval(time, MORNING_RUSH)) { //Spawn worker
-			//98% of the workers are going to work over an hour(2% are sick)
-			Double workers = (double) idleWorkers.size();
-			spawnCount = (int) Math.ceil(workers*0.98d*(1d/60d));
+			//98% of the workers are going to work over an hour and a half(2% are sick)
+			Double workers = ((double) idleWorkers.size())*0.98d*(1d/540d);
+			BigDecimal[] valRem = BigDecimal.valueOf(workers).divideAndRemainder(BigDecimal.ONE);
+			spawnCount = valRem[0].intValue();
+			if(Tools.isTrigger(valRem[1].doubleValue())) { //Uses the remainder as a probability for an extra spawn
+				spawnCount++;
+			}
 			spawnAgent(true, spawnCount);
 		}
 		else { //Spawn shopper
@@ -256,8 +283,7 @@ public class Spawner {
 				Person p = idleWorkers.remove(0);
 				
 				//Start and goal
-				int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
-				Spawn start = (Spawn) spawnPoints.get(spawnPointIndex);
+				Spawn start = getSpawnPoint();
 				if(p.getTravelChoice().equals("bus")) {//Bus
 					start.addToBusQueue(p);
 				}
@@ -283,8 +309,7 @@ public class Spawner {
 				}
 				
 				//Start and goal
-				int spawnPointIndex = RandomHelper.nextIntFromTo(0,  spawnPoints.size() - 1);
-				Spawn start = (Spawn) spawnPoints.get(spawnPointIndex);
+				Spawn start = getSpawnPoint();
 				Person p = idleShoppers.remove(0);
 				
 				//Random shopping place each trip
@@ -311,9 +336,24 @@ public class Spawner {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Returns a random spawn point from the defined probability distribution
+	 * @return Random spawn from distribution
+	 */
+	private Spawn getSpawnPoint() {
+		Spawn start = null;
 		
+		double r = new Random().nextDouble() * csum[csum.length-1];
 		
-		
+		for(int i = 0; i < spawnPoints.length; i++) {
+		    if (csum[i] > r) {
+		        start = (Spawn) spawnPoints[i];
+		    	break;
+		    }
+		}
+		return start;
 	}
 	
 	/**

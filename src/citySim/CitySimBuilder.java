@@ -144,8 +144,8 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		//This is the Electric meter in the simulation
 		globalNode = new RegionalGridNode(space, grid);
 		context.add(globalNode);
-		space.moveTo(globalNode, width - 75, height - 15);
-		grid.moveTo(globalNode, width - 75, height - 15);
+		space.moveTo(globalNode, width - 50, height - 15);
+		grid.moveTo(globalNode, width - 50, height - 15);
 		
 		//Read the images and do stuff with the pixels
 		readCityImage(space, grid, context);
@@ -169,7 +169,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 	private void readCityImage(ContinuousSpace<Object> space, Grid<Object> grid, Context<Object> context) {
 		
 		//Lists
-		List<Road> spawnPoints = new ArrayList<Road>();
+		Road[] spawnPoints = new Road[4];
 		List<Road> despawnPoints = new ArrayList<Road>();
 		List<Road> parkingSpaces = new ArrayList<Road>();
 		List<Road> sideWalks = new ArrayList<Road>();
@@ -219,13 +219,51 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					road.setWeight(roadWeight);
 					
 				}
-				else if(r == 0 && g == 255 && b == 0) {//Start
+				
+//				else if(r == 0 && g == 255 && b == 0) {//Start
+//					Spawn road = new Spawn(space, grid, context);
+//					context.add(road);
+//					space.moveTo(road, x, y);
+//					grid.moveTo(road, x, y);
+//					spawnPoints.add(road);
+//				}
+				
+				//=======================================================
+				//Experiment specific spawn points in order to number them and have load distributions
+				
+				else if(r == 1 && g == 255 && b == 0) {//Start 1/4
 					Spawn road = new Spawn(space, grid, context);
 					context.add(road);
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
-					spawnPoints.add(road);
+					spawnPoints[0] = road;
 				}
+				else if(r == 2 && g == 255 && b == 0) {//Start 2/4
+					Spawn road = new Spawn(space, grid, context);
+					context.add(road);
+					space.moveTo(road, x, y);
+					grid.moveTo(road, x, y);
+					spawnPoints[1] = road;
+				}
+				else if(r == 3 && g == 255 && b == 0) {//Start 3/4
+					Spawn road = new Spawn(space, grid, context);
+					context.add(road);
+					space.moveTo(road, x, y);
+					grid.moveTo(road, x, y);
+					spawnPoints[2] = road;
+				}
+				else if(r == 4 && g == 255 && b == 0) {//Start 4/4
+					Spawn road = new Spawn(space, grid, context);
+					context.add(road);
+					space.moveTo(road, x, y);
+					grid.moveTo(road, x, y);
+					spawnPoints[3] = road;
+				}
+				
+				
+				//=======================================================
+				
+				
 				else if(r == 255 && g == 0 && b == 0) {//end
 					Despawn road = new Despawn(space, grid);
 					context.add(road);
@@ -563,7 +601,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		spanningTree(subs, net, subs.get(0));
 		
 		subs.get(0).setParent(globalNode);
-		net.addEdge(globalNode, subs.get(0));
+//		net.addEdge(globalNode, subs.get(0));
 		
 		return net;
 	}

@@ -34,6 +34,7 @@ public class Person extends Agent{
 	private Double dailyBudget;
 	private Double accumulatedTripCost;
 	private boolean isInstantiated;
+	private int tripTimeUsed;
 	
 	
 	//Factors that apply in calculations (A value of 1 has no effect)
@@ -101,6 +102,7 @@ public class Person extends Agent{
 		accumulatedTripCost = 0d;
 		this.spawner = spawner;
 		previousTrips = new ArrayList<Trip>();
+		tripTimeUsed = 0;
 		
 		// TODO Auto-generated constructor stub
 	}
@@ -288,6 +290,10 @@ public class Person extends Agent{
 		return shop;
 	}
 	
+	public void addTimeUse(int n) {
+		this.tripTimeUsed += n;
+	}
+	
 	/**
 	 * Calculates and updates the logs and such with the cost of the trip.
 	 * @param Vehicle v, The vehicle used for the trip
@@ -295,7 +301,6 @@ public class Person extends Agent{
 	private void updateCostAndChoice(Vehicle v) {
 		//TODO: Add parking costs
 		
-		System.out.println("Agent returned.");
 		//Set the cost
 		accumulatedTripCost = 0d;
 		String choice = "";
@@ -324,19 +329,20 @@ public class Person extends Agent{
 			//Distance from bus stop to work
 			Double distance;
 			if(workPlace != null) {
-				distance = workPlace.getDistanceToNearestBusStop() * DISTANCE_CONSTANT_BUS;
+				distance = workPlace.getDistanceToNearestBusStop() * DISTANCE_CONSTANT_BUS * 2;
 			}
 			else {
-				distance = shop.getDistanceToNearestBusStop() * DISTANCE_CONSTANT_BUS;
+				distance = shop.getDistanceToNearestBusStop() * DISTANCE_CONSTANT_BUS * 2;
 			}
 			accumulatedTripCost += distance;
 			spawner.getReporter().addToAverageBusTravelDistance(distance);
 			
 			//Time
-			Double time = (double) ((Bus) v).getTickCount(); //Time used by the bus in total, not each passenger. Should be per passenger
+			Double time = (double) tripTimeUsed;
 			accumulatedTripCost +=  time * TIME_CONSTANT_BUS;
-			lastTimeUse = ((Bus) v).getTickCount();
+			lastTimeUse = Integer.valueOf(tripTimeUsed);
 			spawner.getReporter().addToAverageBusTravelTime(time);
+			tripTimeUsed = 0;
 			
 			//Bus fare
 			accumulatedTripCost += BUS_FARE_COST;
@@ -352,7 +358,7 @@ public class Person extends Agent{
 		}
 		
 		previousTrips.add(new Trip(accumulatedTripCost, choice));
-		printPriceHistory();
+		//printPriceHistory();
 		
 		
 	}
