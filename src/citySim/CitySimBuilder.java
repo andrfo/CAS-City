@@ -208,7 +208,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					context.add(road);
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
-					road.setWeight(roadWeight);
+					road.setWeight(roadWeight); //Set the weight according to the road overlay image
 					
 				}
 				else if(r == 0 && g == 0 && b == 0) {//Road, direction South-West
@@ -216,7 +216,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 					context.add(road);
 					space.moveTo(road, x, y);
 					grid.moveTo(road, x, y);
-					road.setWeight(roadWeight);
+					road.setWeight(roadWeight); //Set the weight according to the road overlay image
 					
 				}
 				
@@ -229,7 +229,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 //				}
 				
 				//=======================================================
-				//Experiment specific spawn points in order to number them and have load distributions
+				//Experiment specific spawn points in order to number them and vary load distributions
 				
 				else if(r == 1 && g == 255 && b == 0) {//Start 1/4
 					Spawn road = new Spawn(space, grid, context);

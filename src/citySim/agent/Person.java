@@ -75,7 +75,7 @@ public class Person extends Agent{
 	private static final Double BUS_FARE_COST = 40d;
 	
 	//The toll cost of a trip
-	private int TOLL_COST;
+	private int TOLL_COST;//Set in the GUI
 	
 	
 	private List<Trip> previousTrips;
@@ -231,7 +231,7 @@ public class Person extends Agent{
 				}
 			}
 		}
-		if(cost == 0) {
+		if(cost == 0) { //No history of the choice, predicting.
 			if(choice.equals("bus")) {
 				cost = busCostEstimate() * mf;
 			}
