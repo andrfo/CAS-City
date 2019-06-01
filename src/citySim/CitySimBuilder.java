@@ -85,7 +85,7 @@ public class CitySimBuilder implements ContextBuilder<Object> {
 		
 		//Reads the images
 		try {
-		    cityImg = ImageIO.read(new File("C:/Users/andrfo/Documents/Git/CAS-City/maps/smallTrondheim.png"));
+		    cityImg = ImageIO.read(new File("C:/Users/andrfo/Documents/Git/CAS-City/maps/smallTrondheimSmallPark.png"));
 		} catch (IOException e) {
 			System.out.println("There was an error while loading the city traffic map: " + e);
 		}
