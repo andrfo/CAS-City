@@ -124,17 +124,20 @@ public class Vehicle extends Agent{
 	}
 	
 	/**
-	 * Runs every step
+	 * Runs every step. Checks for "dead" after each main step because model destruction does not trigger until next step.
 	 */
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step(){
-		
+		//Scans the surrounding area and sees if the vehicle is able to move
 		getSurroundings(); 		if(!isMovable()) {moved = false;return;}
 		
+		//Has the vehicle reached a goal?
 		isReachedGoal(); 		if(dead) { return;}
 		
+		//Uses its data on past and current surounds to select a new short-term goal for navigation
 		selectNewLocalGoal(); 	if(dead) { return;}
 		
+		//Moves one step along the path
 		move();	
 		
 		
@@ -142,20 +145,27 @@ public class Vehicle extends Agent{
 	
 	//Main functions
 	
+	
+	/**
+	 * Scans the surrounding area. Remebering parking locations and adding roads to a list of viewed roads.
+	 */
 	private void getSurroundings() {
 		
-		tickCount++;
+		tickCount++; //For time measurement
 		
+		//Add time use to passengers
 		if(this instanceof Bus) {
 			for(Person p: occupants) {
 				p.addTimeUse(1);
 			}
 		}
 		
+		//Does not scan if it has not moved (no new info)
 		if(!moved) {
 			return;
 		}
 		
+		//Used to set a timer on the scans to save computations
 		if(scanWait > 0) {
 			scanWait--;
 			return;
@@ -164,6 +174,8 @@ public class Vehicle extends Agent{
 			scanWait = scWaitTime;
 		}
 		
+		
+		//Sets up a grid neighborhood and iterates through it.
 		GridPoint pt = grid.getLocation(this);
 		Double minDist = Double.MAX_VALUE;
 		Double dist = 0d;
@@ -172,39 +184,56 @@ public class Vehicle extends Agent{
 		for (GridCell<Road> gridCell : roadGridCells) {
 			if(gridCell.items().iterator().hasNext()) {
 				Road r = gridCell.items().iterator().next();
+				
+				//Saves the road to the list of viewed roads
 				addOpen(r);
+				
 				dist = Tools.gridDistance(pt, grid.getLocation(r));
+				
+				//Selects the road a new goal if it is in parking search mode
 				if(lookingForParking) {
 					if(r instanceof ParkingSpace && !((ParkingSpace) r ).isReserved()) {
 						goals.replaceCurrent(r);
 						lookingForParking = false;
 					}
 				}
+				
+				//Sets the closest road as the road the car is currently on
 				if(dist < minDist && !(r instanceof SideWalk)) {
 					minDist = dist;
 					currentRoad = r;
 				}
 			}
 		}
+		
+		//Sets this as being in queue for an intersection if it is at the edge of one. 
+		//This will trigger tests for entry into the intersection.
 		if(currentRoad.isEdge() && !currentRoad.isExit()) {
 			setInQueue(true);
 		}
 	}
 	
+	
+	/**
+	 * Tests a number of conditions to see of the vehicle is movable(Allowed/able to make a move)
+	 * @return boolean, true if it can move, false of not.
+	 */
 	private boolean isMovable() {
 		if(parked) {
 			if(tickCount > 0) {
 				tickCount--;
 			}
+			//Is the occupant done working or shopping?
 			if(!occupants.get(0).isWantToLeave()) {
 				return false;
 			}
+			//Is the way clear to exit the parking space?
 			else {
 				//Check surroundings
 				GridPoint pt = grid.getLocation(this);
 				NdPoint spacePt = space.getLocation(this);
 				Double dist = Double.MAX_VALUE;
-				GridCellNgh<Vehicle> agentNghCreator = new GridCellNgh<Vehicle>(grid, pt, Vehicle.class, 2, 2);
+				GridCellNgh<Vehicle> agentNghCreator = new GridCellNgh<Vehicle>(grid, pt, Vehicle.class, 2, 2); //Set to a radius of 2
 				List<GridCell<Vehicle>> agentGridCells = agentNghCreator.getNeighborhood(false);
 				for (GridCell<Vehicle> cell : agentGridCells) {
 					if(cell.items().iterator().hasNext()) {
@@ -213,7 +242,7 @@ public class Vehicle extends Agent{
 								continue;
 							}
 							dist = Tools.spaceDistance(space.getLocation(v), spacePt);
-							if(dist <= 1.6 && !v.isParked()) {
+							if(dist <= 1.6 && !v.isParked()) { //Distance threshold set to 1.6 which seemed to work well
 								//blocked, wait
 								return false;
 							}
@@ -221,7 +250,7 @@ public class Vehicle extends Agent{
 					}
 				}
 				
-				
+				//Leaves the parking space
 				parked = false;
 				parkingSpace.vacate();
 				parkingSpace = null;
@@ -230,6 +259,7 @@ public class Vehicle extends Agent{
 			}
 		}
 		if(isInQueue) {
+			//Moves if the way into the intersection is clear
 			if(isClear(this)) {
 				setInQueue(false);
 			}
@@ -237,15 +267,22 @@ public class Vehicle extends Agent{
 				return false;				
 			}
 		}
+		
+		//If we get there nothing has triggered and it is movable
 		return true;
 	}
 	
+	/**
+	 * Checks if a global goal is reached like the work place or a parking spot.
+	 * @return
+	 */
 	private boolean isReachedGoal() {
 		
-		GridPoint pt = grid.getLocation(this);
-		Entity goal = goals.getCurrent();
-		double triggerDistance;
+		GridPoint pt = grid.getLocation(this);//Current location
+		Entity goal = goals.getCurrent();//current goal
+		double triggerDistance; //The goal is defined to be reached within this distance
 		
+		//Buildings are triggered further away as it needs to find parking and buildings are some distance from the roads.
 		if(goal instanceof Building) {
 			triggerDistance = 10;
 		}
@@ -254,20 +291,23 @@ public class Vehicle extends Agent{
 		}
 		if(Tools.gridDistance(pt, grid.getLocation(goal)) < triggerDistance) {
 			
-			
+			//Reached the intended building, now find parking.
 			if(goal instanceof Building) {
 				ParkingSpace p = findParking(grid.getLocation(goal));
 				
+				//No parking free nearby or along the path, go looking.
 				if(p == null) {
 					gotoNextNexus();
 					lookingForParking = true;
 					return false;
 				}
 				goals.replaceCurrent(p);
-				goingToWork = true;					
+				goingToWork = true;	//As shopper now also have buildings as targets, this may have to be removed. //TODO				
 				
 			}
+			//Reached the intended parking space
 			else if (goal instanceof ParkingSpace) {
+				//is it still free? If so, find a new one
 				if(((ParkingSpace) goal).isReserved()) {
 					ParkingSpace p = findParking(grid.getLocation(this));
 					if(p == null) {
@@ -278,6 +318,9 @@ public class Vehicle extends Agent{
 					goals.replaceCurrent(p);
 					return false;
 				}
+				//Parking space is not reserved, start parking.
+				
+				//"Teleports" to the centre of the parking space
 				stop();
 				space.moveTo(this, space.getLocation(goal).getX(), space.getLocation(goal).getY());
 				grid.moveTo(this, pt.getX(), pt.getY());
@@ -285,12 +328,13 @@ public class Vehicle extends Agent{
 					p.setReachedGoal(this, false);
 				}
 				park(2880, (ParkingSpace) goals.getCurrent());//8h
-				goals.next();
+				goals.next(); //Sets the goal to be the next one
 				
 				closed.clear();
 				open.clear();
 				getSurroundings();
 			}
+			//Reached the exit of the model. Updates the measurements and destroys the vehicle
 			else if (goal instanceof Despawn) {
 				for(Person p : occupants) {
 					p.setReachedGoal(this, true);
@@ -298,6 +342,8 @@ public class Vehicle extends Agent{
 				die("");
 				return true;
 			}
+			
+			//For buses only. Drops off and picks up passenger
 			else if (goal instanceof BusStop) {
 				stop();
 				space.moveTo(this, space.getLocation(goal).getX(), space.getLocation(goal).getY());
@@ -313,6 +359,8 @@ public class Vehicle extends Agent{
 				open.clear();
 				getSurroundings();
 			}
+			
+			//This is only a goal when looking for parking.
 			else if(goal instanceof NorthEastRoad || goal instanceof SouthWestRoad) {
 				parkingNexi.remove(goals.getCurrent());
 				placesChecked++;
@@ -333,6 +381,8 @@ public class Vehicle extends Agent{
 		return false;
 	}
 	
+	
+	//Gets a random one of the parking nexi and sets it as a goal
 	private void gotoNextNexus() {
 		if(parkingNexi.size() > 0) {
 			goals.replaceCurrent(parkingNexi.get(RandomHelper.nextIntFromTo(0, parkingNexi.size() - 1)));
@@ -342,8 +392,13 @@ public class Vehicle extends Agent{
 		}
 	}
 	
+	/**
+	 * Scans the list of viewed roads, selects the one closest to the global goal,
+	 * and calculates a path to it using A-star
+	 */
 	private void selectNewLocalGoal() {
 		
+		//Used to delay calculating a new path
 		if(calcWait > 0) {
 			calcWait--;
 			return;
@@ -352,6 +407,7 @@ public class Vehicle extends Agent{
 			calcWait = scWaitTime;
 		}
 		
+		//If there is no viewed roads, scan the area
 		if(open.size() == 0) {
 			scanWait = 0;
 			moved = true;
@@ -386,14 +442,18 @@ public class Vehicle extends Agent{
 			}
 		}
 		
+		//Create a new path, and reset the position.
 		path = Tools.aStar(currentRoad, localGoal, net);
 		pathIndex = 0;	
 		
 	}
 	
+	/**
+	 * Moves the vehicle along the path
+	 */
 	private void move() {
 		// get the grid location of this Agent
-//		GridPoint pt = grid.getLocation(currentRoad);
+		// GridPoint pt = grid.getLocation(currentRoad);
 		
 		
 		
@@ -405,6 +465,7 @@ public class Vehicle extends Agent{
 		if(index > path.size() - 1) {
 			selectNewLocalGoal();
 		}	
+		//Move
 		else{
 			GridPoint next = grid.getLocation((Road)path.get(index).getTarget());
 			
@@ -434,6 +495,11 @@ public class Vehicle extends Agent{
 		}
 	}
 	
+	/**
+	 * Moves the vehicle towards the point (pt)
+	 * @param pt, point to move towards
+	 * @return boolean, true of sucessful, false if failed.
+	 */
 	public boolean moveTowards(GridPoint pt) {
 		// only move if we are not already in this grid location
 		if(pt.equals(grid.getLocation(currentRoad))) {
@@ -468,8 +534,12 @@ public class Vehicle extends Agent{
 		return true;
 	}
 	
+	/**
+	 * Checks the surroundings for other Agents and checks whether action is needed (speed adjustment)
+	 */
 	private void speedControl() {
 		
+		//Location of this vehile
 		GridPoint pt = grid.getLocation(currentRoad);
 		
 		int pathDistance = 3;
@@ -477,13 +547,11 @@ public class Vehicle extends Agent{
 		Double minDist = Double.MAX_VALUE;
 		GridCellNgh<Agent> agentNghCreator = new GridCellNgh<Agent>(grid, pt, Agent.class, 3, 3);
 		List<GridCell<Agent>> agentGridCells = agentNghCreator.getNeighborhood(false);
-		
-		
-		
 		for (GridCell<Agent> cell : agentGridCells) {
 			if(cell.size() <= 0) {
 				continue;
 			}
+			//Iterates through the nearby agents
 			for(Agent a : cell.items()) {
 				if(a instanceof Person) {//Run over people, for now
 					continue;
@@ -565,6 +633,10 @@ public class Vehicle extends Agent{
 		}
 	}
 	
+	/**
+	 * Removes the vehicle from the context and prints out the message
+	 * @param message
+	 */
 	public void die(String message) {
 		@SuppressWarnings("unchecked")
 		Context<Object> context = ContextUtils.getContext(this);
@@ -582,8 +654,13 @@ public class Vehicle extends Agent{
 		dead = true;
 	}
 	
+	/**
+	 * Tries to find out if there is a deadlock and tries to clear it by 
+	 * giving one car right of way and permission to run over things.
+	 */
 	private void checkDeadlock() {
 		
+		//If it has stood still for a long time, give it right of way
 		if(deadlockTimer > 0) {
 			if(currentRoad instanceof RoundaboutRoad) {
 				deadlockTimer--;
@@ -596,7 +673,7 @@ public class Vehicle extends Agent{
 			giveWay();
 		}
 		
-		
+		//Goes through the chain of blocking cars and tries to detect a cycle and clear it.
 		if(		blockingCar.getBlockingCar() != null &&
 				blockingCar != null) {
 //			if(blockingCar.getBlockingCar() == this) {
@@ -628,6 +705,10 @@ public class Vehicle extends Agent{
 //		rightOfWayCounter = rightOfWayTime;
 	}
 	
+	/**
+	 * Returns the current road the vehicle is on.
+	 * @return
+	 */
 	public Road getRoad() {
 		
 		if(currentRoad == null) {
@@ -640,6 +721,12 @@ public class Vehicle extends Agent{
 		return null;
 	}
 	
+	/**
+	 * Determines if the road is a valid short-term goal.
+	 * @param road
+	 * @param goal
+	 * @return
+	 */
 	public boolean isValidGoal(Road road, Entity goal) {
 		if((road instanceof ParkingSpace && road != goal)) {
 			return false;
@@ -657,10 +744,19 @@ public class Vehicle extends Agent{
 		return true;
 	}
 	
+	/**
+	 * A getter for the debug label which can be accessed by the GUI
+	 * @return
+	 */
 	public String debugLabel() {
 		return debugString;
 	}
 	
+	/**
+	 * Starts a parking session for a parking space.
+	 * @param time, duration of the parking
+	 * @param p, the parking space
+	 */
 	private void park(int time, ParkingSpace p) {
 		parked = true;
 		this.parkingSpace = p;
@@ -674,7 +770,10 @@ public class Vehicle extends Agent{
 	}
 	
 	
-	
+	/**
+	 * Adds a road as visited by the vehicle
+	 * @param r
+	 */
 	public void addVisited(Road r) {
 		if(!closed.contains(r)) {
 			closed.add(r);
@@ -695,7 +794,12 @@ public class Vehicle extends Agent{
 		}
 	}
 	
-	
+	/**
+	 * Checks if a vehicle is in the path of this one.
+	 * @param car
+	 * @param pathDistance
+	 * @return
+	 */
 	private boolean isInPath(Vehicle car, int pathDistance) {
 		for(	int i = getPathIndex(); 
 				i < getPathIndex() + pathDistance &&
@@ -723,7 +827,10 @@ public class Vehicle extends Agent{
 		return this.blockingCar;
 	}
 	
-	
+	/**
+	 * Sets a vehicle to be in queue for an intersection
+	 * @param isInQueue
+	 */
 	public void setInQueue(boolean isInQueue) {
 		this.isInQueue = isInQueue;
 		if(isInQueue) {
@@ -735,6 +842,11 @@ public class Vehicle extends Agent{
 		}
 	}
 	
+	/**
+	 * Checks of the way is clear to move
+	 * @param c
+	 * @return
+	 */
 	private boolean isClear(Vehicle c) {
 		GridPoint pt = grid.getLocation(c);
 				
