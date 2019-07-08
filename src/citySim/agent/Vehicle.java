@@ -868,6 +868,11 @@ public class Vehicle extends Agent{
 		return true;
 	}
 	
+	/**
+	 * Goes through the parking spaces in the list of viewed roads to find the closest one that is free.
+	 * @param target
+	 * @return ParkingSpace which is free, if none is found, returns null.
+	 */
 	private ParkingSpace findParking(GridPoint target) {
 		double minDist = Double.MAX_VALUE;
 		ParkingSpace parking = null;
@@ -919,6 +924,10 @@ public class Vehicle extends Agent{
 		this.goals.addGoal(goal);
 	}
 	
+	/**
+	 * Ads an edge in the debug network(will show up in the GUI)
+	 * @param obj
+	 */
 	public void debugPointTo(Object obj) {
 		Context<Object> context = ContextUtils.getContext(this);
 		Network<Object> net = (Network<Object>)context.getProjection("debug network");
@@ -926,6 +935,10 @@ public class Vehicle extends Agent{
 		
 	}
 	
+	/**
+	 * Removes the edges from an object.
+	 * @param obj
+	 */
 	public void debugRemoveEdges(Object obj) {
 		Context<Object> context = ContextUtils.getContext(obj);
 		Network<Object> net = (Network<Object>)context.getProjection("debug network");
